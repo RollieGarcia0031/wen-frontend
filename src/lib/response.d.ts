@@ -72,17 +72,19 @@ export type SearchAvailabilityResponse = ApiResponse<Array<{
 /**
  * POST /search/professor
  */
-export type SearchProfessorResponse = ApiResponse<Array<{
-    prof_id: number;
-    department: string;
-    year: number;
-    user_id: number;
-    name: string;
-    email: string;
-    day_of_week: number;
-    start_time: string;
-    end_time: string;
-} | null> | null>;
+
+interface SearchProfessorResponseDataItem {
+    prof_id?: number;
+    department?: string;
+    year?: number;
+    user_id?: number;
+    name?: string;
+    email?: string;
+    day_of_week?: number;
+    start_time?: string;
+    end_time?: string;
+}
+export type SearchProfessorResponse = ApiResponse< SearchAvailabilityResponseDataItem[] | null>;
 
 /**
  * POST /appointment/send

@@ -44,4 +44,13 @@ body {
   button, input[type="submit"], a {
     @apply cursor-pointer;
   }
+
+  dialog:open {
+    @apply block fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+      bg-background text-foreground border-white border-[1px] border-solid rounded-md px-2 py-1;
+  }
+
+  dialog:not([open]) {
+    @apply hidden;
+  }
 }
