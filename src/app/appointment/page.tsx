@@ -118,36 +118,43 @@ function SearchPanel({nameInput, setNameInput, setProfessors}: any){
   }
 }
 
-  /**
-   * the box that shows the search result of user student
-   */
+/**
+ * the box that shows the search result of user student
+ */
 function SearchResult({professors}: {professors: SearchProfessorResponseDataItem[]}){
   return (
     <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
-      flex-1
+      flex-1 p-4
     '>
       {professors?.map((professor) => <SearchResultContainer
         key={professor.prof_id}
         id={professor.prof_id}
         year={professor.year}
         department={professor.department}
+        name={professor.name}
       />)}
 
       {professors?.length === 0 && <h1>Search Result</h1>}
     </div>
   );
 }
-
-function SearchResultContainer({id, year, department}:{
+/**
+ * boxes holding the individual professor information 
+ */
+function SearchResultContainer({id, year, department, name}:{
   id?: number,
   year?: number,
-  department?: string
+  department?: string,
+  name?: string
+
 }){
   return (
-    <div>
-      <p>id: {id}</p>
-      <p>year: {year}</p>
-      <p>department: {department}</p>
+    <div className='border-gray-500 border-2 border-solid w-[100%] rounded-md py-2 px-4'>
+      <p className='font-bold'>{name}</p>
+      <div className='flex flex-row gap-4'>
+        <p className='text-xs'>year: {year}</p>
+        <p className='text-xs'>department: {department}</p>
+      </div>
     </div>
   );
 }
