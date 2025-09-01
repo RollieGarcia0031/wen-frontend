@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useState } from "react";
 import { fetchBackend } from "@/lib/api"; 
@@ -9,7 +9,11 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [role, setRole] = useState<string>("");
+  const [role, setRole] = useState<string>("student");
+
+  useEffect(()=>{
+    console.log(role);
+  },[role]);
 
   return (
     <div className="flex flex-col justify-center items-center h-full">

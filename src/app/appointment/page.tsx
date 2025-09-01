@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useAuthContext } from '@/context/AuthContext';
-import React, { useState, useEffect, useRef, use } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 
@@ -82,7 +82,11 @@ function NewAppointmentDialog({nameInput, setNameInput, dialogRef, setProfessors
  * search panel of user student, where the user can search for professors
  * TODO: add more search options
  */
-function SearchPanel({nameInput, setNameInput, setProfessors}: any){
+function SearchPanel({nameInput, setNameInput, setProfessors}: {
+  nameInput: string,
+  setNameInput: React.Dispatch<React.SetStateAction<string>>,
+  setProfessors: React.Dispatch<React.SetStateAction<SearchProfessorResponseDataItem[]>>,
+}){
   return (
     <div className='w-full flex flex-row justify-center items-center gap-2'
     >
