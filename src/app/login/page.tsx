@@ -1,13 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { fetchBackend } from "@/lib/api"; 
+import { fetchBackend } from "@/lib/api";
+import { useAuthContext } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { setUserName, setRole } = useAuthContext();
 
   return (
     <div className="flex flex-col justify-center items-center h-full">
@@ -36,12 +40,21 @@ export default function Login() {
     const body = JSON.stringify({email, password});
     const headers = new Headers({"Content-Type": "application/json"});
 
-    console.log(body);
-
     try {
       const response = await fetchBackend("auth/login", "POST", body, headers);
+      
+      if (response.success && response.data && setUserName && setRole) {
+        const { role, name } = response.data;
+        
+        setUserName(name);
+        setRole(role);
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem("name", name);
+        
+        router.push("/");
+        return;
+      };
       alert(response.message);
-      if (response.success) window.location.href = "/";
       
     } catch (error) {
       console.error(error);

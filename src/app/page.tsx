@@ -3,34 +3,26 @@
 import Link from "next/link";
 import { useAuthContext } from "@/context/AuthContext";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Header from "@/components/Header";
 
 export default function Home() {
+  const { role } = useAuthContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const sessionRole = sessionStorage.getItem("role");
+    const sessionName = sessionStorage.getItem("name");
+
+    if(sessionRole && sessionName) return;
+    router.push("/login");
+  }, [role]);
+
   return (
     <div>
       <Header />
       <h1>Welcome!</h1>
 
     </div>
-  );
-}
-
-function Header(){
-  const AuthContext = useAuthContext();
-  const { role, userName } = useAuthContext();
-
-  useEffect(()=>{
-    console.log({userName, role});
-  }, [])
-
-  return (
-    <header>
-      <nav>
-        <ul className="flex gap-4 flex-row">
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/login">Login</Link></li>
-          <li><Link href="/appointment">Appointments</Link></li>
-        </ul>
-      </nav>
-    </header>
   );
 }
