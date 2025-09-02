@@ -5,6 +5,7 @@ import { useAuthContext } from '@/context/AuthContext';
 import React, { useState, useEffect, useRef } from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
+import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 
 export default function Appointment(){
   const { role } = useAuthContext();
@@ -23,9 +24,7 @@ export default function Appointment(){
   );
 }
 
-/**
- * Appointments panel rendered for students
- */
+// Appointments panel rendered for students
 function SentAppointments(){
   const [nameInput, setNameInput] = useState<string>("");
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -48,6 +47,7 @@ function SentAppointments(){
   );
 
 }
+
 // dialog pop up for adding a new appointment and searching for professors
 function NewAppointmentDialog({nameInput, setNameInput, dialogRef, setProfessors, professors}:{
   nameInput: string,
@@ -126,37 +126,41 @@ function SearchPanel({nameInput, setNameInput, setProfessors}: {
  * the box that shows the search result of user student
  */
 function SearchResult({professors}: {professors: SearchProfessorResponseDataItem[]}){
+  const processProfessorList = ProcessProfData(professors);
+
   return (
     <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
       flex-1 p-4
     '>
-      {professors?.map((professor) => <SearchResultContainer
-        key={professor.prof_id}
-        id={professor.prof_id}
-        year={professor.year}
-        department={professor.department}
-        name={professor.name}
-      />)}
+      {
+        professors?.length !== 0 &&
+        Object.values(processProfessorList).map((professor: newProfItem) => (
+          <SearchResultContainer key={professor.name} professor={professor.data}/>
+        ))
+      }
 
       {professors?.length === 0 && <h1>Search Result</h1>}
     </div>
   );
 }
+
 /**
  * boxes holding the individual professor information 
  */
-function SearchResultContainer({id, year, department, name}:{
-  id?: number,
-  year?: number,
-  department?: string,
-  name?: string
-
+function SearchResultContainer({professor}:{
+  professor: SearchProfessorResponseDataItem[]
 }){
+  const { name } = professor[0];
+  console.log(professor);
+
+  const departments = professor.map((prof) => prof.department);
+  const years = professor.map((prof) => prof.year);
+  const department = Array.from(new Set(departments)).join(", ");
+
   return (
     <div className='border-gray-500 border-2 border-solid w-[100%] rounded-md py-2 px-4'>
       <p className='font-bold'>{name}</p>
       <div className='flex flex-row gap-4'>
-        <p className='text-xs'>year: {year}</p>
         <p className='text-xs'>department: {department}</p>
       </div>
     </div>
