@@ -3,16 +3,34 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchBackend } from '@/lib/api';
-import { ProfessorProfileRequest, } from '@/lib/requests';
 import { ApiResponse } from "@/lib/response";
 
+interface ProfessorProfile {
+  department: string;
+  year: 1 | 2 | 3 | 4;
+}
+
 export default function Profiles(){
+  const [profiles, setProfiles] = useState<ProfessorProfile[]>([]);
+
   useEffect(()=>{
     const sessionRole = sessionStorage.getItem("role");
     if(sessionRole !== "professor") {
       alert("Your are not allowed here!");
       window.location.href = "/"
     };
+
+    const fetchProfiles = async () =>  {
+      try{
+        const profiles = await fetchBackend("professor/profile", "GET");
+        setProfiles(profiles.data);
+      } catch (err){
+        console.error(err)
+      }
+    }
+    
+    fetchProfiles();
+
   },[])
 
   const [year, setYear] = useState<number>(0);
@@ -31,6 +49,11 @@ export default function Profiles(){
         </div>
 
         <button type="submit">Add</button>
+
+        <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4">
+          <div>Your Profiles </div>
+          {profiles?.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
+        </div>
       </form>
     </div>
   );
@@ -50,6 +73,15 @@ export default function Profiles(){
       console.error(err);
     }
   }
+}
+
+function ProfileCard({profile}:{profile: ProfessorProfile}) {
+  return (
+    <div className="flex flex-row gap-4">
+      <div>Year: {profile.year}</div>
+      <div>Department: {profile.department}</div>
+    </div>
+  );
 }
 
 interface FormInputProps {
