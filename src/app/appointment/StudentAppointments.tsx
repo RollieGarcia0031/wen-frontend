@@ -2,7 +2,7 @@ import {useState, useRef} from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
-import ConfirmDialog from '@/components/ConfirmDialog';
+import { useRouter } from 'next/navigation';
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
@@ -176,6 +176,9 @@ function SearchResultContainer({professor, selectedSendButton, index, setSelecte
   );
 
   function SendConfirDialog(){
+    const router = useRouter();
+    const { user_id } = professor[0]
+
     return (
       <div
         className='border-gray-500 border-2 border-solid rounded-md absolute right-0
@@ -184,7 +187,10 @@ function SearchResultContainer({professor, selectedSendButton, index, setSelecte
           flex flex-row justify-evenly gap-2'
       >
         <button className='bg-green-500 py-1 px-2 rounded-md'
-          onClick={()=>setSelectedButtonIndex(-1)}
+          onClick={()=>{
+            setSelectedButtonIndex(-1);
+            router.push(`/appointment/send/${user_id}`);
+          }}
         >
           Confirm
         </button>
