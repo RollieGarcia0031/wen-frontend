@@ -107,6 +107,7 @@ function SearchPanel({nameInput, setNameInput, setProfessors}: {
  */
 function SearchResult({professors}: {professors: SearchProfessorResponseDataItem[]}){
   const processProfessorList = ProcessProfData(professors);
+  const [selectedButtonIndex, setSelectedButtonIndex] = useState<number>(-1);
 
   return (
     <>
@@ -118,8 +119,10 @@ function SearchResult({professors}: {professors: SearchProfessorResponseDataItem
           Object.values(processProfessorList).map((professor: newProfItem, index: number) => (
             <SearchResultContainer
               key={index}
+              index={index}
               professor={professor.data}
-              selectedSendButton={index}
+              selectedSendButton={selectedButtonIndex}
+              setSelectedButtonIndex={setSelectedButtonIndex}
             />
           ))
         }
@@ -133,15 +136,24 @@ function SearchResult({professors}: {professors: SearchProfessorResponseDataItem
 /**
  * boxes holding the individual professor information 
  */
-function SearchResultContainer({professor, selectedSendButton}:{
+function SearchResultContainer({professor, selectedSendButton, index, setSelectedButtonIndex}:{
   professor: SearchProfessorResponseDataItem[],
-  selectedSendButton: number
+  index: number,
+  selectedSendButton: number,
+  setSelectedButtonIndex: React.Dispatch<React.SetStateAction<number>>
 }){
   const { name } = professor[0];
 
   const departments = professor.map((prof) => prof.department);
   const years = professor.map((prof) => prof.year);
   const department = Array.from(new Set(departments)).join(", ");
+
+  const isSelectedToSend = selectedSendButton === index;
+
+  const SendButtonHandler = async () =>{
+    if(!isSelectedToSend) return setSelectedButtonIndex(index);
+    setSelectedButtonIndex(-1);
+  }
 
   return (
     <div className='border-gray-500 border-2 border-solid w-[100%] rounded-md py-2 px-4
@@ -154,17 +166,33 @@ function SearchResultContainer({professor, selectedSendButton}:{
         </div>
       </div>
 
-      <button>
+      <button onClick={SendButtonHandler}>
         Send
       </button>
+
+      { isSelectedToSend && <SendConfirDialog/> }
 
     </div>
   );
 
   function SendConfirDialog(){
     return (
-      <div>
-        Hello
+      <div
+        className='border-gray-500 border-2 border-solid rounded-md absolute right-0
+          w-[10rem] p-2
+          bg-white text-black
+          flex flex-row justify-evenly gap-2'
+      >
+        <button className='bg-green-500 py-1 px-2 rounded-md'
+          onClick={()=>setSelectedButtonIndex(-1)}
+        >
+          Confirm
+        </button>
+        <button className='bg-red-500 py-1 px-2 rounded-md'
+          onClick={()=>setSelectedButtonIndex(-1)}
+        >
+          Cancel
+        </button>
       </div>
     );
   }
