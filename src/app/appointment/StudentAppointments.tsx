@@ -39,8 +39,8 @@ function NewAppointmentDialog({nameInput, setNameInput, dialogRef, setProfessors
   return(
     <dialog ref={dialogRef} onSubmit={(e) => e.preventDefault()}
       className='open:sm:w-[30rem]  open:sm:h-[80dvh] open:w-full
-        open:flex open:flex-col open:justify-center open:items-center'
-    >
+      open:flex open:flex-col open:justify-center open:items-center'
+      >
       <div className='flex flex-row justify-end align-top items-end w-full'>
         <button onClick={() => dialogRef.current?.close()}>❌</button>
       </div>
@@ -115,8 +115,12 @@ function SearchResult({professors}: {professors: SearchProfessorResponseDataItem
       '>
         {
           professors?.length !== 0 &&
-          Object.values(processProfessorList).map((professor: newProfItem) => (
-            <SearchResultContainer key={professor.name} professor={professor.data}/>
+          Object.values(processProfessorList).map((professor: newProfItem, index: number) => (
+            <SearchResultContainer
+              key={index}
+              professor={professor.data}
+              selectedSendButton={index}
+            />
           ))
         }
 
@@ -129,22 +133,39 @@ function SearchResult({professors}: {professors: SearchProfessorResponseDataItem
 /**
  * boxes holding the individual professor information 
  */
-function SearchResultContainer({professor}:{
-  professor: SearchProfessorResponseDataItem[]
+function SearchResultContainer({professor, selectedSendButton}:{
+  professor: SearchProfessorResponseDataItem[],
+  selectedSendButton: number
 }){
   const { name } = professor[0];
-  console.log(professor);
 
   const departments = professor.map((prof) => prof.department);
   const years = professor.map((prof) => prof.year);
   const department = Array.from(new Set(departments)).join(", ");
 
   return (
-    <div className='border-gray-500 border-2 border-solid w-[100%] rounded-md py-2 px-4'>
-      <p className='font-bold'>{name}</p>
-      <div className='flex flex-row gap-4'>
-        <p className='text-xs'>department: {department}</p>
+    <div className='border-gray-500 border-2 border-solid w-[100%] rounded-md py-2 px-4
+      flex flex-row'
+    >
+      <div className='flex-1'>
+        <p className='font-bold'>{name}</p>
+        <div className='flex flex-row gap-4'>
+          <p className='text-xs'>department: {department}</p>
+        </div>
       </div>
+
+      <button>
+        Send
+      </button>
+
     </div>
   );
+
+  function SendConfirDialog(){
+    return (
+      <div>
+        Hello
+      </div>
+    );
+  }
 }

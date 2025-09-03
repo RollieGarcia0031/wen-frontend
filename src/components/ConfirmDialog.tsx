@@ -1,7 +1,7 @@
 export default function ConfirmDialog({message, onConfirm, ref}: {
   message: string,
   onConfirm: () => void,
-  ref: React.RefObject<HTMLDialogElement>
+  ref: React.RefObject<HTMLDialogElement | null>
 }) {
   return (
     <dialog>
