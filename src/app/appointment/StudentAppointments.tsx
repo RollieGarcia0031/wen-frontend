@@ -2,6 +2,8 @@ import {useState, useRef} from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
+import ConfirmDialog from '@/components/ConfirmDialog';
+
 // Appointments panel rendered for students
 export default function SentAppointments(){
   const [nameInput, setNameInput] = useState<string>("");
@@ -11,7 +13,7 @@ export default function SentAppointments(){
   return (
   <>
   <div>
-    <button  onClick={() => dialogRef.current?.showModal()}>New</button>  
+    <button  onClick={() => dialogRef.current?.show()}>New</button>  
     <h1>Sent Appointments</h1>
   </div>
   <NewAppointmentDialog
@@ -107,18 +109,20 @@ function SearchResult({professors}: {professors: SearchProfessorResponseDataItem
   const processProfessorList = ProcessProfData(professors);
 
   return (
-    <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
-      flex-1 p-4
-    '>
-      {
-        professors?.length !== 0 &&
-        Object.values(processProfessorList).map((professor: newProfItem) => (
-          <SearchResultContainer key={professor.name} professor={professor.data}/>
-        ))
-      }
+    <>
+      <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
+        flex-1 p-4
+      '>
+        {
+          professors?.length !== 0 &&
+          Object.values(processProfessorList).map((professor: newProfItem) => (
+            <SearchResultContainer key={professor.name} professor={professor.data}/>
+          ))
+        }
 
-      {professors?.length === 0 && <h1>Search Result</h1>}
-    </div>
+        {professors?.length === 0 && <h1>Search Result</h1>}
+      </div>
+    </>
   );
 }
 
