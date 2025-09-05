@@ -160,10 +160,12 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
     try {
       const response = await fetchBackend("professor/availability", "POST", JSON.stringify(body), headers);
 
-      if(response.success) {
+      if(response.success && response.data) {
         setDay("Monday");
         setStartTime("");
         setEndTime("");
+
+        setAvailabilities(x => [...x, response.data]);
       }
       alert(response.message);
     } catch (error) {
