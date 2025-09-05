@@ -53,7 +53,34 @@ function AvailabilityPanel({id}:{
       className='border-gray-500 border-2 border-solid rounded-md p-4 w-5xl'
     >
         <p>Availability</p>
+        <div
+          className='flex flex-col gap-4 w-full'
+        >
+          {
+            availabilities.map((availability: SearchAvailabilityResponseDataItem) => (
+              <AvailabilityCard
+                key={availability.id}
+                availability={availability}
+              />
+            ))
+          }
+        </div>
+    </div>
+  );
+}
 
+function AvailabilityCard({availability}:{
+  availability: SearchAvailabilityResponseDataItem
+}){
+  const { day_of_week, start_time, end_time } = availability;
+
+  return (
+    <div
+      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full'
+    >
+        <p>{day_of_week}</p>
+        <p>{start_time}</p>
+        <p>{end_time}</p>
     </div>
   );
 }
