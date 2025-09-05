@@ -15,6 +15,7 @@ export default function Profiles(){
 
   useEffect(()=>{
     const sessionRole = sessionStorage.getItem("role");
+
     if(sessionRole !== "professor") {
       alert("Your are not allowed here!");
       window.location.href = "/"
@@ -33,31 +34,54 @@ export default function Profiles(){
 
   },[])
 
-  const [year, setYear] = useState<number>(0);
-  const [department, setDepartment] = useState<string>("");
-
   return(
     <div>
       <Link href="/" >Back</Link>
       <h1>Profiles</h1>
 
-      <form onSubmit={e=>addProfile(e)}>
-        <p>Add your Profile</p>
-        <div className="flex flex-row gap-4">
-          <FormInput type="number" label="Year" value={year.toString()} onChange={(e) => setYear(parseInt(e.target.value))} />
-          <FormInput type="text" label="Department" value={department} onChange={(e) => setDepartment(e.target.value)} />
-        </div>
-
-        <button type="submit">Add</button>
-
-        <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4">
-          <div>Your Profiles </div>
-          {profiles?.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
-        </div>
-      </form>
+      <ProfileContainer
+        profiles={profiles}
+        setProfiles={setProfiles}
+      />
     </div>
   );
+}
 
+function ProfileContainer({profiles, setProfiles}:{
+  profiles: ProfessorProfile[],
+  setProfiles: React.Dispatch<React.SetStateAction<ProfessorProfile[]>>
+}){
+
+  const [year, setYear] = useState<number>(0);
+  const [department, setDepartment] = useState<string>("");
+
+  return (
+    <form onSubmit={e=>addProfile(e)}
+      className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4"
+    >
+      <p
+        className="font-bold text-center text-3xl"
+      >
+        YOUR PROFILES
+      </p>
+
+      <p>Add your Profile</p>
+      
+      <div className="flex flex-row gap-4">
+        <FormInput type="number" label="Year" value={year.toString()} onChange={(e) => setYear(parseInt(e.target.value))} />
+        <FormInput type="text" label="Department" value={department} onChange={(e) => setDepartment(e.target.value)} />
+      </div>
+
+      <button type="submit">Add</button>
+
+      <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4">
+        <div>Your Profiles </div>
+        {profiles?.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
+      </div>
+    </form>
+  );
+
+  //handler function for adding user profile
   async function addProfile(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const body = JSON.stringify({year, department});
@@ -75,6 +99,7 @@ export default function Profiles(){
   }
 }
 
+//container for each profile
 function ProfileCard({profile}:{profile: ProfessorProfile}) {
   return (
     <div className="flex flex-row gap-4">
@@ -84,14 +109,13 @@ function ProfileCard({profile}:{profile: ProfessorProfile}) {
   );
 }
 
-interface FormInputProps {
+//input form
+function FormInput({type, label, value, onChange}: {
   type: string,
   label: string,
   value?: string,
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
-
-function FormInput({type, label, value, onChange}: FormInputProps) {
+}) {
   return (
     <label className="flex flex-row gap-2 items-center justify-center">
       {label}:
