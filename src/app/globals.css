@@ -41,6 +41,9 @@ body {
     @apply border-white border-[1px] border-solid rounded-md px-2 py-1;
   }
 
+  select, option {
+    @apply border-white border-[1px] border-solid rounded-md px-2 py-1 bg-black;
+  }
   button, input[type="submit"], a {
     @apply cursor-pointer;
   }

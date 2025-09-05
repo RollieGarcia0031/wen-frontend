@@ -110,13 +110,64 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
   availabilities: SearchAvailabilityResponseDataItem[],
   setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
 }){
+  type day = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+  const [day, setDay] = useState<day>("Monday");
+  const [start_time, setStartTime] = useState<string>("");
+  const [end_time, setEndTime] = useState<string>("");
+
   return (
     <form
       className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4"
+      onSubmit={e=>handleSubmit(e)}
     >
-      Availability
+      <p 
+        className="font-bold text-center text-3xl"
+      >
+        Availabilities
+      </p>
+
+      <div className="flex flex-row gap-4">
+        <select value={day} onChange={(e) => setDay(e.target.value as day)}>
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option>
+        </select>
+        <FormInput type="time" label="Start Time" value={start_time} onChange={(e) => setStartTime(e.target.value)} />
+        <FormInput type="time" label="End Time" value={end_time} onChange={(e) => setEndTime(e.target.value)} />
+
+        <button type="submit">Add</button>
+      </div>
+
     </form>
   );
+
+  //  handler function for adding availability of professor
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const body = {
+      day,
+      start: `${start_time}:00`,
+      end: `${end_time}:00`
+    };
+
+    const headers = new Headers({"Content-Type": "application/json"});
+
+    try {
+      const response = await fetchBackend("professor/availability", "POST", JSON.stringify(body), headers);
+  
+      alert(response.message);
+    } catch (error) {
+      console.error(error);
+      if(error instanceof Error){
+        alert(error.message);
+      }
+    }
+  }
 }
 
 //container for each profile
