@@ -62,14 +62,16 @@ export type GETProfessorAvailabilityResponse = ApiResponse<ProfessorAvailability
 /**
  * POST /search/availability
  */
-export type SearchAvailabilityResponse = ApiResponse<Array<{
+
+export interface SearchAvailabilityResponseDataItem {
     id: number;
     user_id: number;
     day_of_week: number;
     start_time: string;
     end_time: string;
     created_at: string;
-}> | null>;
+}
+export type SearchAvailabilityResponse = ApiResponse< SearchAvailabilityResponseDataItem[] | null>;
 
 /**
  * POST /search/professor

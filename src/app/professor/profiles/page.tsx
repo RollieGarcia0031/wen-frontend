@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchBackend } from '@/lib/api';
-import { ApiResponse } from "@/lib/response";
+import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 
 interface ProfessorProfile {
   department: string;
@@ -12,6 +12,7 @@ interface ProfessorProfile {
 
 export default function Profiles(){
   const [profiles, setProfiles] = useState<ProfessorProfile[]>([]);
+  const [availabilities, setAvailabilities] = useState<SearchAvailabilityResponseDataItem[]>([]);
 
   useEffect(()=>{
     const sessionRole = sessionStorage.getItem("role");
@@ -43,10 +44,16 @@ export default function Profiles(){
         profiles={profiles}
         setProfiles={setProfiles}
       />
+
+      <AvailabilityPanel
+        availabilities={availabilities}
+        setAvailabilities={setAvailabilities}
+      />
     </div>
   );
 }
 
+//panel container profiles
 function ProfileContainer({profiles, setProfiles}:{
   profiles: ProfessorProfile[],
   setProfiles: React.Dispatch<React.SetStateAction<ProfessorProfile[]>>
@@ -99,6 +106,19 @@ function ProfileContainer({profiles, setProfiles}:{
   }
 }
 
+function AvailabilityPanel({availabilities, setAvailabilities}:{
+  availabilities: SearchAvailabilityResponseDataItem[],
+  setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
+}){
+  return (
+    <form
+      className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4"
+    >
+      Availability
+    </form>
+  );
+}
+
 //container for each profile
 function ProfileCard({profile}:{profile: ProfessorProfile}) {
   return (
@@ -108,6 +128,9 @@ function ProfileCard({profile}:{profile: ProfessorProfile}) {
     </div>
   );
 }
+
+
+
 
 //input form
 function FormInput({type, label, value, onChange}: {
