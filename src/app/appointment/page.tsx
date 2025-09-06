@@ -159,6 +159,17 @@ function ConfirmationDialog({selectedAppointment, ref, id}:{
         </div>
       </div>
     </dialog>
-
   );
+
+  async function handleConfirm(){
+    const body = {id: parseInt(id.toString())};
+
+    const response = await fetchBackend(
+      'appointment/accept',
+      'POST',
+      JSON.stringify(body),
+      new Headers({"Content-Type": "application/json"})
+    );
+    
+  }
 }
