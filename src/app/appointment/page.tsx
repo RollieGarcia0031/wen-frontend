@@ -7,6 +7,7 @@ import SentAppointments from './StudentAppointments';
 import { fetchBackend } from '@/lib/api';
 
 export interface appointmentData {
+  appointment_id: number,
   student_id: number,
   professor_id: number,
   status: string,
@@ -38,6 +39,9 @@ export default function Appointment(){
  */
 function ReceivedAppointments(){
   const [appointments, setAppointments] = useState<appointmentData[]>([]);
+  const [selectedAppointment, setSelectedAppointment] = useState<appointmentData | null>(null);
+  const [appointmentId, setAppointmentId] = useState<number>(0);
+  const confirmDialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(()=>{
     const fetchAppointments = async () => {
@@ -64,15 +68,23 @@ function ReceivedAppointments(){
           <AppointmentCard
             key={index}
             appointment={appointment}
+            setAppointmentId={setAppointmentId}
+            confirmDialogRef={confirmDialogRef}
           />)}
       </div>
+
+      <ConfirmationDialog id={appointmentId} ref={confirmDialogRef} selectedAppointment={selectedAppointment}/>
 
     </div>
   );
 }
 
-function AppointmentCard({appointment}: {appointment: appointmentData}){
-  const { status, name, day_of_week, start_time, end_time } = appointment;
+function AppointmentCard({appointment, setAppointmentId, confirmDialogRef}: {
+  appointment: appointmentData
+  setAppointmentId: React.Dispatch<React.SetStateAction<number>>,
+  confirmDialogRef: React.RefObject<HTMLDialogElement | null>
+}){
+  const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
 
   return (
     <div
@@ -80,7 +92,7 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
         flex flex-row'
     >
       <div
-        className='flex-1'
+        className='flex-1 flex flex-col'
       >
         <div
           className='flex flex-row justify-start gap-6 flex-1'
@@ -112,8 +124,14 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
   );
 }
 
-function ConfirmationDialog({appointmentData}:{
-  appointmentData: appointmentData,
+function ConfirmationDialog({selectedAppointment, ref, id}:{
+  selectedAppointment: appointmentData | null,
+  ref: React.RefObject<HTMLDialogElement | null>,
+  id: number
 }){
-
+  return (
+    <dialog ref={ref}>
+      Are you Sure?
+    </dialog>
+  );
 }
