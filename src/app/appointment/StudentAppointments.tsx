@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
@@ -10,6 +10,30 @@ export default function SentAppointments(){
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [professors, setProfessors] = useState<SearchProfessorResponseDataItem[]>([]);
 
+  const [sentAppointments, setSentAppointments] = useState<{
+    student_id: number,
+    professor_id: number,
+    status: string,
+    name: string,
+    day_of_week: number,
+    start_time: string,
+    end_time: string
+  }[]>([]);
+
+  useEffect(()=>{
+    const fetchAppointments = async () => {
+      const response = await fetchBackend('appointment/list', 'GET');
+
+      if(!response.success || !response?.data || !response?.data?.appointments) return;
+      const {appointments} = response.data;
+      console.log(appointments)
+      setSentAppointments(appointments);
+
+    }
+
+    fetchAppointments().catch(console.error);
+
+  },[]);
   return (
   <>
   <div>
