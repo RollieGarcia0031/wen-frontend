@@ -61,19 +61,30 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
   
   return(
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4'
+      className='
+      flex flex-row gap-3
+      border-gray-500 border-2 border-solid rounded-md p-4 m-4'
     >
-      <div
-        className='flex flex-row justify-start gap-6'
-      >
-        <p>{name}</p> <p>{status}</p>
+
+      <div className='flex-1'>
+        <div
+          className='flex flex-row justify-start gap-6'
+        >
+          <p>{name}</p> <p>{status}</p>
+        </div>
+        <div 
+          className='flex flex-row justify-between'
+        >
+          <p>{day_of_week}</p>
+          <p>{start_time}</p>
+          <p>{end_time}</p>
+        </div>
       </div>
-      <div 
-        className='flex flex-row justify-between'
+
+      <div
+        className='border-gray-500 border-2 border-solid rounded-md p-4'
       >
-        <p>{day_of_week}</p>
-        <p>{start_time}</p>
-        <p>{end_time}</p>
+        <button>Delete</button>
       </div>
     </div>
   );
