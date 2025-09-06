@@ -42,6 +42,7 @@ function ReceivedAppointments(){
   const [selectedAppointment, setSelectedAppointment] = useState<appointmentData | null>(null);
   const [appointmentId, setAppointmentId] = useState<number>(0);
   const confirmDialogRef = useRef<HTMLDialogElement>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   useEffect(()=>{
     const fetchAppointments = async () => {
@@ -71,6 +72,8 @@ function ReceivedAppointments(){
             setAppointmentId={setAppointmentId}
             confirmDialogRef={confirmDialogRef}
             setSelectedAppointment={setSelectedAppointment}
+            index={index}
+            setSelectedIndex={setSelectedIndex}
           />)}
       </div>
 
@@ -80,11 +83,13 @@ function ReceivedAppointments(){
   );
 }
 
-function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSelectedAppointment}: {
+function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSelectedAppointment, index, setSelectedIndex}: {
   appointment: appointmentData
   setAppointmentId: React.Dispatch<React.SetStateAction<number>>,
   confirmDialogRef: React.RefObject<HTMLDialogElement | null>
-  setSelectedAppointment: React.Dispatch<React.SetStateAction<appointmentData | null>>  
+  setSelectedAppointment: React.Dispatch<React.SetStateAction<appointmentData | null>>,
+  index: number,
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
 }){
   const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
 
@@ -132,6 +137,7 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
   function handleAccept(){
     setAppointmentId(appointment_id);
     setSelectedAppointment(appointment);
+    setSelectedIndex(index);
     confirmDialogRef.current?.showModal();
   }
 }
@@ -164,12 +170,22 @@ function ConfirmationDialog({selectedAppointment, ref, id}:{
   async function handleConfirm(){
     const body = {id: parseInt(id.toString())};
 
-    const response = await fetchBackend(
-      'appointment/accept',
-      'POST',
-      JSON.stringify(body),
-      new Headers({"Content-Type": "application/json"})
-    );
-    
+    try{
+      const response = await fetchBackend(
+        'appointment/accept',
+        'POST',
+        JSON.stringify(body),
+        new Headers({"Content-Type": "application/json"})
+      );
+
+      if(response.success) {
+        alert(response.message);
+        return ref.current?.close()
+      };
+
+    } catch (err){
+      console.error(err);
+    }
+
   }
 }
