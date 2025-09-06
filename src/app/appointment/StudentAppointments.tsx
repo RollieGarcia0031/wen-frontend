@@ -141,7 +141,11 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
   );
 
   function handleConfirm(){
-
+    setIsDeleting(false);
+    setSentAppointments(x => {
+      x.splice(index, 1);
+      return [...x];
+    })
   }
 }
 
