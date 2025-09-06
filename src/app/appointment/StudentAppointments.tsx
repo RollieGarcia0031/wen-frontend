@@ -4,21 +4,23 @@ import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 import { useRouter } from 'next/navigation';
 
+interface appointmentData {
+  student_id: number,
+  professor_id: number,
+  status: string,
+  name: string,
+  day_of_week: number,
+  start_time: string,
+  end_time: string
+}
+
 // Appointments panel rendered for students
 export default function SentAppointments(){
   const [nameInput, setNameInput] = useState<string>("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [professors, setProfessors] = useState<SearchProfessorResponseDataItem[]>([]);
 
-  const [sentAppointments, setSentAppointments] = useState<{
-    student_id: number,
-    professor_id: number,
-    status: string,
-    name: string,
-    day_of_week: number,
-    start_time: string,
-    end_time: string
-  }[]>([]);
+  const [sentAppointments, setSentAppointments] = useState<appointmentData[]>([]);
 
   useEffect(()=>{
     const fetchAppointments = async () => {
@@ -36,20 +38,29 @@ export default function SentAppointments(){
   },[]);
   return (
   <>
-  <div>
-    <button  onClick={() => dialogRef.current?.show()}>New</button>  
-    <h1>Sent Appointments</h1>
-  </div>
-  <NewAppointmentDialog
-    nameInput={nameInput}
-    setNameInput={setNameInput}
-    dialogRef={dialogRef}
-    setProfessors={setProfessors}
-    professors={professors}
-  />
+    <div>
+      <button  onClick={() => dialogRef.current?.show()}>New</button>  
+      <h1>Sent Appointments</h1>
+
+      <div>
+
+      </div>
+
+    </div>
+    <NewAppointmentDialog
+      nameInput={nameInput}
+      setNameInput={setNameInput}
+      dialogRef={dialogRef}
+      setProfessors={setProfessors}
+      professors={professors}
+    />
   </>
   );
 
+}
+
+function AppointmentCard({appointment}: {appointment: any}){
+  return(<></>);
 }
 
 // dialog pop up for adding a new appointment and searching for professors
