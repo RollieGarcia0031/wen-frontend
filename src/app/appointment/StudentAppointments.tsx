@@ -140,12 +140,29 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
     </dialog>
   );
 
-  function handleConfirm(){
-    setIsDeleting(false);
-    setSentAppointments(x => {
-      x.splice(index, 1);
-      return [...x];
-    })
+  async function handleConfirm(){
+    const body = { id: parseInt(appointment_id.toString()) };
+    
+    try{
+      const response = await fetchBackend(
+        `appointment/delete`,
+        'DELETE',
+        JSON.stringify(body),
+        new Headers({"Content-Type": "application/json"})
+      );
+
+      if(!response.success) return alert(response.message);
+
+      setIsDeleting(false);
+      setSentAppointments(x => {
+        x.splice(index, 1);
+        return [...x];
+      });
+    }
+
+    catch(err){
+      console.error(err);
+    }
   }
 }
 
