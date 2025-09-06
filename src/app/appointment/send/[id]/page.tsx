@@ -4,6 +4,7 @@ import {use, useEffect, useState, useRef} from 'react';
 import { SearchAvailabilityResponseDataItem } from '@/lib/response';
 import { fetchBackend } from '@/lib/api';
 import { parse } from 'path';
+import { MdAlternateEmail } from 'react-icons/md';
 
 export default function SendAppointment({params}: {
   params : Promise<{id: number}>
@@ -24,6 +25,10 @@ export default function SendAppointment({params}: {
   );
 }
 
+/**
+ * 
+ * @param {number} id - id of the professor
+ */
 function AvailabilityPanel({id}:{
   id:number
 }){
@@ -78,6 +83,7 @@ function AvailabilityPanel({id}:{
                 key={availability.id}
                 availability={availability}
                 profName={profName}
+                prof_id={id}
               />
             ))
           }
@@ -86,9 +92,10 @@ function AvailabilityPanel({id}:{
   );
 }
 
-function AvailabilityCard({availability, profName}:{
+function AvailabilityCard({availability, profName, prof_id}:{
   availability: SearchAvailabilityResponseDataItem,
-  profName: string
+  profName: string,
+  prof_id: number
 }){
   const { day_of_week, start_time, end_time, id } = availability;
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -114,15 +121,17 @@ function AvailabilityCard({availability, profName}:{
       ref={dialogRef}
       availability={availability}
       profName={profName}
+      prof_id={prof_id}
     />
     
     </>
   );
 }
 
-function ConfirmationDialog({ref, availability, profName}: {
+function ConfirmationDialog({ref, availability, profName, prof_id}: {
   ref: React.RefObject<HTMLDialogElement | null>,
   availability: SearchAvailabilityResponseDataItem,
+  prof_id: number,
   profName: string
 }){
   const { day_of_week, start_time, end_time, id } = availability;
@@ -140,9 +149,33 @@ function ConfirmationDialog({ref, availability, profName}: {
 
       <div>
         <button onClick={() => ref.current?.close()}>Cancel</button>
-        <button>Send</button>
+        <button
+          onClick={handleConfirm}
+        >
+          Confirm
+        </button>
       </div>
 
     </dialog>
   );
+
+  async function handleConfirm(){
+    const body = {
+      prof_id: parseInt(prof_id.toString()),
+      availability_id: id
+    }
+
+    const response = await fetchBackend(
+      'appointment/send',
+      'POST', JSON.stringify(body),
+      new Headers({"Content-Type": "application/json"})
+    );
+
+    if(response.success){
+      ref.current?.close();
+      alert('Appointment sent!');
+    } else {
+      alert(response.message);
+    }
+  }
 }
