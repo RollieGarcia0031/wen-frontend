@@ -1,6 +1,6 @@
 "use client";
 
-import {use, useEffect, useState} from 'react';
+import {use, useEffect, useState, useRef} from 'react';
 import { SearchAvailabilityResponseDataItem } from '@/lib/response';
 import { fetchBackend } from '@/lib/api';
 import { parse } from 'path';
@@ -72,15 +72,54 @@ function AvailabilityPanel({id}:{
 function AvailabilityCard({availability}:{
   availability: SearchAvailabilityResponseDataItem
 }){
-  const { day_of_week, start_time, end_time } = availability;
+  const { day_of_week, start_time, end_time, id } = availability;
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
+    <>
     <div
       className='border-gray-500 border-2 border-solid rounded-md p-4 w-full'
     >
         <p>{day_of_week}</p>
         <p>{start_time}</p>
         <p>{end_time}</p>
+
+        <button onClick={() => dialogRef.current?.showModal()}>
+          Send
+        </button>
     </div>
+
+    <ConfirmationDialog
+      ref={dialogRef}
+      availability={availability}
+    />
+    
+    </>
+  );
+}
+
+function ConfirmationDialog({ref, availability}: {
+  ref: React.RefObject<HTMLDialogElement | null>,
+  availability: SearchAvailabilityResponseDataItem
+}){
+  const { day_of_week, start_time, end_time, id } = availability;
+
+  return (
+    <dialog
+      ref={ref}
+    >
+      <div>
+        <p>Are you sure you want to send this appointment?</p>
+        <p>{day_of_week}</p>
+        <p>{start_time}</p>
+        <p>{end_time}</p>
+      </div>
+
+      <div>
+        <button onClick={() => ref.current?.close()}>Cancel</button>
+        <button>Send</button>
+      </div>
+
+    </dialog>
   );
 }
