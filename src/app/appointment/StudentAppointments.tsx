@@ -3,16 +3,8 @@ import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 import { useRouter } from 'next/navigation';
+import { appointmentData } from './page';
 
-interface appointmentData {
-  student_id: number,
-  professor_id: number,
-  status: string,
-  name: string,
-  day_of_week: number,
-  start_time: string,
-  end_time: string
-}
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
