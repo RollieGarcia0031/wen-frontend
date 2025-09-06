@@ -56,8 +56,8 @@ function AvailabilityPanel({id}:{
       );
 
       if(response.success && response.data) {
-        console.log(response.data);
-        setProfName(response.data.name);
+        console.log(response.data[0]);
+        setProfName(response.data[0].name);
       } 
     }
 
@@ -132,7 +132,7 @@ function ConfirmationDialog({ref, availability, profName}: {
       ref={ref}
     >
       <div>
-        <p>Are you sure you want to send this appointment?</p>
+        <p>Are you sure you want to send this appointment to {profName}?</p>
         <p>{day_of_week}</p>
         <p>{start_time}</p>
         <p>{end_time}</p>
