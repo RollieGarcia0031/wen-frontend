@@ -56,6 +56,17 @@ function ReceivedAppointments(){
   return (
     <div>
       <h1>Received Appointments</h1>
+
+      <div
+        className='flex flex-col justify-center items-center w-full border-white border-2 border-solid rounded-md p-4'
+      >
+        {appointments?.map((appointment, index) =>
+          <AppointmentCard
+            key={index}
+            appointment={appointment}
+          />)}
+      </div>
+
     </div>
   );
 }
@@ -65,20 +76,44 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
 
   return (
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4'
+      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4
+        flex flex-row'
     >
       <div
-        className='flex flex-row justify-start gap-6'
+        className='flex-1'
       >
-        <p>{name}</p> <p>{status}</p>
+        <div
+          className='flex flex-row justify-start gap-6 flex-1'
+        >
+          <p
+            className='font-bold'
+          >
+            {name}
+          </p>
+          <p>{status}</p>
+        </div>
+        <div 
+          className='flex flex-row justify-between'
+        >
+          <p>{day_of_week}</p>
+          <p>{start_time}</p>
+          <p>{end_time}</p>
+        </div>
       </div>
-      <div 
-        className='flex flex-row justify-between'
+
+      <div
+        className="flex flex-col px-5 ml-10 gap-4
+        *:border-white *:border-2 *:border-solid *:rounded-md *:p-2"
       >
-        <p>{day_of_week}</p>
-        <p>{start_time}</p>
-        <p>{end_time}</p>
+        <button>Accept</button>
+        <button>Decline</button>
       </div>
     </div>
   );
+}
+
+function ConfirmationDialog({appointmentData}:{
+  appointmentData: appointmentData,
+}){
+
 }
