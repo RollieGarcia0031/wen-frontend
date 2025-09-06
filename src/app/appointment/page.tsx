@@ -70,6 +70,7 @@ function ReceivedAppointments(){
             appointment={appointment}
             setAppointmentId={setAppointmentId}
             confirmDialogRef={confirmDialogRef}
+            setSelectedAppointment={setSelectedAppointment}
           />)}
       </div>
 
@@ -79,10 +80,11 @@ function ReceivedAppointments(){
   );
 }
 
-function AppointmentCard({appointment, setAppointmentId, confirmDialogRef}: {
+function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSelectedAppointment}: {
   appointment: appointmentData
   setAppointmentId: React.Dispatch<React.SetStateAction<number>>,
   confirmDialogRef: React.RefObject<HTMLDialogElement | null>
+  setSelectedAppointment: React.Dispatch<React.SetStateAction<appointmentData | null>>  
 }){
   const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
 
@@ -117,11 +119,21 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef}: {
         className="flex flex-col px-5 ml-10 gap-4
         *:border-white *:border-2 *:border-solid *:rounded-md *:p-2"
       >
-        <button>Accept</button>
+        <button
+          onClick={handleAccept}
+        >
+          Accept
+        </button>
         <button>Decline</button>
       </div>
     </div>
   );
+
+  function handleAccept(){
+    setAppointmentId(appointment_id);
+    setSelectedAppointment(appointment);
+    confirmDialogRef.current?.showModal();
+  }
 }
 
 function ConfirmationDialog({selectedAppointment, ref, id}:{
