@@ -77,6 +77,7 @@ function AvailabilityPanel({id}:{
               <AvailabilityCard
                 key={availability.id}
                 availability={availability}
+                profName={profName}
               />
             ))
           }
@@ -85,8 +86,9 @@ function AvailabilityPanel({id}:{
   );
 }
 
-function AvailabilityCard({availability}:{
-  availability: SearchAvailabilityResponseDataItem
+function AvailabilityCard({availability, profName}:{
+  availability: SearchAvailabilityResponseDataItem,
+  profName: string
 }){
   const { day_of_week, start_time, end_time, id } = availability;
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -111,15 +113,17 @@ function AvailabilityCard({availability}:{
     <ConfirmationDialog
       ref={dialogRef}
       availability={availability}
+      profName={profName}
     />
     
     </>
   );
 }
 
-function ConfirmationDialog({ref, availability}: {
+function ConfirmationDialog({ref, availability, profName}: {
   ref: React.RefObject<HTMLDialogElement | null>,
-  availability: SearchAvailabilityResponseDataItem
+  availability: SearchAvailabilityResponseDataItem,
+  profName: string
 }){
   const { day_of_week, start_time, end_time, id } = availability;
 
