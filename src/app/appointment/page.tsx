@@ -77,7 +77,13 @@ function ReceivedAppointments(){
           />)}
       </div>
 
-      <ConfirmationDialog id={appointmentId} ref={confirmDialogRef} selectedAppointment={selectedAppointment}/>
+      <ConfirmationDialog
+        id={appointmentId}
+        ref={confirmDialogRef}
+        selectedAppointment={selectedAppointment}
+        selectedIndex={selectedIndex}
+        setAppointments={setAppointments}
+      />
 
     </div>
   );
@@ -142,10 +148,12 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
   }
 }
 
-function ConfirmationDialog({selectedAppointment, ref, id}:{
+function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setAppointments}:{
   selectedAppointment: appointmentData | null,
   ref: React.RefObject<HTMLDialogElement | null>,
-  id: number
+  id: number,
+  selectedIndex: number,
+  setAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
 }){
   return (
     <dialog 
@@ -160,7 +168,12 @@ function ConfirmationDialog({selectedAppointment, ref, id}:{
         <div
           className='flex flex-row justify-end gap-4 mt-4'
         >
-          <button onClick={() => ref.current?.close()}>Confirm</button>
+          <button
+            onClick={() => handleConfirm()}
+          >
+            Confirm
+          </button>
+
           <button onClick={() => ref.current?.close()}>Cancel</button>
         </div>
       </div>
@@ -180,6 +193,10 @@ function ConfirmationDialog({selectedAppointment, ref, id}:{
 
       if(response.success) {
         alert(response.message);
+        setAppointments(x => {
+          x[selectedIndex].status = "Accepted";
+          return [...x];
+        });
         return ref.current?.close()
       };
 
