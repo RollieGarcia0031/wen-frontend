@@ -78,15 +78,18 @@ function AvailabilityCard({availability}:{
   return (
     <>
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full'
+      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full
+        flex flex-row justify-between'
     >
-        <p>{day_of_week}</p>
-        <p>{start_time}</p>
-        <p>{end_time}</p>
+      <div>
+          <p>{day_of_week}</p>
+          <p>{start_time}</p>
+          <p>{end_time}</p>
+      </div>
 
-        <button onClick={() => dialogRef.current?.showModal()}>
-          Send
-        </button>
+      <button onClick={() => dialogRef.current?.showModal()}>
+        Send
+      </button>
     </div>
 
     <ConfirmationDialog
