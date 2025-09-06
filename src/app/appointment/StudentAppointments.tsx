@@ -95,17 +95,22 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
         >Delete</button>
       </div>
 
-      {isDeleting && <DeleteDialog ref={deleteDialogRef}/>}
+      {isDeleting && <DeleteDialog
+        ref={deleteDialogRef}
+        setIsDeleting={setIsDeleting}
+      />}
     </div>
   );
 }
 
-function DeleteDialog({ref}:{
-  ref: React.RefObject<HTMLDialogElement | null>
+function DeleteDialog({ref, setIsDeleting}:{
+  ref: React.RefObject<HTMLDialogElement | null>,
+  setIsDeleting: React.Dispatch<React.SetStateAction<boolean>>
 }){
   return(
     <dialog
       ref={ref}
+      onClose={() => setIsDeleting(false)}
     >
       <h1>Are you sure? You can't undo this</h1>
     </dialog>
