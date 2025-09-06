@@ -39,6 +39,8 @@ export default function SentAppointments(){
           <AppointmentCard
             key={index} 
             appointment={appointment}
+            index={index}
+            setSentAppointments={setSentAppointments}
           />)
         }
       </div>
@@ -56,7 +58,11 @@ export default function SentAppointments(){
 
 }
 
-function AppointmentCard({appointment}: {appointment: appointmentData}){
+function AppointmentCard({appointment, index, setSentAppointments}:{
+  appointment: appointmentData
+  index: number,
+  setSentAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
+}){
   const { name, day_of_week, start_time, end_time, status, appointment_id } = appointment;
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
@@ -99,16 +105,20 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
         ref={deleteDialogRef}
         setIsDeleting={setIsDeleting}
         appointment_id={appointment_id}
+        index={index}
+        setSentAppointments={setSentAppointments}
       />}
     </div>
   );
 }
 
 // dialog pop up for deleting an appointment
-function DeleteDialog({ref, setIsDeleting, appointment_id}:{
+function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppointments}:{
   ref: React.RefObject<HTMLDialogElement | null>,
   setIsDeleting: React.Dispatch<React.SetStateAction<boolean>>,
-  appointment_id: number
+  appointment_id: number,
+  index: number,
+  setSentAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
 }){
   return(
     <dialog
