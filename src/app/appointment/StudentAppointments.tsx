@@ -98,23 +98,41 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
       {isDeleting && <DeleteDialog
         ref={deleteDialogRef}
         setIsDeleting={setIsDeleting}
+        appointment_id={appointment_id}
       />}
     </div>
   );
 }
 
-function DeleteDialog({ref, setIsDeleting}:{
+// dialog pop up for deleting an appointment
+function DeleteDialog({ref, setIsDeleting, appointment_id}:{
   ref: React.RefObject<HTMLDialogElement | null>,
-  setIsDeleting: React.Dispatch<React.SetStateAction<boolean>>
+  setIsDeleting: React.Dispatch<React.SetStateAction<boolean>>,
+  appointment_id: number
 }){
   return(
     <dialog
       ref={ref}
       onClose={() => setIsDeleting(false)}
     >
-      <h1>Are you sure? You can't undo this</h1>
+      <div className='flex flex-col justify-center items-center w-full rounded-md p-4'>
+        <h1>Are you sure? You can't undo this</h1>
+
+        <div className='flex flex-row gap-4 w-full justify-center'>
+          <button onClick={handleConfirm}>
+            Confirm
+          </button>
+          <button onClick={() => setIsDeleting(false)}>
+            Cancel
+          </button>
+        </div>
+      </div>
     </dialog>
   );
+
+  function handleConfirm(){
+
+  }
 }
 
 // dialog pop up for adding a new appointment and searching for professors
