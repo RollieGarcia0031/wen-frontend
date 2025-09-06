@@ -43,7 +43,12 @@ export default function SentAppointments(){
       <h1>Sent Appointments</h1>
 
       <div>
-
+        {sentAppointments?.map((appointment, index) =>
+          <AppointmentCard
+            key={index} 
+            appointment={appointment}
+          />)
+        }
       </div>
 
     </div>
@@ -59,8 +64,27 @@ export default function SentAppointments(){
 
 }
 
-function AppointmentCard({appointment}: {appointment: any}){
-  return(<></>);
+function AppointmentCard({appointment}: {appointment: appointmentData}){
+  const { name, day_of_week, start_time, end_time, status } = appointment;
+  
+  return(
+    <div
+      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4'
+    >
+      <div
+        className='flex flex-row justify-start gap-6'
+      >
+        <p>{name}</p> <p>{status}</p>
+      </div>
+      <div 
+        className='flex flex-row justify-between'
+      >
+        <p>{day_of_week}</p>
+        <p>{start_time}</p>
+        <p>{end_time}</p>
+      </div>
+    </div>
+  );
 }
 
 // dialog pop up for adding a new appointment and searching for professors
