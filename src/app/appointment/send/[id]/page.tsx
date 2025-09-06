@@ -3,8 +3,7 @@
 import {use, useEffect, useState, useRef} from 'react';
 import { SearchAvailabilityResponseDataItem } from '@/lib/response';
 import { fetchBackend } from '@/lib/api';
-import { parse } from 'path';
-import { MdAlternateEmail } from 'react-icons/md';
+import Link from 'next/link';
 
 export default function SendAppointment({params}: {
   params : Promise<{id: number}>
@@ -16,6 +15,11 @@ export default function SendAppointment({params}: {
     <div
       className='w-full h-full flex flex-col justify-center items-center'
     >
+      <button>
+        <Link href='/appointment'>
+          Go Back
+        </Link>
+      </button>
       <h1>Send Appointment</h1>
 
       <AvailabilityPanel
@@ -173,7 +177,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
 
     if(response.success){
       ref.current?.close();
-      alert('Appointment sent!');
+      alert('Appointment sent!');``
     } else {
       alert(response.message);
     }
