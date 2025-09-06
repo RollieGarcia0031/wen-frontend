@@ -57,8 +57,14 @@ export default function SentAppointments(){
 }
 
 function AppointmentCard({appointment}: {appointment: appointmentData}){
-  const { name, day_of_week, start_time, end_time, status } = appointment;
-  
+  const { name, day_of_week, start_time, end_time, status, appointment_id } = appointment;
+  const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
+  const deleteDialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(()=>{
+    if(isDeleting) deleteDialogRef.current?.showModal();
+  }, [isDeleting]);
+
   return(
     <div
       className='
@@ -84,9 +90,25 @@ function AppointmentCard({appointment}: {appointment: appointmentData}){
       <div
         className='border-gray-500 border-2 border-solid rounded-md p-4'
       >
-        <button>Delete</button>
+        <button
+          onClick={() => setIsDeleting(true)}
+        >Delete</button>
       </div>
+
+      {isDeleting && <DeleteDialog ref={deleteDialogRef}/>}
     </div>
+  );
+}
+
+function DeleteDialog({ref}:{
+  ref: React.RefObject<HTMLDialogElement | null>
+}){
+  return(
+    <dialog
+      ref={ref}
+    >
+      <h1>Are you sure? You can't undo this</h1>
+    </dialog>
   );
 }
 
