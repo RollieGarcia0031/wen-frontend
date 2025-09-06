@@ -142,8 +142,18 @@ function ConfirmationDialog({selectedAppointment, ref, id}:{
   id: number
 }){
   return (
-    <dialog ref={ref}>
+    <dialog ref={ref}
+      className='flex flex-col justify-center items-center'
+    >
       Are you Sure?
+
+      <div
+        className='flex flex-row justify-end gap-4 mt-4'
+      >
+        <button onClick={() => ref.current?.close()}>Confirm</button>
+        <button onClick={() => ref.current?.close()}>Cancel</button>
+      </div>
     </dialog>
+
   );
 }
