@@ -28,6 +28,7 @@ function AvailabilityPanel({id}:{
   id:number
 }){
   const [availabilities, setAvailabilities] = useState<SearchAvailabilityResponseDataItem[]>([]);
+  const [profName, setProfName] = useState<string>("");
   
   useEffect(()=>{
     const body = {id: parseInt(id.toString())};
@@ -46,6 +47,21 @@ function AvailabilityPanel({id}:{
     }
 
     fetchAvailabilities().catch(console.error);
+
+    const fetchProfName = async () =>  {
+      const response = await fetchBackend(
+        'search/professor/info',
+        'POST', JSON.stringify(body),
+        new Headers({"Content-Type": "application/json"})
+      );
+
+      if(response.success && response.data) {
+        console.log(response.data);
+        setProfName(response.data.name);
+      } 
+    }
+
+    fetchProfName().catch(console.error);
   },[]);
 
   return (
