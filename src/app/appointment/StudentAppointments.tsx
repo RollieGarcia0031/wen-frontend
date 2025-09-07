@@ -192,7 +192,7 @@ function NewAppointmentDialog(){
       </div>
       <div className='flex-1 w-full flex flex-col justify-center items-center'>
         <SearchPanel />
-        <SearchResult professors={professors}/>
+        <SearchResult />
       </div>
     </dialog>
     </>
@@ -241,19 +241,20 @@ function SearchPanel(){
 /**
  * the box that shows the search result of user student
  */
-function SearchResult({professors}: {professors: SearchProfessorResponseDataItem[]}){
+function SearchResult(){
+  const {professors} = useStudentAppointmentContext();
   const processProfessorList = ProcessProfData(professors);
   const [selectedButtonIndex, setSelectedButtonIndex] = useState<number>(-1);
 
   return (
     <>
       <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
-        flex-1 p-4
+        flex-1 p-4 flex flex-col gap-2
       '>
         {
           professors?.length !== 0 &&
           Object.values(processProfessorList).map((professor: newProfItem, index: number) => (
-            <SearchResultContainer
+            <SearchResultCard
               key={index}
               index={index}
               professor={professor.data}
@@ -272,7 +273,7 @@ function SearchResult({professors}: {professors: SearchProfessorResponseDataItem
 /**
  * boxes holding the individual professor information 
  */
-function SearchResultContainer({professor, selectedSendButton, index, setSelectedButtonIndex}:{
+function SearchResultCard({professor, selectedSendButton, index, setSelectedButtonIndex}:{
   professor: SearchProfessorResponseDataItem[],
   index: number,
   selectedSendButton: number,
@@ -306,12 +307,12 @@ function SearchResultContainer({professor, selectedSendButton, index, setSelecte
         Send
       </button>
 
-      { isSelectedToSend && <SendConfirDialog/> }
+      { isSelectedToSend && <SendConfirmDialog/> }
 
     </div>
   );
 
-  function SendConfirDialog(){
+  function SendConfirmDialog(){
     const router = useRouter();
     const { user_id } = professor[0]
 
