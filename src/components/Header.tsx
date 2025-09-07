@@ -6,6 +6,8 @@ import { useEffect, use } from "react";
 import { usePathname } from "next/navigation";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineAttachEmail } from "react-icons/md";
+import { VscAccount } from "react-icons/vsc";
+import { TbLayoutBottombarCollapse } from "react-icons/tb";
 
 export default function Header(){
   const { role } = useAuthContext();
@@ -38,13 +40,14 @@ function StudentHeader(){
     <header
       className="flex flex-row justify-center items-center h-full p-2"
     >
-      <nav className="w-full flex flex-row">
+      <nav className="w-full flex flex-row
+        [&_svg]:text-2xl [&_svg]:cursor-pointer [&_a]:duration-200
+        sm:[&_a]:p-2 sm:[&_a]:rounded-xl">
         <div
           className="flex gap-4 flex-row
           justify-center items-center
           *:flex-row *:flex *:justify-center *:items-center *:gap-2
-          [&_svg]:text-2xl [&_svg]:cursor-pointer [&_a]:duration-200
-          sm:[&_a]:p-2 sm:[&_a]:rounded-xl
+          
           "
         
         >
@@ -60,11 +63,31 @@ function StudentHeader(){
             Send Appointments
           </Link>
         </div>
-        <div className='flex-1 flex flex-row justify-end'>
-          <Link href="/login">Login</Link>
-        </div>
+        <AccountOptionPanel />
       </nav>
     </header>
+  );
+}
+
+function AccountOptionPanel(){
+  const { userName } = useAuthContext();
+
+  return (
+    <div className='flex-1 flex flex-row justify-end items-center'>
+      <div
+        className='overflow-hidden'
+      >
+        <button className="flex-row-center gap-2">
+          <VscAccount />
+          <p>{userName}</p>
+          <TbLayoutBottombarCollapse/>
+        </button>
+
+        <div className="absolute">
+          
+        </div>
+      </div>
+    </div> 
   );
 }
 
