@@ -12,14 +12,22 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-text-muted: var(--text-muted);
+  --color-highlight: var(--highlight);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary: var(--primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: oklch(5% 0.1 188);
     --foreground: #ededed;
+    --text-muted: oklch(85% 0 0);
+    --primary: oklch(65% 0.1 188);
+    --primary-hover: oklch(50% 0.09 188);
+    --highlight: oklch(80% 0.05 188);
   }
 }
 
@@ -34,7 +42,7 @@ body {
     @apply h-full;
   }
   * {
-    @apply text-white
+    @apply text-foreground
   }
 
   input, textarea {
@@ -55,5 +63,15 @@ body {
 
   dialog:not([open]) {
     @apply hidden;
+  }
+}
+
+@layer components {
+  .card {
+    @apply border-highlight border-[1px] border-solid rounded-2xl px-2 py-1 bg-black;
+  }
+
+  .flex-row-center {
+    @apply flex flex-row justify-center items-center;
   }
 }
