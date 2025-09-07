@@ -4,7 +4,7 @@ export default function ConfirmDialog({message, onConfirm, ref}: {
   ref: React.RefObject<HTMLDialogElement | null>
 }) {
   return (
-    <dialog>
+    <dialog ref={ref}>
       <div className="modal-action">
         <button onClick={close}>Close</button>
       </div>

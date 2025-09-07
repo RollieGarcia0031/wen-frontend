@@ -1,10 +1,11 @@
-import {useState, useRef, useEffect} from 'react';
+import {useState, useRef, useEffect, use} from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 import { useRouter } from 'next/navigation';
 import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
+import { MdOutlineCreate } from "react-icons/md";
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
@@ -30,8 +31,15 @@ export default function SentAppointments(){
   },[]);
   return (
   <>
-    <div>
-      <button  onClick={() => dialogRef?.current?.show()}>New</button>  
+    <div
+      className='sm:p-4'
+    >
+      <button  onClick={() => dialogRef?.current?.showModal()}
+        className='flex-row-center gap-1 bg-secondary
+          px-2 py-1 rounded-md'  
+      >
+        <MdOutlineCreate/>New
+      </button>  
       <h1>Sent Appointments</h1>
 
       <div>
@@ -165,6 +173,7 @@ function NewAppointmentDialog(){
     const {professors, setProfessors, dialogRef, setNameInput, nameInput} = useStudentAppointmentContext();
 
   return(
+    <>
     <dialog ref={dialogRef} onSubmit={(e) => e.preventDefault()}
       className='open:sm:w-[30rem]  open:sm:h-[80dvh] open:w-full
       open:flex open:flex-col open:justify-center open:items-center'
@@ -174,14 +183,11 @@ function NewAppointmentDialog(){
       </div>
       <div className='flex-1 w-full flex flex-col justify-center items-center'>
         <h1>New Appointment</h1>
-        <SearchPanel 
-          nameInput={nameInput}
-          setNameInput={setNameInput}
-          setProfessors={setProfessors}
-        />
+        <SearchPanel />
         <SearchResult professors={professors}/>
       </div>
     </dialog>
+    </>
 
   );
 }
@@ -190,11 +196,9 @@ function NewAppointmentDialog(){
  * search panel of user student, where the user can search for professors
  * TODO: add more search options
  */
-function SearchPanel({nameInput, setNameInput, setProfessors}: {
-  nameInput: string,
-  setNameInput: React.Dispatch<React.SetStateAction<string>>,
-  setProfessors: React.Dispatch<React.SetStateAction<SearchProfessorResponseDataItem[]>>,
-}){
+function SearchPanel(){
+  const { nameInput, setNameInput, setProfessors } = useStudentAppointmentContext();
+
   return (
     <div className='w-full flex flex-row justify-center items-center gap-2'
     >

@@ -19,9 +19,6 @@ export default function Appointment(){
 
   return(
     <div>
-      <div className="flex gap-4 flex-row">
-        <Link href='/'>Home</Link>
-      </div>
       {role === "student" ? (
         <StudentContextProvider>
         <SentAppointments />
