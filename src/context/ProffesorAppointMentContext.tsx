@@ -1,7 +1,16 @@
 import { createContext, useContext, useState, useRef } from "react";
 
 interface ProfessorContextProps {
-
+    appointments: appointmentData[],
+    setAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
+    selectedAppointment: appointmentData | null,
+    setSelectedAppointment: React.Dispatch<React.SetStateAction<appointmentData | null>>,
+    appointmentId: number,
+    setAppointmentId: React.Dispatch<React.SetStateAction<number>>,
+    selectedIndex: number,
+    setSelectedIndex: React.Dispatch<React.SetStateAction<number>>,
+    confirmDialogRef: React.RefObject<HTMLDialogElement | null>,
+    deleteDialogRef: React.RefObject<HTMLDialogElement | null>
 }
 
 export interface appointmentData {
@@ -23,9 +32,21 @@ export default function ProfessorContextProvider({children}: {children: React.Re
     const [appointmentId, setAppointmentId] = useState<number>(0);
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const confirmDialogRef = useRef<HTMLDialogElement>(null);
+    const deleteDialogRef = useRef<HTMLDialogElement>(null);
 
     return (
-        <ProfessorContext.Provider value={{}}>
+        <ProfessorContext.Provider value={{
+            appointments,
+            setAppointments,
+            selectedAppointment,
+            setSelectedAppointment,
+            appointmentId,
+            setAppointmentId,
+            selectedIndex,
+            setSelectedIndex,
+            confirmDialogRef,
+            deleteDialogRef
+        }}>
             {children}
         </ProfessorContext.Provider>
     );
