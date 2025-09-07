@@ -3,16 +3,16 @@ import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 import { useRouter } from 'next/navigation';
+import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
-
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
-  const [nameInput, setNameInput] = useState<string>("");
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const [professors, setProfessors] = useState<SearchProfessorResponseDataItem[]>([]);
-
-  const [sentAppointments, setSentAppointments] = useState<appointmentData[]>([]);
+  const {
+    setSentAppointments,
+    sentAppointments,
+    dialogRef
+  } = useStudentAppointmentContext();
 
   useEffect(()=>{
     const fetchAppointments = async () => {
@@ -31,7 +31,7 @@ export default function SentAppointments(){
   return (
   <>
     <div>
-      <button  onClick={() => dialogRef.current?.show()}>New</button>  
+      <button  onClick={() => dialogRef?.current?.show()}>New</button>  
       <h1>Sent Appointments</h1>
 
       <div>
@@ -40,32 +40,25 @@ export default function SentAppointments(){
             key={index} 
             appointment={appointment}
             index={index}
-            setSentAppointments={setSentAppointments}
           />)
         }
       </div>
 
     </div>
-    <NewAppointmentDialog
-      nameInput={nameInput}
-      setNameInput={setNameInput}
-      dialogRef={dialogRef}
-      setProfessors={setProfessors}
-      professors={professors}
-    />
+    <NewAppointmentDialog/>
   </>
   );
 
 }
 
-function AppointmentCard({appointment, index, setSentAppointments}:{
+function AppointmentCard({appointment, index}:{
   appointment: appointmentData
   index: number,
-  setSentAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
 }){
   const { name, day_of_week, start_time, end_time, status, appointment_id } = appointment;
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
+  const {setSentAppointments} = useStudentAppointmentContext();
 
   useEffect(()=>{
     if(isDeleting) deleteDialogRef.current?.showModal();
@@ -116,7 +109,7 @@ function AppointmentCard({appointment, index, setSentAppointments}:{
 function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppointments}:{
   ref: React.RefObject<HTMLDialogElement | null>,
   setIsDeleting: React.Dispatch<React.SetStateAction<boolean>>,
-  appointment_id: number,
+  appointment_id?: number,
   index: number,
   setSentAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
 }){
@@ -141,6 +134,7 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
   );
 
   async function handleConfirm(){
+    if(appointment_id === undefined) return;
     const body = { id: parseInt(appointment_id.toString()) };
     
     try{
@@ -167,20 +161,16 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
 }
 
 // dialog pop up for adding a new appointment and searching for professors
-function NewAppointmentDialog({nameInput, setNameInput, dialogRef, setProfessors, professors}:{
-  nameInput: string,
-  setNameInput: React.Dispatch<React.SetStateAction<string>>,
-  dialogRef: React.RefObject<HTMLDialogElement | null>  ,
-  setProfessors: React.Dispatch<React.SetStateAction<SearchProfessorResponseDataItem[]>>,
-  professors: SearchProfessorResponseDataItem[],
-  }){
+function NewAppointmentDialog(){
+    const {professors, setProfessors, dialogRef, setNameInput, nameInput} = useStudentAppointmentContext();
+
   return(
     <dialog ref={dialogRef} onSubmit={(e) => e.preventDefault()}
       className='open:sm:w-[30rem]  open:sm:h-[80dvh] open:w-full
       open:flex open:flex-col open:justify-center open:items-center'
       >
       <div className='flex flex-row justify-end align-top items-end w-full'>
-        <button onClick={() => dialogRef.current?.close()}>❌</button>
+        <button onClick={() => dialogRef?.current?.close()}>❌</button>
       </div>
       <div className='flex-1 w-full flex flex-col justify-center items-center'>
         <h1>New Appointment</h1>
@@ -230,7 +220,6 @@ function SearchPanel({nameInput, setNameInput, setProfessors}: {
     
     const response: SearchProfessorResponse = await fetchBackend("search/professor", "POST", body);
     
-    console.log(response);
     if(response.success){
       const { data } = response;
       if(data){
