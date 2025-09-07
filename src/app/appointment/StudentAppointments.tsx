@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { MdOutlineCreate } from "react-icons/md";
+import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
+import { IoSearchCircleOutline } from "react-icons/io5";
+
+
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
@@ -176,13 +180,17 @@ function NewAppointmentDialog(){
     <>
     <dialog ref={dialogRef} onSubmit={(e) => e.preventDefault()}
       className='open:sm:w-[30rem]  open:sm:h-[80dvh] open:w-full
-      open:flex open:flex-col open:justify-center open:items-center'
+      open:flex open:flex-col open:justify-center open:items-center
+      px-2 py-2'
       >
-      <div className='flex flex-row justify-end align-top items-end w-full'>
-        <button onClick={() => dialogRef?.current?.close()}>❌</button>
+      <div className='
+        flex flex-row justify-end align-top items-end w-full'
+      >
+        <button onClick={() => dialogRef?.current?.close()}>
+          <IoIosCloseCircleOutline className='text-2xl'/>
+        </button>
       </div>
       <div className='flex-1 w-full flex flex-col justify-center items-center'>
-        <h1>New Appointment</h1>
         <SearchPanel />
         <SearchResult professors={professors}/>
       </div>
@@ -202,17 +210,14 @@ function SearchPanel(){
   return (
     <div className='w-full flex flex-row justify-center items-center gap-2'
     >
-      <label>
-        🔎: 
+      <label className='flex flex-row justify-center items-center'>
+        <p>Search:</p> 
         <input type='text' className='ml-2'
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value) }
         />
       </label>
-      <div className='flex-1'>
-        other options...
-      </div>
-      <button type='button' onClick={e=>search(e)}>Search</button>
+      <button type='button' onClick={e=>search(e)}><IoIosSearch className='text-2xl'/></button>
     </div>
   );
 
