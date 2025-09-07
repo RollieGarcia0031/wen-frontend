@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, use} from 'react';
+import {useState, useRef, useEffect, use, ReactElement} from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
@@ -7,8 +7,8 @@ import { useStudentAppointmentContext } from '@/context/StudentAppointmentContex
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { MdOutlineCreate } from "react-icons/md";
 import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
-import { IoSearchCircleOutline } from "react-icons/io5";
-
+import { MdOutlinePending, MdCheckCircleOutline } from "react-icons/md";
+import { IconType } from 'react-icons';
 
 
 // Appointments panel rendered for students
@@ -75,11 +75,32 @@ export default function SentAppointments(){
 
 }
 
+function AppointmentCardIcon({status}:
+  {status: undefined | string}
+){
+  status = status? status : 'pending';
+
+  type CardIcon = {
+    [key: string]: ReactElement
+  }
+
+  const icon: CardIcon = {
+    pending: (<MdOutlinePending
+      className='text-3xl fill-text-muted'
+    />),
+    confirmed: (<MdCheckCircleOutline
+      className='text-3xl rounded-full fill-green-500'
+    />)
+  }
+
+  return icon[status] || icon['pending'];
+}
+
 function AppointmentCard({appointment, index}:{
   appointment: appointmentData,
   index: number,
 }){
-  const { name, day_of_week, start_time, end_time, status, appointment_id } = appointment;
+  const { name, day_of_week, start_time, end_time, appointment_id, status } = appointment;
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
   const {setSentAppointments} = useStudentAppointmentContext();
@@ -89,50 +110,55 @@ function AppointmentCard({appointment, index}:{
   }, [isDeleting]);
 
   return(
-    <div
-      className='
-      flex flex-row gap-3
-      border-gray-500 border-2 border-solid rounded-md p-3 m-4'
-    >
-
-      <div className='flex-1 flex flex-col'>
-        <div
-          className='flex flex-row justify-start gap-6 flex-1'
-        >
-          <p className='font-bold'>
-            {name}
-          </p>
-          <p
-            className='italic text-xs flex-1'
-          >
-            {status}
-          </p>
-        </div>
-        <div 
-          className='flex flex-row justify-start
-            sm:gap-6'
-        >
-          <p>{day_of_week}</p>
-          <p>{start_time}</p>
-          <p>{end_time}</p>
-        </div>
+    <div className='w-full flex flex-row'>
+      <div className='flex-row-center'>
+        <AppointmentCardIcon status={status}/>
       </div>
-
       <div
-        className='border-gray-500 border-2 border-solid rounded-md p-4'
+        className='
+        flex flex-row gap-3 w-full
+        border-gray-500 border-2 border-solid rounded-md p-3 m-4'
       >
-        <button
-          onClick={() => setIsDeleting(true)}
-        >Delete</button>
-      </div>
 
-      {isDeleting && <DeleteDialog
-        ref={deleteDialogRef}
-        setIsDeleting={setIsDeleting}
-        appointment_id={appointment_id}
-        index={index}
-        setSentAppointments={setSentAppointments}
-      />}
+        <div className='flex-1 flex flex-col'>
+          <div
+            className='flex flex-row justify-start gap-6 flex-1'
+          >
+            <p className='font-bold'>
+              {name}
+            </p>
+            <p
+              className='italic text-xs flex-1'
+            >
+              {status}
+            </p>
+          </div>
+          <div 
+            className='flex flex-row justify-start
+              sm:gap-6'
+          >
+            <p>{day_of_week}</p>
+            <p>{start_time}</p>
+            <p>{end_time}</p>
+          </div>
+        </div>
+
+        <div
+          className='border-gray-500 border-2 border-solid rounded-md p-4'
+        >
+          <button
+            onClick={() => setIsDeleting(true)}
+          >Delete</button>
+        </div>
+
+        {isDeleting && <DeleteDialog
+          ref={deleteDialogRef}
+          setIsDeleting={setIsDeleting}
+          appointment_id={appointment_id}
+          index={index}
+          setSentAppointments={setSentAppointments}
+        />}
+      </div>
     </div>
   );
 }
