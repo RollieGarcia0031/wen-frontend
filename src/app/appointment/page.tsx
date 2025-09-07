@@ -144,7 +144,7 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
         *:border-white *:border-2 *:border-solid *:rounded-md *:p-2"
       >
         {status === "pending" && <AcceptButton/>}
-        <button>Decline</button>
+        <DeclineButton/>
       </div>
     </div>
 
@@ -160,6 +160,17 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
     );
 
   }
+
+  function DeclineButton(){
+    return (
+      <button
+        onClick={handleDecline}
+      >
+        Decline
+      </button>
+    );
+  }
+
   function handleAccept(){
     setAppointmentId(appointment_id);
     setSelectedAppointment(appointment);
