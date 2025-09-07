@@ -75,7 +75,6 @@ function AppointmentCard({appointment, index}: {
   index: number
 }){
   const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
-  console.log(status, name, day_of_week, start_time, end_time, appointment_id);
   const { setAppointmentId, confirmDialogRef, setSelectedAppointment, setSelectedIndex} = useProfessorContext();
   return (
     <div
