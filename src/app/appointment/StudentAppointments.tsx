@@ -7,7 +7,7 @@ import { useStudentAppointmentContext } from '@/context/StudentAppointmentContex
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { MdOutlineCreate } from "react-icons/md";
 import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
-import { MdOutlinePending, MdCheckCircleOutline } from "react-icons/md";
+import { MdOutlinePending, MdCheckCircleOutline, MdOutlineDelete } from "react-icons/md";
 import { IconType } from 'react-icons';
 
 
@@ -144,11 +144,17 @@ function AppointmentCard({appointment, index}:{
         </div>
 
         <div
-          className='border-gray-500 border-2 border-solid rounded-md p-4'
+          className='rounded-md p-4'
         >
           <button
             onClick={() => setIsDeleting(true)}
-          >Delete</button>
+            className='flex flex-row justify-center items-center'
+          >
+            <MdOutlineDelete
+              className='text-3xl fill-red-500 hover:fill-red-700
+              duration-150'
+            />
+          </button>
         </div>
 
         {isDeleting && <DeleteDialog
