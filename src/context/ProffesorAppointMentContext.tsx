@@ -28,7 +28,7 @@ export interface appointmentData {
 
 const ProfessorContext = createContext<ProfessorContextProps>({});
 
-export function ProfessorContextProvider({children}: {children: React.ReactNode}){
+export function ProfessorContextProvider({children}: any){
     /**
      * appointments - contains received appointments
      * setAppointments - to update received appointments upon sucessful decline/accept user action

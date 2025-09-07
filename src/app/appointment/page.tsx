@@ -21,7 +21,7 @@ export default function Appointment(){
       <div className="flex gap-4 flex-row">
         <Link href='/'>Home</Link>
       </div>
-      {role === "student" ? <SentAppointments /> : <ReceivedAppointments />}
+      {role === "student" ? <SentAppointments /> : <ProfessorContextProvider><ReceivedAppointments /> </ProfessorContextProvider>}
     </div>
   );
 }
@@ -32,7 +32,7 @@ export default function Appointment(){
 function ReceivedAppointments(){
   const {
     setAppointments,
-    appointments,
+    appointments
   } = useProfessorContext();
 
   useEffect(()=>{
@@ -50,7 +50,6 @@ function ReceivedAppointments(){
   }, [])
 
   return (
-    <ProfessorContextProvider>
     <div>
       <h1>Received Appointments</h1>
 
@@ -68,20 +67,16 @@ function ReceivedAppointments(){
       <ConfirmationDialog/>
 
     </div>
-    </ProfessorContextProvider>
   );
 }
 
-function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSelectedAppointment, index, setSelectedIndex}: {
+function AppointmentCard({appointment, index}: {
   appointment: appointmentData
-  setAppointmentId: React.Dispatch<React.SetStateAction<number>>,
-  confirmDialogRef: React.RefObject<HTMLDialogElement | null>
-  setSelectedAppointment: React.Dispatch<React.SetStateAction<appointmentData | null>>,
-  index: number,
-  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
+  index: number
 }){
   const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
-
+  console.log(status, name, day_of_week, start_time, end_time, appointment_id);
+  const { setAppointmentId, confirmDialogRef, setSelectedAppointment, setSelectedIndex} = useProfessorContext();
   return (
     <div
       className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4
@@ -142,10 +137,12 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
   }
 
   function handleAccept(){
-    setAppointmentId(appointment_id);
-    setSelectedAppointment(appointment);
-    setSelectedIndex(index);
-    confirmDialogRef.current?.showModal();
+    if(setAppointmentId && setSelectedAppointment && setSelectedIndex && confirmDialogRef){
+      setAppointmentId(appointment_id || -1);
+      setSelectedAppointment(appointment);
+      setSelectedIndex(index);
+      confirmDialogRef.current?.showModal();
+    }
   }
 
   function handleDecline(){
@@ -153,16 +150,12 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
   }
 }
 
-function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setAppointments}:{
-  selectedAppointment: appointmentData | null,
-  ref: React.RefObject<HTMLDialogElement | null>,
-  id: number,
-  selectedIndex: number,
-  setAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>
-}){
+function ConfirmationDialog(){
+  const { selectedAppointment, confirmDialogRef, selectedIndex, setAppointments, appointmentId } = useProfessorContext();
+
   return (
     <dialog 
-      ref={ref}
+      ref={confirmDialogRef}
     >
       <div
         className='flex flex-col justify-center items-center w-full rounded-md p-4'
@@ -179,14 +172,15 @@ function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setApp
             Confirm
           </button>
 
-          <button onClick={() => ref.current?.close()}>Cancel</button>
+          <button onClick={() => confirmDialogRef?.current?.close()}>Cancel</button>
         </div>
       </div>
     </dialog>
   );
 
   async function handleConfirm(){
-    const body = {id: parseInt(id.toString())};
+    if(!setAppointments || !selectedIndex || !appointmentId) return;
+    const body = {id: parseInt(appointmentId.toString())};
 
     try{
       const response = await fetchBackend(
@@ -202,13 +196,12 @@ function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setApp
           x[selectedIndex].status = "Accepted";
           return [...x];
         });
-        return ref.current?.close()
+        return confirmDialogRef?.current?.close()
       };
 
     } catch (err){
       console.error(err);
     }
-
   }
 }
 
