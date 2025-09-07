@@ -150,7 +150,7 @@ function AppointmentCard({appointment, index}: {
 }
 
 function ConfirmationDialog(){
-  const { selectedAppointment, confirmDialogRef, selectedIndex, setAppointments, appointmentId } = useProfessorContext();
+  const { confirmDialogRef, selectedIndex, setAppointments, appointmentId } = useProfessorContext();
 
   return (
     <dialog 
@@ -178,7 +178,8 @@ function ConfirmationDialog(){
   );
 
   async function handleConfirm(){
-    if(!setAppointments || !selectedIndex || !appointmentId) return;
+    if(selectedIndex == undefined || selectedIndex < 0) return;
+    if(!setAppointments || !appointmentId) return;
     const body = {id: parseInt(appointmentId.toString())};
 
     try{
