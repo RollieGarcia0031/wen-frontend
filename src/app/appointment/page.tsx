@@ -177,6 +177,10 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
     setSelectedIndex(index);
     confirmDialogRef.current?.showModal();
   }
+
+  function handleDecline(){
+
+  }
 }
 
 function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setAppointments}:{
@@ -236,4 +240,8 @@ function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setApp
     }
 
   }
+}
+
+function DeclineDialog(){
+
 }
