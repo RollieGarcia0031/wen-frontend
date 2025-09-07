@@ -39,7 +39,8 @@ function StudentHeader(){
 
   return (
     <header
-      className="flex flex-row justify-center items-center h-full p-2"
+      className="flex flex-row justify-center items-center h-full p-2
+      border-b-2 border-b-primary"
     >
       <nav className="w-full flex flex-row
         [&_svg]:text-2xl [&_svg]:cursor-pointer [&_a]:duration-200

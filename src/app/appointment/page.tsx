@@ -7,6 +7,7 @@ import SentAppointments from './StudentAppointments';
 import { fetchBackend } from '@/lib/api';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { ProfessorContextProvider, useProfessorContext } from '@/context/ProffesorAppointMentContext';
+import { StudentContextProvider } from '@/context/StudentAppointmentContext';
 
 
 export default function Appointment(){
@@ -21,7 +22,15 @@ export default function Appointment(){
       <div className="flex gap-4 flex-row">
         <Link href='/'>Home</Link>
       </div>
-      {role === "student" ? <SentAppointments /> : <ProfessorContextProvider><ReceivedAppointments /> </ProfessorContextProvider>}
+      {role === "student" ? (
+        <StudentContextProvider>
+        <SentAppointments />
+        </StudentContextProvider>
+      ):(
+        <ProfessorContextProvider>
+          <ReceivedAppointments />
+        </ProfessorContextProvider>
+      )}
     </div>
   );
 }
