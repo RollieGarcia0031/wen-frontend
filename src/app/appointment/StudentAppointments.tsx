@@ -36,26 +36,38 @@ export default function SentAppointments(){
   return (
   <>
     <div
-      className='sm:p-4'
+      className='w-full flex flex-col justify-center items-center'
     >
-      <button  onClick={() => dialogRef?.current?.showModal()}
-        className='flex-row-center gap-1 bg-secondary
-          px-2 py-1 rounded-md'  
+      <div
+        className='sm:p-4 sm:w-[35rem]'
       >
-        <MdOutlineCreate/>New
-      </button>  
-      <h1>Sent Appointments</h1>
+        <button  onClick={() => dialogRef?.current?.showModal()}
+          className='flex-row-center gap-1 bg-secondary
+            px-2 py-1 rounded-md'  
+        >
+          <MdOutlineCreate/>New
+        </button>  
+        <div
+          className='mt-4 '
+        >
+          <h1
+            className='text-2xl font-bold text-text-muted'  
+          >
+            Sent Appointments
+          </h1>
 
-      <div>
-        {sentAppointments?.map((appointment, index) =>
-          <AppointmentCard
-            key={index} 
-            appointment={appointment}
-            index={index}
-          />)
-        }
+          <div>
+            {sentAppointments?.map((appointment, index) =>
+              <AppointmentCard
+                key={index} 
+                appointment={appointment}
+                index={index}
+              />)
+            }
+          </div>
+        </div>
+
       </div>
-
     </div>
     <NewAppointmentDialog/>
   </>
@@ -64,7 +76,7 @@ export default function SentAppointments(){
 }
 
 function AppointmentCard({appointment, index}:{
-  appointment: appointmentData
+  appointment: appointmentData,
   index: number,
 }){
   const { name, day_of_week, start_time, end_time, status, appointment_id } = appointment;
@@ -80,17 +92,25 @@ function AppointmentCard({appointment, index}:{
     <div
       className='
       flex flex-row gap-3
-      border-gray-500 border-2 border-solid rounded-md p-4 m-4'
+      border-gray-500 border-2 border-solid rounded-md p-3 m-4'
     >
 
-      <div className='flex-1'>
+      <div className='flex-1 flex flex-col'>
         <div
-          className='flex flex-row justify-start gap-6'
+          className='flex flex-row justify-start gap-6 flex-1'
         >
-          <p>{name}</p> <p>{status}</p>
+          <p className='font-bold'>
+            {name}
+          </p>
+          <p
+            className='italic text-xs flex-1'
+          >
+            {status}
+          </p>
         </div>
         <div 
-          className='flex flex-row justify-between'
+          className='flex flex-row justify-start
+            sm:gap-6'
         >
           <p>{day_of_week}</p>
           <p>{start_time}</p>
