@@ -12,7 +12,7 @@ interface ProfessorContextProps {
     selectedIndex?: number,
     setSelectedIndex?: React.Dispatch<React.SetStateAction<number>>,
     confirmDialogRef?: React.RefObject<HTMLDialogElement | null>,
-    deleteDialogRef?: React.RefObject<HTMLDialogElement | null>
+    declineDialogRef?: React.RefObject<HTMLDialogElement | null>
 }
 
 export interface appointmentData {
@@ -47,7 +47,7 @@ export function ProfessorContextProvider({children}: any){
     const [appointmentId, setAppointmentId] = useState<number>(0);
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const confirmDialogRef = useRef<HTMLDialogElement>(null);
-    const deleteDialogRef = useRef<HTMLDialogElement>(null);
+    const declineDialogRef = useRef<HTMLDialogElement>(null);
 
     return (
         <ProfessorContext.Provider value={{
@@ -60,7 +60,7 @@ export function ProfessorContextProvider({children}: any){
             selectedIndex,
             setSelectedIndex,
             confirmDialogRef,
-            deleteDialogRef
+            declineDialogRef: declineDialogRef
         }}>
             {children}
         </ProfessorContext.Provider>

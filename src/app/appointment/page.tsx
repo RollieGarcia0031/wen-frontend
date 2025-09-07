@@ -65,7 +65,7 @@ function ReceivedAppointments(){
       </div>
 
       <ConfirmationDialog/>
-
+      <DeclineDialog/>
     </div>
   );
 }
@@ -75,7 +75,13 @@ function AppointmentCard({appointment, index}: {
   index: number
 }){
   const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
-  const { setAppointmentId, confirmDialogRef, setSelectedAppointment, setSelectedIndex} = useProfessorContext();
+  const {
+    setAppointmentId,
+    confirmDialogRef,
+    setSelectedAppointment,
+    setSelectedIndex,
+    declineDialogRef
+  } = useProfessorContext();
   return (
     <div
       className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4
@@ -145,7 +151,12 @@ function AppointmentCard({appointment, index}: {
   }
 
   function handleDecline(){
-
+    if(setAppointmentId && setSelectedAppointment && setSelectedIndex && declineDialogRef){
+      setAppointmentId(appointment_id || -1);
+      setSelectedAppointment(appointment);
+      setSelectedIndex(index);
+      declineDialogRef.current?.showModal();
+    }
   }
 }
 
@@ -206,14 +217,21 @@ function ConfirmationDialog(){
 }
 
 function DeclineDialog(){
+  const ref = useProfessorContext().declineDialogRef;
+
   return (
-    <dialog>
+    <dialog ref={ref}>
       <div
         className='flex flex-col justify-center items-center w-full rounded-md p-4'
       >
         <h1>
           Are you sure?
         </h1>
+
+        <div>
+          <button>Confirm</button>
+          <button onClick={() => ref?.current?.close()}>Cancel</button>
+        </div>
       </div>
     </dialog>
   );
