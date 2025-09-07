@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import SentAppointments from './StudentAppointments';
 import { fetchBackend } from '@/lib/api';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
-import {} from '@/context/ProffesorAppointMentContext';
+import { ProfessorContextProvider, useProfessorContext } from '@/context/ProffesorAppointMentContext';
 
 
 export default function Appointment(){
@@ -30,24 +30,10 @@ export default function Appointment(){
  * appointment panel rendered for professors
  */
 function ReceivedAppointments(){
-  /**
-   * appointments - contains received appointments
-   * setAppointments - to update received appointments upon sucessful decline/accept user action
-   * 
-   * appointmentId - contains id of selected appointment
-   * setAppointmentId - to update id of selected appointment, so dialog knows which appointment to update
-   * 
-   * selectedAppointment - contains selected appointment
-   * setSelectedAppointment - to update selected appointment, baka next time ko lagyan extra details sa appointment
-   * 
-   * selectedIndex - contains index of selected appointment
-   * setSelectedIndex - for dialog to know which index of appointments[] to update after sucessful accept/decline
-   */
-  const [appointments, setAppointments] = useState<appointmentData[]>([]);
-  const [selectedAppointment, setSelectedAppointment] = useState<appointmentData | null>(null);
-  const [appointmentId, setAppointmentId] = useState<number>(0);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const confirmDialogRef = useRef<HTMLDialogElement>(null);
+  const {
+    setAppointments,
+    appointments,
+  } = useProfessorContext();
 
   useEffect(()=>{
     const fetchAppointments = async () => {
@@ -57,13 +43,14 @@ function ReceivedAppointments(){
 
       const {appointments} = response.data;
       console.log(appointments)
-      setAppointments(appointments);
+      if(setAppointments)setAppointments(appointments);
     }
 
     fetchAppointments().catch(console.error);
   }, [])
 
   return (
+    <ProfessorContextProvider>
     <div>
       <h1>Received Appointments</h1>
 
@@ -74,23 +61,14 @@ function ReceivedAppointments(){
           <AppointmentCard
             key={index}
             appointment={appointment}
-            setAppointmentId={setAppointmentId}
-            confirmDialogRef={confirmDialogRef}
-            setSelectedAppointment={setSelectedAppointment}
             index={index}
-            setSelectedIndex={setSelectedIndex}
           />)}
       </div>
 
-      <ConfirmationDialog
-        id={appointmentId}
-        ref={confirmDialogRef}
-        selectedAppointment={selectedAppointment}
-        selectedIndex={selectedIndex}
-        setAppointments={setAppointments}
-      />
+      <ConfirmationDialog/>
 
     </div>
+    </ProfessorContextProvider>
   );
 }
 
