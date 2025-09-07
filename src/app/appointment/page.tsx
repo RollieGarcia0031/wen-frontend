@@ -5,17 +5,8 @@ import { useAuthContext } from '@/context/AuthContext';
 import React, { useState, useEffect, useRef } from 'react';
 import SentAppointments from './StudentAppointments';
 import { fetchBackend } from '@/lib/api';
+import { appointmentData } from '@/context/ProffesorAppointMentContext';
 
-export interface appointmentData {
-  appointment_id: number,
-  student_id: number,
-  professor_id: number,
-  status: string,
-  name: string,
-  day_of_week: number,
-  start_time: string,
-  end_time: string
-}
 
 export default function Appointment(){
   const { role } = useAuthContext();
@@ -243,5 +234,15 @@ function ConfirmationDialog({selectedAppointment, ref, id, selectedIndex, setApp
 }
 
 function DeclineDialog(){
-
+  return (
+    <dialog>
+      <div
+        className='flex flex-col justify-center items-center w-full rounded-md p-4'
+      >
+        <h1>
+          Are you sure?
+        </h1>
+      </div>
+    </dialog>
+  );
 }

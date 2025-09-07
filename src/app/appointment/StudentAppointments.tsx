@@ -3,7 +3,7 @@ import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 import { useRouter } from 'next/navigation';
-import { appointmentData } from './page';
+import { appointmentData } from '@/context/ProffesorAppointMentContext';
 
 
 // Appointments panel rendered for students
