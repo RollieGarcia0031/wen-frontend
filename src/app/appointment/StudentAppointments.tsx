@@ -181,15 +181,20 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
     <dialog
       ref={ref}
       onClose={() => setIsDeleting(false)}
+      className='rounded-xl p-4'
     >
       <div className='flex flex-col justify-center items-center w-full rounded-md p-4'>
         <h1>Are you sure? You can't undo this</h1>
 
-        <div className='flex flex-row gap-4 w-full justify-center'>
-          <button onClick={handleConfirm}>
+        <div className='flex flex-row gap-4 w-full justify-center mt-4'>
+          <button onClick={handleConfirm}
+            className='bg-green-500 px-2 py-1 rounded-lg text-black'
+          >
             Confirm
           </button>
-          <button onClick={() => setIsDeleting(false)}>
+          <button onClick={() => setIsDeleting(false)}
+            className='bg-red-500 px-2 py-1 rounded-lg text-black'  
+          >
             Cancel
           </button>
         </div>
