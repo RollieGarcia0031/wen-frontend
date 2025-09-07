@@ -143,16 +143,23 @@ function AppointmentCard({appointment, setAppointmentId, confirmDialogRef, setSe
         className="flex flex-col px-5 ml-10 gap-4
         *:border-white *:border-2 *:border-solid *:rounded-md *:p-2"
       >
-        <button
-          onClick={handleAccept}
-        >
-          Accept
-        </button>
+        {status === "pending" && <AcceptButton/>}
         <button>Decline</button>
       </div>
     </div>
-  );
 
+);
+
+  function AcceptButton(){
+    return (
+      <button
+        onClick={handleAccept}
+      >
+        Accept
+      </button>
+    );
+
+  }
   function handleAccept(){
     setAppointmentId(appointment_id);
     setSelectedAppointment(appointment);
