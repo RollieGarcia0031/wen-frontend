@@ -64,3 +64,7 @@ export default function ProfessorContextProvider({children}: {children: React.Re
         </ProfessorContext.Provider>
     );
 }
+
+export function useProfessorContext() {
+  return useContext(ProfessorContext);
+}
