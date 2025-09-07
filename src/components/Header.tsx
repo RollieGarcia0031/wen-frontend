@@ -14,6 +14,11 @@ export default function Header(){
     console.log(role)
   }, [role]);
 
+  const pathname = usePathname();
+  const protectedRoutes = ['/login', '/register'];
+
+  if(protectedRoutes.includes(pathname)) return null;
+
   return (
     <header>
       {role === "professor" ? <ProfessorHeader /> : <StudentHeader />}
