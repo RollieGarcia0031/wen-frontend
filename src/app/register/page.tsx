@@ -70,9 +70,9 @@ export default function Login() {
       console.log(response);
 
       if(response.success) {
-        alert(response.message);
         router.push("/login");
       }
+      alert(response.message);
 
     } catch (error) {
       console.error(error);
