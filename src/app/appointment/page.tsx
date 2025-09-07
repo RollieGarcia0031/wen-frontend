@@ -218,6 +218,7 @@ function ConfirmationDialog(){
 
 function DeclineDialog(){
   const ref = useProfessorContext().declineDialogRef;
+  const { selectedAppointment, appointmentId, selectedIndex, setAppointments } = useProfessorContext();
 
   return (
     <dialog ref={ref}>
@@ -225,14 +226,52 @@ function DeclineDialog(){
         className='flex flex-col justify-center items-center w-full rounded-md p-4'
       >
         <h1>
-          Are you sure?
+          Are you sure? <br/>This will permanently delete the sent appointment
         </h1>
 
-        <div>
-          <button>Confirm</button>
-          <button onClick={() => ref?.current?.close()}>Cancel</button>
+        <div
+          className='flex flex-row justify-end gap-4 mt-4
+          *:border-2 *:border-white *:border-solid *:rounded-md *:p-2'
+        >
+          <button
+            onClick={handleConfirm}
+            className='bg-green-700 py-1 px-2 rounded-md'
+          >Confirm</button>
+          <button
+            className='bg-red-700 py-1 px-2 rounded-md'
+            onClick={() => ref?.current?.close()}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </dialog>
   );
+
+  async function handleConfirm(){
+    if(appointmentId == undefined || appointmentId < 0 || !setAppointments) return;
+
+    const body = {id: parseInt(appointmentId.toString())};
+
+    try {
+      const response = await fetchBackend(
+        'appointment/delete',
+        'DELETE',
+        JSON.stringify(body),
+        new Headers({"Content-Type": "application/json"})
+      );
+
+      if(response.success) {
+        ref?.current?.close();
+        setAppointments(x => {
+          x.splice(selectedIndex || 0, 1);
+          return [...x];
+        });
+
+        alert(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
