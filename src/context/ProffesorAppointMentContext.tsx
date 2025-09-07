@@ -27,6 +27,19 @@ export interface appointmentData {
 const ProfessorContext = createContext<ProfessorContextProps | null>(null);
 
 export default function ProfessorContextProvider({children}: {children: React.ReactNode}){
+    /**
+     * appointments - contains received appointments
+     * setAppointments - to update received appointments upon sucessful decline/accept user action
+     * 
+     * appointmentId - contains id of selected appointment
+     * setAppointmentId - to update id of selected appointment, so dialog knows which appointment to update
+     * 
+     * selectedAppointment - contains selected appointment
+     * setSelectedAppointment - to update selected appointment, baka next time ko lagyan extra details sa appointment
+     * 
+     * selectedIndex - contains index of selected appointment
+     * setSelectedIndex - for dialog to know which index of appointments[] to update after sucessful accept/decline
+     */
     const [appointments, setAppointments] = useState<appointmentData[]>([]);
     const [selectedAppointment, setSelectedAppointment] = useState<appointmentData | null>(null);
     const [appointmentId, setAppointmentId] = useState<number>(0);
