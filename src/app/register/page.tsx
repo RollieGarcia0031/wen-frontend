@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { useState } from "react";
 import { fetchBackend } from "@/lib/api"; 
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
@@ -11,9 +12,7 @@ export default function Login() {
   const [name, setName] = useState<string>("");
   const [role, setRole] = useState<string>("student");
 
-  useEffect(()=>{
-    console.log(role);
-  },[role]);
+  const router = useRouter();
 
   return (
     <div className="flex flex-col justify-center items-center h-full">
@@ -39,7 +38,7 @@ export default function Login() {
             onChange={(e) => setName(e.target.value)}
           />
           
-          <select value={role} defaultValue={role} onChange={(e) => setRole(e.target.value)}>
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="professor">professor</option>
             <option value="student">student</option>
           </select>
@@ -66,10 +65,18 @@ export default function Login() {
     const body = JSON.stringify({email, password, name, role});
     const headers = new Headers({"Content-Type": "application/json"});
 
-    console.log(body);
+    try{
+      const response = await fetchBackend("auth/signup", "POST", body, headers);
+      console.log(response);
 
-    const response = await fetchBackend("auth/signup", "POST", body, headers);
-    console.log(response);
+      if(response.success) {
+        alert(response.message);
+        router.push("/login");
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
 
   }
 }
