@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useAuthContext } from "@/context/AuthContext";
-import { useEffect, use } from "react";
+import { useEffect, use, useState } from "react";
 import { usePathname } from "next/navigation";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineAttachEmail } from "react-icons/md";
 import { VscAccount } from "react-icons/vsc";
 import { TbLayoutBottombarCollapse } from "react-icons/tb";
+import { CiLogout } from "react-icons/ci";
 
 export default function Header(){
   const { role } = useAuthContext();
@@ -42,12 +43,12 @@ function StudentHeader(){
     >
       <nav className="w-full flex flex-row
         [&_svg]:text-2xl [&_svg]:cursor-pointer [&_a]:duration-200
-        sm:[&_a]:p-2 sm:[&_a]:rounded-xl">
+        sm:[&_a]:rounded-xl">
         <div
           className="flex gap-4 flex-row
           justify-center items-center
           *:flex-row *:flex *:justify-center *:items-center *:gap-2
-          
+          sm:[&_a]:p-2
           "
         
         >
@@ -71,21 +72,38 @@ function StudentHeader(){
 
 function AccountOptionPanel(){
   const { userName } = useAuthContext();
+  const [ isOpened, setIsOpened ] = useState(false);
 
   return (
     <div className='flex-1 flex flex-row justify-end items-center'>
       <div
         className='overflow-hidden'
       >
-        <button className="flex-row-center gap-2">
+        <button className="flex-row-center gap-2"
+          onClick={()=>setIsOpened(x=>!x)}
+        >
           <VscAccount />
           <p>{userName}</p>
           <TbLayoutBottombarCollapse/>
         </button>
 
-        <div className="absolute">
-          
-        </div>
+        {isOpened && (
+          <div className="absolute flex flex-col justify-end items-end right-4
+            card p-2 mt-4
+            [&_a]:flex [&_a]:flex-row [&_a]:items-center [&_a]:gap-2
+            sm:[&_a]:px-1 sm:[&_a]:py-0.5"
+          >
+            <button
+              className='rounded-md'
+            >
+                <Link href='/login'><CiLogout className="text-sm"/>Logout</Link>
+            </button>
+
+            <button>
+              <Link href='/professor/profiles'><VscAccount className="text-sm"/>My Profile</Link>
+            </button>
+          </div>
+        )}
       </div>
     </div> 
   );
