@@ -269,10 +269,13 @@ function DeclineDialog(){
 
       if(response.success) {
         ref?.current?.close();
-        setAppointments(x => {
-          x.splice(selectedIndex || 0, 1);
-          return [...x];
-        });
+        if(selectedIndex != undefined){
+          console.log(selectedIndex)
+          setAppointments(x => {
+            const filtered = x.filter((_, i) => i !== selectedIndex);
+            return [...filtered];
+          });
+        };
 
         alert(response.message);
       }
