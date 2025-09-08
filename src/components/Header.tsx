@@ -111,17 +111,46 @@ function AccountOptionPanel(){
 }
 
 function ProfessorHeader(){
+  const pathName = usePathname().split("/");
+  const basePath = pathName[1];
+
+  const HeaderIconClassName = (requiredPath: string) => {
+    return `${basePath === requiredPath ?
+      "text-primary border-b-[1px] border-b-primary" :
+      ""}`;
+  };
+
   return (
     <header>
-      <nav>
-        <div className="flex gap-4 flex-row">
-          <Link href="/">Home</Link>
-          <Link href="/appointment">View Your Appointments</Link>
-          <Link href="/professor/profiles">Manage Your Profile</Link>
+      <nav
+        className="flex flex-row justify-center items-center h-full p-4
+          [&_a]:flex-row [&_a]:flex [&_a]:justify-center [&_a]:items-center [&_a]:gap-2
+          sm:[&_a]:p-2"
+      >
+        <div 
+          className="flex gap-4 flex-row [&_svg]:text-2xl [&_svg]:cursor-pointer"
+        >
+          <Link href="/"
+            className={HeaderIconClassName("")}
+          >
+            <IoHomeOutline />
+          </Link>
+          <Link href="/appointment"
+            className={HeaderIconClassName("appointment")}
+          >
+              <MdOutlineAttachEmail />
+              Your Appointments
+          </Link>
+          <Link href="/professor/profiles"
+            className={HeaderIconClassName("professor")}
+          >
+            <VscAccount />Manage Your Profile
+          </Link>
           <div className='flex-1 text-right'>
-            <Link href="/login">Login</Link>
           </div>
         </div>
+
+        <AccountOptionPanel />
       </nav>
     </header>
   );
