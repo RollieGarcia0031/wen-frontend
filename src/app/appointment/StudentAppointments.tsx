@@ -184,7 +184,7 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
       className='rounded-xl p-4'
     >
       <div className='flex flex-col justify-center items-center w-full rounded-md p-4'>
-        <h1>Are you sure? You can't undo this</h1>
+        <h1>Are you sure? You can&apos;t undo this</h1>
 
         <div className='flex flex-row gap-4 w-full justify-center mt-4'>
           <button onClick={handleConfirm}
