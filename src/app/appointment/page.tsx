@@ -56,11 +56,18 @@ function ReceivedAppointments(){
   }, [])
 
   return (
-    <div>
-      <h1>Received Appointments</h1>
+    <div
+      className='flex flex-col justify-center items-center w-full'
+    >
+      <h1
+        className='my-4 text-2xl font-bold'
+      >
+        Received Appointments
+      </h1>
 
       <div
-        className='flex flex-col justify-center items-center w-full border-white border-2 border-solid rounded-md p-4'
+        className='flex flex-col justify-center items-center w-[40rem]
+        border-highlight-muted border-2 border-solid rounded-md p-4'
       >
         {appointments?.map((appointment, index) =>
           <AppointmentCard
@@ -116,8 +123,9 @@ function AppointmentCard({appointment, index}: {
       </div>
 
       <div
-        className="flex flex-col px-5 ml-10 gap-4
-        *:border-white *:border-2 *:border-solid *:rounded-md *:p-2"
+        className="flex flex-row ml-10 gap-4 flex-1 justify-end
+        *:rounded-md *:p-2 *:duration-500
+        *:hover:text-text-muted"
       >
         {status === "pending" && <AcceptButton/>}
         <DeclineButton/>
@@ -130,6 +138,8 @@ function AppointmentCard({appointment, index}: {
     return (
       <button
         onClick={handleAccept}
+        className='border-green-600 border-2 border-solid rounded-md
+          bg-green-950'
       >
         Accept
       </button>
@@ -141,6 +151,8 @@ function AppointmentCard({appointment, index}: {
     return (
       <button
         onClick={handleDecline}
+        className='border-red-600 border-2 border-solid rounded-md
+          bg-red-950'
       >
         Decline
       </button>
@@ -174,21 +186,30 @@ function ConfirmationDialog(){
       ref={confirmDialogRef}
     >
       <div
-        className='flex flex-col justify-center items-center w-full rounded-md p-4'
+        className='flex flex-col justify-center items-center w-full rounded-md p-4
+          text-center'
       >
           <h1>
-            Are you Sure?
+            Are you Sure? <br/>
+            To accept this appointment?
           </h1>
         <div
-          className='flex flex-row justify-end gap-4 mt-4'
+          className='flex flex-row justify-end gap-4 mt-4
+            *:py-1 *:px-2 *:rounded-md *:duration-500'
         >
           <button
             onClick={() => handleConfirm()}
+            className='border-green-600 border-2 border-solid rounded-md'
           >
             Confirm
           </button>
 
-          <button onClick={() => confirmDialogRef?.current?.close()}>Cancel</button>
+          <button onClick={() => confirmDialogRef?.current?.close()}
+            className='border-red-700 border-2 border-solid rounded-md
+              text-text-muted'  
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </dialog>
@@ -229,22 +250,26 @@ function DeclineDialog(){
   return (
     <dialog ref={ref}>
       <div
-        className='flex flex-col justify-center items-center w-full rounded-md p-4'
+        className='flex flex-col justify-center items-center w-full rounded-md p-4 text-center
+          '
       >
         <h1>
-          Are you sure? <br/>This will permanently delete the sent appointment
+          Are you sure?
+          <br/>
+          This will permanently delete the sent appointment
         </h1>
 
         <div
           className='flex flex-row justify-end gap-4 mt-4
-          *:border-2 *:border-white *:border-solid *:rounded-md *:p-2'
+          *:border-2 *:border-solid *:rounded-md *:p-2'
         >
           <button
             onClick={handleConfirm}
-            className='bg-green-700 py-1 px-2 rounded-md'
+            className='border-green-600'
           >Confirm</button>
           <button
-            className='bg-red-700 py-1 px-2 rounded-md'
+            className='border-red-700
+              text-text-muted'
             onClick={() => ref?.current?.close()}
           >
             Cancel
