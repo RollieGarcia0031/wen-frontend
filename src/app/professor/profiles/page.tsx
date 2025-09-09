@@ -7,7 +7,7 @@ import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response"
 
 interface ProfessorProfile {
   department: string;
-  year: 1 | 2 | 3 | 4;
+  year: number;
 }
 
 export default function Profiles(){
@@ -97,6 +97,12 @@ function ProfileContainer({profiles, setProfiles}:{
       const response: ApiResponse = await fetchBackend("professor/profile", "POST", body, headers);
 
       if(response.success) {
+        setYear(0);
+        setDepartment("");
+        setProfiles(x=>{
+          const newProfile: ProfessorProfile = { department, year};
+          return [...x, newProfile];
+        });
         alert(response.message);
       }
 
