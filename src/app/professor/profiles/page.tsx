@@ -37,7 +37,6 @@ export default function Profiles(){
 
   return(
     <div>
-      <Link href="/" >Back</Link>
       <h1>Profiles</h1>
 
       <ProfileContainer
@@ -63,29 +62,52 @@ function ProfileContainer({profiles, setProfiles}:{
   const [department, setDepartment] = useState<string>("");
 
   return (
-    <form onSubmit={e=>addProfile(e)}
-      className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4"
+    <div
+      className="flex-row-center gap-4 max-w-full"
     >
-      <p
-        className="font-bold text-center text-3xl"
+      <form onSubmit={e=>addProfile(e)}
+        className="flex flex-col border-gray-500 border-2 border-solid rounded-md
+          p-4 m-4 gap-4 sm:w-[40rem]"
       >
-        YOUR PROFILES
-      </p>
+        <p
+          className="font-bold text-center text-3xl
+          sm:my-4"
+        >
+          Your Profiles
+        </p>
 
-      <p>Add your Profile</p>
-      
-      <div className="flex flex-row gap-4">
-        <FormInput type="number" label="Year" value={year.toString()} onChange={(e) => setYear(parseInt(e.target.value))} />
-        <FormInput type="text" label="Department" value={department} onChange={(e) => setDepartment(e.target.value)} />
-      </div>
+        <div
+          className="grid grid-cols-[7rem_auto] justify-center items-start
+          sm:gap-2"
+        >
+          <FormInput type="number" label="Year" value={year.toString()} onChange={(e) => setYear(parseInt(e.target.value))} />
+          <FormInput type="text" label="Department" value={department} onChange={(e) => setDepartment(e.target.value)} />
+        </div>
 
-      <button type="submit">Add</button>
+        <div className="flex-row-center">
+          <button type="submit"
+            className="border-primary border-2 border-solid rounded-md bg-primary text-white hover:bg-primary-hover hover:text-black duration-150
+              sm:px-10 sm:py-1"
+          >
+            Add
+          </button>
+        </div>
 
-      <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4">
-        <div>Your Profiles </div>
-        {profiles?.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
-      </div>
-    </form>
+        <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4">
+          {profiles?.length === 0 && (
+            <div className="text-center">
+              <p>No Profiles</p>
+              <p
+                className="text-sm text-text-muted
+                sm:mt-5 sm:mb-3"
+              >
+                You can add a new profile by filling the form, and clicking "Add"
+              </p>
+            </div>)}
+          {profiles?.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
+        </div>
+      </form>
+    </div>
   );
 
   //handler function for adding user profile
@@ -204,13 +226,15 @@ function FormInput({type, label, value, onChange}: {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) {
   return (
-    <label className="flex flex-row gap-2 items-center justify-center">
+    <>
+    <label className="font-semibold">
       {label}:
-      <input type={type}
-        value={value}
-        onChange={onChange}
-        required
-      />
     </label>
+    <input type={type}
+      value={value}
+      onChange={onChange}
+      required
+    />
+    </>
   );
 }
