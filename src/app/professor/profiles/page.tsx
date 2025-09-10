@@ -6,6 +6,7 @@ import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 
 interface ProfessorProfile {
+  id: number
   department: string;
   year: number;
 }
@@ -105,7 +106,14 @@ function ProfileContainer({profiles, setProfiles}:{
                 You can add a new profile by filling the form, and clicking "Add"
               </p>
             </div>)}
-          {profiles?.map((profile, index) => <ProfileCard key={index} profile={profile} />)}
+          {profiles?.map((profile, index) =>
+            <ProfileCard key={index}
+              profile={profile}
+              setProfiles={setProfiles}
+              index={index}
+              profile_id={profile.id}
+            />
+          )}
         </div>
       </form>
     </div>
@@ -207,7 +215,12 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 }
 
 //container for each profile
-function ProfileCard({profile}:{profile: ProfessorProfile}) {
+function ProfileCard({profile, setProfiles, index, profile_id}:{
+  profile: ProfessorProfile,
+  setProfiles: React.Dispatch<React.SetStateAction<ProfessorProfile[]>>,
+  index: number,
+  profile_id: number
+}) {
   return (
     <div
       className="flex flex-row
@@ -226,6 +239,7 @@ function ProfileCard({profile}:{profile: ProfessorProfile}) {
           className="border-red-600 border-2 border-solid rounded-md bg-red-950
             sm:px-2 sm:py-1"
           type='button'
+          onClick={removeProfile}
         >
           Remove
         </button>
@@ -234,18 +248,17 @@ function ProfileCard({profile}:{profile: ProfessorProfile}) {
   );
 
   async function removeProfile(){
-    const body = {};
+    const body = {id : profile_id};
     const header = {"Content-Type": 'application/json'}
 
     const res = await fetchBackend(
-      "professor/profile/delete",
+      "professor/profile",
       "DELETE",
       JSON.stringify(body),
       header
     );
-    
-    if(res.sucess){
-      
+    if(res.success){
+      setProfiles(x => x.filter((_, i) => i !== index));
     }
   }
 }
