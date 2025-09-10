@@ -130,8 +130,11 @@ function ProfileContainer({profiles, setProfiles}:{
       if(response.success) {
         setYear(0);
         setDepartment("");
+        if(!response.data){return;}
+        const new_id: number = response.data['id'];
+
         setProfiles(x=>{
-          const newProfile: ProfessorProfile = { department, year};
+          const newProfile: ProfessorProfile = { department, year, id: new_id };
           return [...x, newProfile];
         });
         alert(response.message);
