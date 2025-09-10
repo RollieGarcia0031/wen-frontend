@@ -93,7 +93,8 @@ function ProfileContainer({profiles, setProfiles}:{
           </button>
         </div>
 
-        <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4">
+        <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4
+          flex flex-col gap-2">
           {profiles?.length === 0 && (
             <div className="text-center">
               <p>No Profiles</p>
@@ -208,11 +209,45 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 //container for each profile
 function ProfileCard({profile}:{profile: ProfessorProfile}) {
   return (
-    <div className="flex flex-row gap-4">
-      <div>Year: {profile.year}</div>
-      <div>Department: {profile.department}</div>
+    <div
+      className="flex flex-row
+      border-b-highlight-muted border-b-[1px] border-b-solid
+      sm:pb-2"
+    >
+      <div className="flex flex-row gap-4 flex-1 justify-start
+        h-full"
+      >
+        <p>Year: {profile.year}</p>
+        <p>Department: {profile.department}</p>
+      </div>
+
+      <div>
+        <button
+          className="border-red-600 border-2 border-solid rounded-md bg-red-950
+            sm:px-2 sm:py-1"
+          type='button'
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
+
+  async function removeProfile(){
+    const body = {};
+    const header = {"Content-Type": 'application/json'}
+
+    const res = await fetchBackend(
+      "professor/profile/delete",
+      "DELETE",
+      JSON.stringify(body),
+      header
+    );
+    
+    if(res.sucess){
+      
+    }
+  }
 }
 
 
