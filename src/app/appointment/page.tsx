@@ -83,6 +83,7 @@ function ReceivedAppointments(){
   );
 }
 
+//div for each appointment
 function AppointmentCard({appointment, index}: {
   appointment: appointmentData
   index: number
@@ -178,6 +179,7 @@ function AppointmentCard({appointment, index}: {
   }
 }
 
+//pop up for accepting an appointment
 function ConfirmationDialog(){
   const { confirmDialogRef, selectedIndex, setAppointments, appointmentId } = useProfessorContext();
 
@@ -243,6 +245,7 @@ function ConfirmationDialog(){
   }
 }
 
+//pop up for declining an appointment
 function DeclineDialog(){
   const ref = useProfessorContext().declineDialogRef;
   const { selectedAppointment, appointmentId, selectedIndex, setAppointments } = useProfessorContext();
@@ -279,6 +282,7 @@ function DeclineDialog(){
     </dialog>
   );
 
+  //delete recieved appointment
   async function handleConfirm(){
     if(appointmentId == undefined || appointmentId < 0 || !setAppointments) return;
 
