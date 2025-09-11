@@ -12,6 +12,7 @@ interface ProfessorProfile {
 }
 
 export default function Profiles(){
+  //profiles and availability that will render
   const [profiles, setProfiles] = useState<ProfessorProfile[]>([]);
   const [availabilities, setAvailabilities] = useState<SearchAvailabilityResponseDataItem[]>([]);
 
