@@ -35,6 +35,19 @@ export default function Profiles(){
     
     fetchProfiles();
 
+    const fetchAvailabilities = async () =>  {
+      try{
+        const availabilities = await fetchBackend("/professor/availability", "GET");
+
+        if(!availabilities.data){return;}
+        setAvailabilities(availabilities.data);
+      } catch (err){
+        console.error(err)
+      }
+    }
+    
+    fetchAvailabilities();
+
   },[])
 
   return(
@@ -147,6 +160,56 @@ function ProfileContainer({profiles, setProfiles}:{
   }
 }
 
+//container for each profile
+function ProfileCard({profile, setProfiles, index, profile_id}:{
+  profile: ProfessorProfile,
+  setProfiles: React.Dispatch<React.SetStateAction<ProfessorProfile[]>>,
+  index: number,
+  profile_id: number
+}) {
+  return (
+    <div
+      className="flex flex-row
+      border-b-highlight-muted border-b-[1px] border-b-solid
+      sm:pb-2"
+    >
+      <div className="flex flex-row gap-4 flex-1 justify-start
+        h-full"
+      >
+        <p>Year: {profile.year}</p>
+        <p>Department: {profile.department}</p>
+      </div>
+
+      <div>
+        <button
+          className="border-red-600 border-2 border-solid rounded-md bg-red-950
+            sm:px-2 sm:py-1"
+          type='button'
+          onClick={removeProfile}
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  );
+
+  async function removeProfile(){
+    const body = {id : profile_id};
+    const header = {"Content-Type": 'application/json'}
+
+    const res = await fetchBackend(
+      "professor/profile",
+      "DELETE",
+      JSON.stringify(body),
+      header
+    );
+    if(res.success){
+      setProfiles(x => x.filter((_, i) => i !== index));
+    }
+  }
+}
+
+
 function AvailabilityPanel({availabilities, setAvailabilities}:{
   availabilities: SearchAvailabilityResponseDataItem[],
   setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
@@ -218,57 +281,14 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
   }
 }
 
-//container for each profile
-function ProfileCard({profile, setProfiles, index, profile_id}:{
-  profile: ProfessorProfile,
-  setProfiles: React.Dispatch<React.SetStateAction<ProfessorProfile[]>>,
-  index: number,
-  profile_id: number
-}) {
-  return (
-    <div
-      className="flex flex-row
-      border-b-highlight-muted border-b-[1px] border-b-solid
-      sm:pb-2"
-    >
-      <div className="flex flex-row gap-4 flex-1 justify-start
-        h-full"
-      >
-        <p>Year: {profile.year}</p>
-        <p>Department: {profile.department}</p>
-      </div>
 
-      <div>
-        <button
-          className="border-red-600 border-2 border-solid rounded-md bg-red-950
-            sm:px-2 sm:py-1"
-          type='button'
-          onClick={removeProfile}
-        >
-          Remove
-        </button>
-      </div>
+function AvailabilityCard(){
+  return (
+    <div>
+
     </div>
   );
-
-  async function removeProfile(){
-    const body = {id : profile_id};
-    const header = {"Content-Type": 'application/json'}
-
-    const res = await fetchBackend(
-      "professor/profile",
-      "DELETE",
-      JSON.stringify(body),
-      header
-    );
-    if(res.success){
-      setProfiles(x => x.filter((_, i) => i !== index));
-    }
-  }
 }
-
-
-
 
 //input form
 function FormInput({type, label, value, onChange}: {
