@@ -37,10 +37,10 @@ export default function Profiles(){
 
     const fetchAvailabilities = async () =>  {
       try{
-        const availabilities = await fetchBackend("/professor/availability", "GET");
+        const availabilities = await fetchBackend("professor/availability", "GET");
 
         if(!availabilities.data){return;}
-        setAvailabilities(availabilities.data);
+        setAvailabilities(x=>availabilities.data);
       } catch (err){
         console.error(err)
       }
@@ -246,6 +246,11 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
         <button type="submit">Add</button>
       </div>
 
+      <div className="flex flex-col gap-2">
+        {availabilities?.map((availability, index) =>
+          <AvailabilityCard key={index} availability={availability} />
+        )}
+      </div>
     </form>
   );
 
@@ -282,10 +287,16 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 }
 
 
-function AvailabilityCard(){
+function AvailabilityCard({availability}:{
+  availability: SearchAvailabilityResponseDataItem
+}){
+  const { day_of_week, start_time, end_time } = availability;
+
   return (
     <div>
-
+      <p>{day_of_week}</p>
+      <p>{start_time}</p>
+      <p>{end_time}</p>
     </div>
   );
 }
