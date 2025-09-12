@@ -321,8 +321,8 @@ function AvailabilityCard({availability}:{
       <div
         className="flex flex-row gap-4"
       >
-        <p>{start_time}</p>
-        <p>{end_time}</p>
+        <p>{start_time.substring(0, 5)}</p>
+        <p>{end_time.substring(0, 5)}</p>
       </div>
     </div>
   );
