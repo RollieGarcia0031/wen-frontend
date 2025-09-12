@@ -65,11 +65,11 @@ export type GETProfessorAvailabilityResponse = ApiResponse<ProfessorAvailability
 
 export interface SearchAvailabilityResponseDataItem {
     id: number;
-    user_id: number;
-    day_of_week: number;
+    user_id?: number;
+    day_of_week: any;
     start_time: string;
     end_time: string;
-    created_at: string;
+    created_at?: string;
 }
 export type SearchAvailabilityResponse = ApiResponse< SearchAvailabilityResponseDataItem[] | null>;
 

@@ -279,7 +279,19 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
         setStartTime("");
         setEndTime("");
 
-        setAvailabilities(x => [...x, response.data]);
+        setAvailabilities(x => {
+          const id = response?.data?.id;
+          if(id === undefined) return x;
+          const newAvailability: SearchAvailabilityResponseDataItem = {
+            day_of_week: day,
+            start_time,
+            end_time,
+            id
+          };
+
+          return [...x, newAvailability];
+
+        });
       }
       alert(response.message);
     } catch (error) {
