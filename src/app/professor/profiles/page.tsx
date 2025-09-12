@@ -220,38 +220,43 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
   const [end_time, setEndTime] = useState<string>("");
 
   return (
-    <form
-      className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4"
-      onSubmit={e=>handleSubmit(e)}
+    <div
+      className="w-full flex-row-center"
     >
-      <p 
-        className="font-bold text-center text-3xl"
+      <form
+        className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4
+        sm:w-[40rem]"
+        onSubmit={e=>handleSubmit(e)}
       >
-        Availabilities
-      </p>
+        <p 
+          className="font-bold text-center text-3xl my-6"
+        >
+          Availabilities
+        </p>
 
-      <div className="flex flex-row gap-4">
-        <select value={day} onChange={(e) => setDay(e.target.value as day)}>
-          <option value="Monday">Monday</option>
-          <option value="Tuesday">Tuesday</option>
-          <option value="Wednesday">Wednesday</option>
-          <option value="Thursday">Thursday</option>
-          <option value="Friday">Friday</option>
-          <option value="Saturday">Saturday</option>
-          <option value="Sunday">Sunday</option>
-        </select>
-        <FormInput type="time" label="Start Time" value={start_time} onChange={(e) => setStartTime(e.target.value)} />
-        <FormInput type="time" label="End Time" value={end_time} onChange={(e) => setEndTime(e.target.value)} />
+        <div className="flex flex-row gap-4">
+          <select value={day} onChange={(e) => setDay(e.target.value as day)}>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+          <FormInput type="time" label="Start Time" value={start_time} onChange={(e) => setStartTime(e.target.value)} />
+          <FormInput type="time" label="End Time" value={end_time} onChange={(e) => setEndTime(e.target.value)} />
 
-        <button type="submit">Add</button>
-      </div>
+          <button type="submit">Add</button>
+        </div>
 
-      <div className="flex flex-col gap-2">
-        {availabilities?.map((availability, index) =>
-          <AvailabilityCard key={index} availability={availability} />
-        )}
-      </div>
-    </form>
+        <div className="flex flex-col gap-2">
+          {availabilities?.map((availability, index) =>
+            <AvailabilityCard key={index} availability={availability} />
+          )}
+        </div>
+      </form>
+    </div>
   );
 
   //  handler function for adding availability of professor
@@ -294,9 +299,19 @@ function AvailabilityCard({availability}:{
 
   return (
     <div>
-      <p>{day_of_week}</p>
-      <p>{start_time}</p>
-      <p>{end_time}</p>
+      <p
+        className="font-bold text-2xl
+        border-b-highlight-muted border-b-[1px] border-b-solid
+        sm:mt-2"
+      >
+        {day_of_week}
+      </p>
+      <div
+        className="flex flex-row gap-4"
+      >
+        <p>{start_time}</p>
+        <p>{end_time}</p>
+      </div>
     </div>
   );
 }
