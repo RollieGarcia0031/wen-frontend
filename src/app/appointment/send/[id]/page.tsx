@@ -5,6 +5,9 @@ import { SearchAvailabilityResponseDataItem } from '@/lib/response';
 import { fetchBackend } from '@/lib/api';
 import Link from 'next/link';
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 export default function SendAppointment({params}: {
   params : Promise<{id: number}>
 }) {
@@ -139,16 +142,25 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
   profName: string
 }){
   const { day_of_week, start_time, end_time, id } = availability;
+  const [date, setDate] = useState<Date | null>(new Date());
 
   return (
     <dialog
       ref={ref}
+      className='sm:min-h-[20rem]'
     >
       <div>
         <p>Are you sure you want to send this appointment to {profName}?</p>
         <p>{day_of_week}</p>
         <p>{start_time}</p>
         <p>{end_time}</p>
+      </div>
+
+      <div>
+        <DatePicker
+          selected={date}
+          onChange={(date: Date | null, ) => setDate(date)}
+        />        
       </div>
 
       <div>
