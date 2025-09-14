@@ -144,34 +144,73 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
   const { day_of_week, start_time, end_time, id } = availability;
   const [date, setDate] = useState<Date | null>(new Date());
 
+  const filteredDates = (date: Date) => {
+    const day = date.getDay();
+    const daysArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return day === daysArray.indexOf(day_of_week);
+  };
+
   return (
     <dialog
       ref={ref}
-      className='sm:min-h-[20rem]'
+      className='sm:p-4 open:overflow-visible'
     >
-      <div>
-        <p>Are you sure you want to send this appointment to {profName}?</p>
-        <p>{day_of_week}</p>
-        <p>{start_time}</p>
-        <p>{end_time}</p>
-      </div>
-
-      <div>
-        <DatePicker
-          selected={date}
-          onChange={(date: Date | null, ) => setDate(date)}
-        />        
-      </div>
-
-      <div>
-        <button onClick={() => ref.current?.close()}>Cancel</button>
-        <button
-          onClick={handleConfirm}
+      <div
+        className='flex flex-col w-full'
+      >
+        <div
+          className='flex flex-col w-full flex-1'
         >
-          Confirm
-        </button>
-      </div>
+            <p
+              className='sm:mb-6 text-center'
+            >
+              Are you sure you want to send this appointment to
+              <span className='font-bold italic ml-1'>
+                {profName}
+              </span>
+              ?
+            </p>
+          <div
+            className='flex flex-col w-full'
+          >
+            <div className='flex flex-row justify-center items-center'>
+              <p className='flex-1'>{day_of_week}</p>
+              <div>
+                <DatePicker
+                  selected={date}
+                  onChange={(date: Date | null, ) => setDate(date)}
+                  filterDate={filteredDates}
+                />        
+              </div>
+            </div>
+            <p>{start_time}</p>
+            <p>{end_time}</p>
 
+          </div>
+
+        </div>
+
+        <div
+          className='flex flex-row gap-4 justify-center'
+        >
+          <button
+            onClick={handleConfirm}
+            className='bg-green-600 hover:bg-green-700 font-bold
+              sm:py-1 sm:px-3 rounded-xl'
+          >
+            Confirm
+          </button>
+
+          <button
+            onClick={() => ref.current?.close()}
+            className='bg-red-600 hover:bg-red-700 text-text-muted
+              sm:py-1 sm:px-3 rounded-xl'
+          >
+            Cancel
+          </button>
+        </div>
+
+      </div>
     </dialog>
   );
 
