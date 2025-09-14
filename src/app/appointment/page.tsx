@@ -231,13 +231,13 @@ function ConfirmationDialog(){
       );
 
       if(response.success) {
-        alert(response.message);
         setAppointments(x => {
           x[selectedIndex].status = "Accepted";
           return [...x];
         });
         return confirmDialogRef?.current?.close()
       };
+      alert(response.message);
 
     } catch (err){
       console.error(err);
