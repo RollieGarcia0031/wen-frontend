@@ -228,6 +228,15 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
       availability_id: id
     }
 
+    const daysArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const selectedDay = day_of_week;
+    const calendarPickedDay = daysArray[date?.getDay() || 0];
+
+    if(selectedDay !== calendarPickedDay){
+      alert('Please select a day that matches the availability day');
+      return;
+    }
+
     const response = await fetchBackend(
       'appointment/send',
       'POST', JSON.stringify(body),
