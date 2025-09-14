@@ -310,14 +310,27 @@ function AvailabilityCard({availability}:{
   const { day_of_week, start_time, end_time } = availability;
 
   return (
-    <div>
-      <p
-        className="font-bold text-2xl
+    <div className="w-full">
+      <div className="flex flex-row w-full justify-between
         border-b-highlight-muted border-b-[1px] border-b-solid
         sm:mt-2"
       >
-        {day_of_week}
-      </p>
+        <p
+          className="font-bold text-2xl"
+        >
+          {day_of_week}
+        </p>
+
+        <div>
+          <button
+            type='button'
+            className="flex-1"
+          >
+            Remove
+          </button>
+        </div>
+
+      </div>
       <div
         className="flex flex-row gap-4"
       >
