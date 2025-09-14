@@ -350,11 +350,14 @@ function AvailabilityCard({availability, setAvailabilities}:{
   async function handleRemove(){
     
     try{
-      const response = await fetchBackend(`professor/availability/${id}`, "DELETE");
+      const body = {id};
+      const response = await fetchBackend(`professor/availability`, "DELETE", JSON.stringify(body));
 
-      if(response.success) {
+      if(response.success && response.data.id === id) {
         setAvailabilities(x => x.filter(availability => availability.id !== id));
+        return;
       }
+      
       alert(response.message);
 
     } catch (err) {
