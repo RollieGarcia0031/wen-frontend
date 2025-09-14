@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
@@ -295,6 +295,7 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
           return [...x, newAvailability];
 
         });
+        return;
       }
       alert(response.message);
     } catch (error) {
@@ -312,6 +313,8 @@ function AvailabilityCard({availability, setAvailabilities}:{
   setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
 }){
   const { day_of_week, start_time, end_time, id } = availability;
+  const [isRemoving, setIsRemoving] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
     <div className="w-full">
@@ -344,6 +347,7 @@ function AvailabilityCard({availability, setAvailabilities}:{
         <p>{start_time.substring(0, 5)}</p>
         <p>{end_time.substring(0, 5)}</p>
       </div>
+
     </div>
   );
 
@@ -357,7 +361,7 @@ function AvailabilityCard({availability, setAvailabilities}:{
         setAvailabilities(x => x.filter(availability => availability.id !== id));
         return;
       }
-      
+
       alert(response.message);
 
     } catch (err) {
