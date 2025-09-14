@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
+import { IoIosRemoveCircleOutline } from "react-icons/io";
 
 interface ProfessorProfile {
   id: number
@@ -182,12 +183,10 @@ function ProfileCard({profile, setProfiles, index, profile_id}:{
 
       <div>
         <button
-          className="border-red-600 border-2 border-solid rounded-md bg-red-950
-            sm:px-2 sm:py-1"
           type='button'
           onClick={removeProfile}
         >
-          Remove
+          <IoIosRemoveCircleOutline className="sm:text-2xl fill-red-600" />
         </button>
       </div>
     </div>
@@ -252,7 +251,11 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 
         <div className="flex flex-col gap-2">
           {availabilities?.map((availability, index) =>
-            <AvailabilityCard key={index} availability={availability} />
+            <AvailabilityCard
+              key={index}
+              availability={availability}
+              setAvailabilities={setAvailabilities}
+            />
           )}
         </div>
       </form>
@@ -304,10 +307,11 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 }
 
 
-function AvailabilityCard({availability}:{
-  availability: SearchAvailabilityResponseDataItem
+function AvailabilityCard({availability, setAvailabilities}:{
+  availability: SearchAvailabilityResponseDataItem,
+  setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
 }){
-  const { day_of_week, start_time, end_time } = availability;
+  const { day_of_week, start_time, end_time, id } = availability;
 
   return (
     <div className="w-full">
@@ -324,9 +328,12 @@ function AvailabilityCard({availability}:{
         <div>
           <button
             type='button'
+            onClick={handleRemove}
             className="flex-1"
           >
-            Remove
+            <IoIosRemoveCircleOutline
+              className="sm:text-2xl fill-red-600"
+            />
           </button>
         </div>
 
@@ -339,6 +346,22 @@ function AvailabilityCard({availability}:{
       </div>
     </div>
   );
+
+  async function handleRemove(){
+    
+    try{
+      const response = await fetchBackend(`professor/availability/${id}`, "DELETE");
+
+      if(response.success) {
+        setAvailabilities(x => x.filter(availability => availability.id !== id));
+      }
+      alert(response.message);
+
+    } catch (err) {
+      console.error(err);
+    }
+    
+  }
 }
 
 //input form
