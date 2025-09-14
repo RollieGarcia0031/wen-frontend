@@ -171,17 +171,25 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
               ?
             </p>
           <div
-            className='flex flex-col w-full'
+            className='flex flex-col w-full
+            sm:mb-3 gap-2
+            [&>div]:flex [&>div]:flex-row [&>div]:items-center
+            sm:[&>div]:gap-6'
           >
-            <div className='flex flex-row justify-center items-center'>
+            <div>
               <p className='flex-1'>{day_of_week}</p>
-              <div>
                 <DatePicker
                   selected={date}
                   onChange={(date: Date | null, ) => setDate(date)}
                   filterDate={filteredDates}
                 />        
-              </div>
+            </div>
+
+            <div>
+              <p className='flex-1'>Subject</p>
+              <input
+                placeholder='Subject'
+              />
             </div>
             <p>{start_time}</p>
             <p>{end_time}</p>
@@ -191,7 +199,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
         </div>
 
         <div
-          className='flex flex-row gap-4 justify-center'
+          className='flex flex-row gap-2 justify-center'
         >
           <button
             onClick={handleConfirm}
