@@ -53,8 +53,6 @@ export default function Profiles(){
 
   return(
     <div>
-      <h1>Profiles</h1>
-
       <ProfileContainer
         profiles={profiles}
         setProfiles={setProfiles}
