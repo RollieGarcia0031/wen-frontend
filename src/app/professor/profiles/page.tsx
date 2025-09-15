@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { BsSkipBackwardCircle } from "react-icons/bs";
 
 interface ProfessorProfile {
   id: number

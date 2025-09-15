@@ -3,6 +3,7 @@
 import {use, useEffect, useState, useRef} from 'react';
 import { SearchAvailabilityResponseDataItem } from '@/lib/response';
 import { fetchBackend } from '@/lib/api';
+import { BsSkipBackwardCircle, BsSendPlus} from 'react-icons/bs';
 import Link from 'next/link';
 
 import DatePicker from "react-datepicker";
@@ -20,10 +21,15 @@ export default function SendAppointment({params}: {
     >
       <button>
         <Link href='/appointment'>
-          Go Back
+          <BsSkipBackwardCircle className='text-2xl'/>
         </Link>
       </button>
-      <h1>Send Appointment</h1>
+      <h1
+        className='text-3xl font-bold
+        sm:my-6 sm:text-4xl'
+      >
+        Send Appointment
+      </h1>
 
       <AvailabilityPanel
         id={id}
@@ -78,9 +84,9 @@ function AvailabilityPanel({id}:{
 
   return (
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4 w-5xl'
+      className='border-gray-500 border-2 border-solid rounded-md p-4
+      sm:min-w-[35rem]'
     >
-        <p>Availability</p>
         <div
           className='flex flex-col gap-4 w-full'
         >
@@ -110,18 +116,40 @@ function AvailabilityCard({availability, profName, prof_id}:{
   return (
     <>
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full
-        flex flex-row justify-between'
+      className='border-b-gray-500 border-b-2 border-solid rounded-md p-4 w-full
+        flex flex-row justify-between
+        sm:gap-5'
     >
-      <div>
-          <p>{day_of_week}</p>
-          <p>{start_time}</p>
-          <p>{end_time}</p>
+      <div
+        className='flex-row-center
+          border-r-highlight-muted border-r-[1px] border-r-solid
+          pr-8
+        '
+      >
+          <p
+            className='font-bold text-xl'
+          >
+            {day_of_week}
+          </p>
       </div>
 
-      <button onClick={() => dialogRef.current?.showModal()}>
-        Send
-      </button>
+      <div>
+          <p>{start_time}</p>
+          <p>{end_time}</p>
+
+      </div>
+
+      <div className='flex-1 flex justify-end'>
+        <button
+          onClick={() => dialogRef.current?.showModal()}
+          className='flex-row-center aspect-square rounded-full duration-150 transition-all
+          *:fill-primary hover:bg-gray-700 hover:*:fill-white'
+        >
+          <BsSendPlus
+            className='sm:text-xl'
+          />
+        </button>
+      </div>
     </div>
 
     <ConfirmationDialog
@@ -203,7 +231,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
         >
           <button
             onClick={handleConfirm}
-            className='bg-green-600 hover:bg-green-700 font-bold
+            className='bg-green-600 hover:bg-green-700  text-black
               sm:py-1 sm:px-3 rounded-xl'
           >
             Confirm
@@ -211,7 +239,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
 
           <button
             onClick={() => ref.current?.close()}
-            className='bg-red-600 hover:bg-red-700 text-text-muted
+            className='bg-red-600 hover:bg-red-700 text-black
               sm:py-1 sm:px-3 rounded-xl'
           >
             Cancel
