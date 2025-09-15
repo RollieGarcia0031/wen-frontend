@@ -8,8 +8,7 @@ import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { MdOutlineCreate } from "react-icons/md";
 import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { MdOutlinePending, MdCheckCircleOutline, MdOutlineDelete } from "react-icons/md";
-import { IconType } from 'react-icons';
-
+import { TbCalendarUser } from "react-icons/tb";
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
@@ -238,13 +237,13 @@ function NewAppointmentDialog(){
     <dialog ref={dialogRef} onSubmit={(e) => e.preventDefault()}
       className='open:sm:w-[30rem]  open:sm:h-[80dvh] open:w-full
       open:flex open:flex-col open:justify-center open:items-center
-      px-2 py-2'
+      px-6 py-2'
       >
       <div className='
         flex flex-row justify-end align-top items-end w-full'
       >
         <button onClick={() => dialogRef?.current?.close()}>
-          <IoIosCloseCircleOutline className='text-2xl'/>
+          <IoIosCloseCircleOutline className='text-2xl fill-red-700'/>
         </button>
       </div>
       <div className='flex-1 w-full flex flex-col justify-center items-center'>
@@ -265,7 +264,9 @@ function SearchPanel(){
   const { nameInput, setNameInput, setProfessors } = useStudentAppointmentContext();
 
   return (
-    <div className='w-full flex flex-row justify-center items-center gap-2'
+    <div
+      className='w-full flex flex-row justify-center items-center gap-4
+      sm:my-6'
     >
       <label className='flex flex-row justify-center items-center'>
         <p>Search:</p> 
@@ -274,7 +275,13 @@ function SearchPanel(){
           onChange={(e) => setNameInput(e.target.value) }
         />
       </label>
-      <button type='button' onClick={e=>search(e)}><IoIosSearch className='text-2xl'/></button>
+      <button
+        type='button' onClick={e=>search(e)}
+        className='bg-primary aspect-square rounded-full
+        sm:p-2'  
+      >
+        <IoIosSearch className='text-2xl'/>
+      </button>
     </div>
   );
 
@@ -302,11 +309,18 @@ function SearchResult(){
   const {professors} = useStudentAppointmentContext();
   const processProfessorList = ProcessProfData(professors);
   const [selectedButtonIndex, setSelectedButtonIndex] = useState<number>(-1);
+  const [searchMessage, setSearchMessage] = useState<string>("Search Result");
+
+  useEffect(()=>{
+    if(professors.length === 0){
+      setSearchMessage("No professors found");
+    }
+  }, [professors]);
 
   return (
     <>
       <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
-        flex-1 p-4 flex flex-col gap-2
+        flex-1 p-4 flex flex-col sm:gap-6
       '>
         {
           professors?.length !== 0 &&
@@ -321,7 +335,13 @@ function SearchResult(){
           ))
         }
 
-        {professors?.length === 0 && <h1>Search Result</h1>}
+        {professors?.length === 0 &&
+          (<div
+            className='h-full flex-row-center text-2xl text-text-muted'
+          >
+            {searchMessage}
+          </div>)
+        }
       </div>
     </>
   );
@@ -350,7 +370,8 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
   }
 
   return (
-    <div className='border-gray-500 border-2 border-solid w-[100%] rounded-md py-2 px-4
+    <div className='border-b-highlight-muted border-b-2 border-solid w-[100%] rounded-md
+      sm:py-2 sm:px-4
       flex flex-row'
     >
       <div className='flex-1'>
@@ -361,7 +382,8 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
       </div>
 
       <button onClick={SendButtonHandler}>
-        Send
+        <TbCalendarUser
+          className='text-2xl'/>
       </button>
 
       { isSelectedToSend && <SendConfirmDialog/> }
@@ -375,12 +397,13 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
 
     return (
       <div
-        className='border-gray-500 border-2 border-solid rounded-md absolute right-0
+        className='border-black border-2 border-solid rounded-md absolute right-0
           w-[10rem] p-2
-          bg-white text-black
+          bg-gray-800 text-black
           flex flex-row justify-evenly gap-2'
       >
-        <button className='bg-green-500 py-1 px-2 rounded-md'
+        <button
+          className='bg-green-500 py-1 px-2 rounded-md'
           onClick={()=>{
             setSelectedButtonIndex(-1);
             router.push(`/appointment/send/${user_id}`);
