@@ -112,7 +112,6 @@ function AppointmentCard({appointment, index}: {
           >
             {name}
           </p>
-          <p>{status}</p>
         </div>
         <div 
           className='flex flex-row justify-between'
@@ -155,7 +154,7 @@ function AppointmentCard({appointment, index}: {
         className='border-red-600 border-2 border-solid rounded-md
           bg-red-950'
       >
-        Decline
+        {status === "pending" ?"Decline":"Delete"}
       </button>
     );
   }
