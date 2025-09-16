@@ -235,9 +235,10 @@ function NewAppointmentDialog(){
   return(
     <>
     <dialog ref={dialogRef} onSubmit={(e) => e.preventDefault()}
-      className='open:sm:w-[30rem]  open:sm:h-[80dvh] open:w-full
-      open:flex open:flex-col open:justify-center open:items-center
-      px-6 py-2'
+      className='open:sm:w-[30rem] open:sm:h-[80dvh] open:w-full
+      open:h-full open:overflow-hidden
+      open:flex open:flex-col open:justify-start open:items-center
+      open:px-6 open:py-2'
       >
       <div className='
         flex flex-row justify-end align-top items-end w-full'
@@ -246,7 +247,10 @@ function NewAppointmentDialog(){
           <IoIosCloseCircleOutline className='text-2xl fill-red-700'/>
         </button>
       </div>
-      <div className='flex-1 w-full flex flex-col justify-center items-center'>
+      <div className='flex-1 w-full grid h-full
+        grid-rows-[4rem_auto] grid-cols-1
+        gap-2 justify-items-center'
+      >
         <SearchPanel />
         <SearchResult />
       </div>
@@ -278,9 +282,9 @@ function SearchPanel(){
       <button
         type='button' onClick={e=>search(e)}
         className='bg-primary aspect-square rounded-full
-        sm:p-2'  
+        sm:p-2 p-2'  
       >
-        <IoIosSearch className='text-2xl'/>
+        <IoIosSearch className='sm:text-2xl'/>
       </button>
     </div>
   );
@@ -319,9 +323,12 @@ function SearchResult(){
 
   return (
     <>
-      <div className='border-gray-500 border-2 border-solid m-4 w-[100%] rounded-md
-        flex-1 p-4 flex flex-col sm:gap-6
-      '>
+      <div className='w-full rounded-md sm:h-[95%]
+        flex-1 flex flex-col justify-start 
+        sm:gap-6 sm:px-6 
+        gap-4 p-4
+        overflow-y-auto'
+      >
         {
           professors?.length !== 0 &&
           Object.values(processProfessorList).map((professor: newProfItem, index: number) => (
@@ -372,6 +379,7 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
   return (
     <div className='border-b-highlight-muted border-b-2 border-solid w-[100%] rounded-md
       sm:py-2 sm:px-4
+      py-1 px-2
       flex flex-row'
     >
       <div className='flex-1'>
