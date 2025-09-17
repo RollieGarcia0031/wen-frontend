@@ -171,6 +171,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
 }){
   const { day_of_week, start_time, end_time, id } = availability;
   const [date, setDate] = useState<Date | null>(new Date());
+  const [message, setMessage] = useState<string>("");
 
   const filteredDates = (date: Date) => {
     const day = date.getDay();
@@ -217,6 +218,8 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
               <p className='flex-1'>Subject</p>
               <input
                 placeholder='Subject'
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               />
             </div>
             <p>{start_time}</p>
@@ -251,9 +254,17 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
   );
 
   async function handleConfirm(){
+    const year = date?.getFullYear() || 0;
+    const month = date?.getMonth() || 0;
+    const day = date?.getDate() || 0;
+
+    const dateString = `${year}-${month + 1}-${day}`;
+
     const body = {
       prof_id: parseInt(prof_id.toString()),
-      availability_id: id
+      availability_id: id,
+      time_stamp: dateString,
+      message: message,
     }
 
     const daysArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -264,6 +275,8 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
       alert('Please select a day that matches the availability day');
       return;
     }
+
+    console.log(body);
 
     const response = await fetchBackend(
       'appointment/send',
