@@ -115,19 +115,24 @@ function AppointmentCard({appointment, index}:{
       </div>
       <div
         className='
-        flex flex-row gap-3 w-full
-        border-gray-500 border-2 border-solid rounded-md p-3 m-4'
+        flex-row-center w-full
+        sm:p-4
+        border-highlight-muted border-2 border-solid rounded-md m-4'
       >
 
-        <div className='flex-1 flex flex-col'>
+        <div
+          className='flex-1 flex flex-col
+          sm:gap-2'
+        >
           <div
-            className='flex flex-row justify-start gap-6 flex-1'
+            className='flex flex-row justify-start gap-6
+            [&>p]:flex [&>p]:flex-col [&>p]:justify-end'
           >
             <p className='font-bold'>
               {name}
             </p>
             <p
-              className='italic text-xs flex-1'
+              className='italic text-xs flex-1 text-text-muted'
             >
               {status}
             </p>
@@ -143,7 +148,7 @@ function AppointmentCard({appointment, index}:{
         </div>
 
         <div
-          className='rounded-md p-4'
+          className='rounded-md'
         >
           <button
             onClick={() => setIsDeleting(true)}
