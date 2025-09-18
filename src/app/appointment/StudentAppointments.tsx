@@ -280,10 +280,16 @@ function NewAppointmentDialog(){
 }
 /**
  * shows information of selected appointment
- * TODO: soon: add option to edit appointment message
+ * TODO: add option to edit appointment message
+ * TODO: fix adding function, update index first, update appointment states
  */
 function InfoDialog(){
-  const { infoDialogRef, selectedAppointment } = useStudentAppointmentContext();
+  const {
+    infoDialogRef,
+    selectedAppointment,
+    setSentAppointments,
+    selectedIndex,
+  } = useStudentAppointmentContext();
   const { name, appointment_id, message, time_stamp, status } = selectedAppointment || {};
 
   const messageSpanRef = useRef<HTMLSpanElement | null>(null);

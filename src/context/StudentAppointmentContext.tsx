@@ -13,7 +13,9 @@ interface StudentContextProps {
     setSentAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>;
     infoDialogRef?: React.RefObject<HTMLDialogElement | null>;
     selectedAppointment?: appointmentData | null;
-    setSelectedAppointment?: React.Dispatch<React.SetStateAction<appointmentData | null>>
+    setSelectedAppointment?: React.Dispatch<React.SetStateAction<appointmentData | null>>,
+    setSelectedIndex: React.Dispatch<React.SetStateAction<number>>,
+    selectedIndex: number
 }
 
 const StudentContext = createContext<StudentContextProps>({
@@ -24,7 +26,9 @@ const StudentContext = createContext<StudentContextProps>({
     sentAppointments: [],
     setSentAppointments: () => {return;},
     selectedAppointment: null,
-    setSelectedAppointment: () => {return;}
+    setSelectedAppointment: () => {return;},
+    selectedIndex: -1,
+    setSelectedIndex: ()=>{return;}
 });
 
 export function StudentContextProvider({children}: {children: React.ReactNode}){
@@ -40,6 +44,8 @@ export function StudentContextProvider({children}: {children: React.ReactNode}){
     const infoDialogRef = useRef<HTMLDialogElement>(null);
     //selected appointment, used by dialog to refer to selected appointment card
     const [selectedAppointment, setSelectedAppointment] = useState<appointmentData | null>(null);
+    //index of selected appointment
+    const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
     return (
         <StudentContext.Provider value={{
@@ -52,7 +58,9 @@ export function StudentContextProvider({children}: {children: React.ReactNode}){
             setSentAppointments,
             infoDialogRef,
             selectedAppointment,
-            setSelectedAppointment
+            setSelectedAppointment,
+            selectedIndex,
+            setSelectedIndex
         }}
         >
             {children}
