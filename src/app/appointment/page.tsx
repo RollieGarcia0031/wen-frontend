@@ -67,7 +67,8 @@ function ReceivedAppointments(){
 
       <div
         className='flex flex-col justify-center items-center w-[40rem]
-        border-highlight-muted border-2 border-solid rounded-md p-4'
+        border-highlight-muted border-2 border-solid rounded-md
+        sm:p-6'
       >
         {appointments?.map((appointment, index) =>
           <AppointmentCard
@@ -98,7 +99,9 @@ function AppointmentCard({appointment, index}: {
   } = useProfessorContext();
   return (
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4 w-full m-4
+      className='border-b-highlight-muted border-b-2 border-solid
+      sm:rounded-2xl sm:py-4 sm:px-8
+      w-full m-4
         flex flex-row'
     >
       <div
