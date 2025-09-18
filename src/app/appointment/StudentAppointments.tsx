@@ -103,7 +103,7 @@ function AppointmentCard({appointment, index}:{
   const { name, day_of_week, start_time, end_time, appointment_id, status } = appointment;
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
-  const {setSentAppointments, infoDialogRef } = useStudentAppointmentContext();
+  const {setSentAppointments, infoDialogRef, setSelectedAppointment } = useStudentAppointmentContext();
 
   useEffect(()=>{
     if(isDeleting) deleteDialogRef.current?.showModal();
@@ -180,7 +180,10 @@ function AppointmentCard({appointment, index}:{
   );
 
   function handleInfoButton(){
-    infoDialogRef?.current?.showModal();
+    if(setSelectedAppointment && infoDialogRef){
+      setSelectedAppointment(appointment);
+      infoDialogRef?.current?.showModal();
+    }
   }
 }
 
@@ -275,23 +278,88 @@ function NewAppointmentDialog(){
 
   );
 }
-
+/**
+ * shows information of selected appointment
+ * TODO: soon: add option to edit appointment message
+ */
 function InfoDialog(){
-  const { infoDialogRef, sentAppointments } = useStudentAppointmentContext();
+  const { infoDialogRef, selectedAppointment } = useStudentAppointmentContext();
+  const { name, appointment_id, message, time_stamp, status } = selectedAppointment || {};
+
+  const messageSpanRef = useRef<HTMLSpanElement | null>(null);
 
   return (
     <dialog
       ref={infoDialogRef}
       className='sm:open:w-[30rem] sm:open:h-[80dvh] open:overflow-hidden
-      flex flex-col justify-start items-center sm:open:p-2'
+      open:flex open:flex-col justify-start items-center
+      sm:open:p-2'
     >
       <div className='text-right w-full'>
         <button onClick={() => infoDialogRef?.current?.close()}>
           <IoIosCloseCircleOutline className='text-2xl fill-red-700'/>
         </button>
       </div>
+
+      <form
+        className='w-full sm:space-y-1
+        sm:px-9 sm:[&_p>*]:ml-3
+        [&_p>*]:border-b-highlight-muted [&_p>*]:border-b-[1px] [&_p>*]:border-solid [&_p>*]:px-2 [&_p>*]:focus:outline-none'
+      >
+        <p>To: <span> {name} </span></p>
+        <div className='w-full flex flex-row'>
+          <p className='indent-0'>
+            Message:
+            <span
+              ref={messageSpanRef}
+              contentEditable={true}
+              dangerouslySetInnerHTML={{__html: message || ''}}
+            >
+            </span>
+          </p>
+
+          <div className='flex-1 flex flex-row items-center justify-end'>
+            <button type='button'>
+              <MdOutlineEdit onClick={handleEditButton}/>
+            </button>
+          </div>
+        </div>
+        <p>Status:  <span> {status} </span></p>
+        <p>Day: <span> {time_stamp} </span></p>
+      </form>
     </dialog>
   );
+
+  async function handleEditButton(){
+    if(
+      messageSpanRef.current === null ||
+      message?.length === undefined ||
+      message?.length === null ||
+      message?.length === 0 ||
+      appointment_id === undefined ||
+      appointment_id < 0
+    ) return;
+
+    messageSpanRef.current.focus();
+
+    const typedMessage = messageSpanRef.current.innerHTML;
+
+    if(typedMessage === message) return;
+
+    const body = {id: parseInt(appointment_id.toString()), message: typedMessage};
+    const head = new Headers({"Content-Type": "application/json"});
+    //save new message
+    const response = await fetchBackend(
+      'appointment/update/message',
+      'PUT',
+      JSON.stringify(body),
+      head
+    );
+
+    if(response.success){
+      
+    }
+  }
 }
 
 /**
