@@ -5,7 +5,6 @@ import { useEffect, useState, useRef } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
-import { BsSkipBackwardCircle } from "react-icons/bs";
 
 interface ProfessorProfile {
   id: number
@@ -117,7 +116,7 @@ function ProfileContainer({profiles, setProfiles}:{
                 className="text-sm text-text-muted
                 sm:mt-5 sm:mb-3"
               >
-                You can add a new profile by filling the form, and clicking "Add"
+                You can add a new profile by filling the form, and clicking &quot;Add&quot;
               </p>
             </div>)}
           {profiles?.map((profile, index) =>
