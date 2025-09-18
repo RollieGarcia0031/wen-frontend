@@ -24,7 +24,9 @@ export interface appointmentData {
   name?: string,
   day_of_week?: number,
   start_time?: string,
-  end_time?: string
+  end_time?: string,
+  message?: string
+  time_stamp?: string
 }
 
 const ProfessorContext = createContext<ProfessorContextProps>({});

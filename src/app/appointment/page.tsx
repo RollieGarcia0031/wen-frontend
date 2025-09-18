@@ -9,6 +9,7 @@ import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { ProfessorContextProvider, useProfessorContext } from '@/context/ProffesorAppointMentContext';
 import { StudentContextProvider } from '@/context/StudentAppointmentContext';
 import { MdOutlineInfo } from 'react-icons/md';
+import { IoIosCloseCircleOutline } from 'react-icons/io';
 
 
 export default function Appointment(){
@@ -81,6 +82,7 @@ function ReceivedAppointments(){
 
       <ConfirmationDialog/>
       <DeclineDialog/>
+      <InfoDialog/>
     </div>
   );
 }
@@ -96,7 +98,8 @@ function AppointmentCard({appointment, index}: {
     confirmDialogRef,
     setSelectedAppointment,
     setSelectedIndex,
-    declineDialogRef
+    declineDialogRef,
+    infoDialogRef
   } = useProfessorContext();
   return (
     <div
@@ -107,6 +110,7 @@ function AppointmentCard({appointment, index}: {
     >
       <div className='flex-row-center'>
         <button
+          onClick={handeInfoButton}
           className='hover:bg-primary p-2 rounded-full hover:[&>svg]:fill-black
           duration-200 [&>svg]:duration-200'
         >
@@ -188,6 +192,15 @@ function AppointmentCard({appointment, index}: {
       setSelectedAppointment(appointment);
       setSelectedIndex(index);
       declineDialogRef.current?.showModal();
+    }
+  }
+
+  function handeInfoButton(){
+    if(setAppointmentId && setSelectedAppointment && setSelectedIndex && infoDialogRef){
+      setAppointmentId(appointment_id || -1);
+      setSelectedAppointment(appointment);
+      setSelectedIndex(index);
+      infoDialogRef.current?.showModal();
     }
   }
 }
@@ -323,6 +336,46 @@ function DeclineDialog(){
       }
     } catch (error) {
       console.error(error);
+    }
+  }
+}
+
+function InfoDialog(){
+  const { infoDialogRef, selectedAppointment, setSelectedAppointment, setSelectedIndex } = useProfessorContext();
+  const {message, name, time_stamp} = selectedAppointment || {};
+  const dateString = new Date(time_stamp || '').toLocaleDateString('en-US',{
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  return (
+    <dialog ref={infoDialogRef}
+      className='open:px-6 open:pb-6 open:pt-4'
+    >
+      <div
+        className='flex flex-col justify-center items-start w-full
+        sm:gap-2'
+      >
+        <div className='w-full text-right'>
+          <button>
+            <IoIosCloseCircleOutline
+              className='text-2xl fill-red-700'
+              onClick={handleClose}
+            />
+          </button>
+        </div>
+        <p>Name:&nbsp; {name}</p>
+        <p>Message: &nbsp; {message}</p>
+        <p>Time: &nbsp; {dateString}</p>
+      </div>
+    </dialog>
+  );
+
+  function handleClose(){
+    infoDialogRef?.current?.close();
+    if(setSelectedIndex){
+      setSelectedIndex(-1);
     }
   }
 }
