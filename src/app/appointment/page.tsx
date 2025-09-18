@@ -211,12 +211,14 @@ function AppointmentCard({appointment, index}: {
 function ConfirmationDialog(){
   const { confirmDialogRef, selectedIndex, setAppointments, appointmentId, selectedAppointment } = useProfessorContext();
   const {name, time_stamp, message, start_time} = selectedAppointment || {};
-  const selected_date = new Date(time_stamp || '');
-  const display_date = selected_date.toLocaleDateString('en-US',{
+  const selected_date = selectedAppointment? new Date(time_stamp || '') : null;
+  const display_date = selected_date?.toLocaleDateString('en-US',{
     month: 'long',
     day: 'numeric',
     year: 'numeric'
   });
+
+  console.log(selected_date)
   return (
     <dialog 
       ref={confirmDialogRef}
