@@ -10,6 +10,8 @@ import { ProfessorContextProvider, useProfessorContext } from '@/context/Proffes
 import { StudentContextProvider } from '@/context/StudentAppointmentContext';
 import { MdOutlineInfo } from 'react-icons/md';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 
 export default function Appointment(){
@@ -207,20 +209,34 @@ function AppointmentCard({appointment, index}: {
 
 //pop up for accepting an appointment
 function ConfirmationDialog(){
-  const { confirmDialogRef, selectedIndex, setAppointments, appointmentId } = useProfessorContext();
-
+  const { confirmDialogRef, selectedIndex, setAppointments, appointmentId, selectedAppointment } = useProfessorContext();
+  const {name, time_stamp, message, start_time} = selectedAppointment || {};
+  const selected_date = new Date(time_stamp || '');
+  const display_date = selected_date.toLocaleDateString('en-US',{
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
   return (
     <dialog 
       ref={confirmDialogRef}
+      className='sm:open:px-5 sm:open:pt-2 sm:open:w-[30rem]'
     >
       <div
-        className='flex flex-col justify-center items-center w-full rounded-md p-4
-          text-center'
+        className='flex flex-col justify-center items-center w-full rounded-md p-4'
       >
-          <h1>
-            Are you Sure? <br/>
-            To accept this appointment?
-          </h1>
+          <div className='text-left space-y-2 mb-2'>
+            <p>From: {name}</p>
+            <p>Purpose: {message}</p>
+            <p>Time: {start_time}</p>
+            <p>Date: {display_date}</p>
+            <DatePicker
+              selected={selected_date}
+              disabled
+              inline
+              dateFormat="MMMM d, yyyy"
+            />
+          </div>
         <div
           className='flex flex-row justify-end gap-4 mt-4
             *:py-1 *:px-2 *:rounded-md *:duration-500'
