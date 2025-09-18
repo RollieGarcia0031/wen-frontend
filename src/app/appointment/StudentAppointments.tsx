@@ -3,12 +3,12 @@ import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
 import { useRouter } from 'next/navigation';
-import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
-import { MdOutlineCreate } from "react-icons/md";
+import { MdOutlineCreate, MdOutlineEdit, MdOutlineInfo } from "react-icons/md";
 import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { MdOutlinePending, MdCheckCircleOutline, MdOutlineDelete } from "react-icons/md";
 import { TbCalendarUser } from "react-icons/tb";
+import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
@@ -148,17 +148,22 @@ function AppointmentCard({appointment, index}:{
         </div>
 
         <div
-          className='rounded-md'
+          className='rounded-md flex-row-center
+          sm:[&_svg]:text-3xl sm:gap-2
+          [&>button]:duration-300 [&>button]:p-1 [&>button]:rounded-full'
         >
-          <button
-            onClick={() => setIsDeleting(true)}
-            className='flex flex-row justify-center items-center'
-          >
-            <MdOutlineDelete
-              className='text-3xl fill-red-500 hover:fill-red-700
-              duration-150'
+          <button>
+            <MdOutlineInfo
+              className='fill-blue-300 hover:fill-blue-700'
             />
           </button>
+
+          <button onClick={() => setIsDeleting(true)}>
+            <MdOutlineDelete
+              className='fill-red-500 hover:fill-red-700'
+            />
+          </button>
+
         </div>
 
         {isDeleting && <DeleteDialog
