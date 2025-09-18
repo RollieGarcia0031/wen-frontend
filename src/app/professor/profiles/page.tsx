@@ -151,8 +151,8 @@ function ProfileContainer({profiles, setProfiles}:{
           const newProfile: ProfessorProfile = { department, year, id: new_id };
           return [...x, newProfile];
         });
-        alert(response.message);
       }
+      alert(response.message);
 
     } catch(err){
       console.error(err);
