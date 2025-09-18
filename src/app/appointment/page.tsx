@@ -8,6 +8,7 @@ import { fetchBackend } from '@/lib/api';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
 import { ProfessorContextProvider, useProfessorContext } from '@/context/ProffesorAppointMentContext';
 import { StudentContextProvider } from '@/context/StudentAppointmentContext';
+import { MdOutlineInfo } from 'react-icons/md';
 
 
 export default function Appointment(){
@@ -100,10 +101,20 @@ function AppointmentCard({appointment, index}: {
   return (
     <div
       className='border-b-highlight-muted border-b-2 border-solid
-      sm:rounded-2xl sm:py-4 sm:px-8
+      sm:rounded-2xl sm:py-4 sm:pr-8 sm:pl-4 sm:gap-4
       w-full m-4
         flex flex-row'
     >
+      <div className='flex-row-center'>
+        <button
+          className='hover:bg-primary p-2 rounded-full hover:[&>svg]:fill-black
+          duration-200 [&>svg]:duration-200'
+        >
+          <MdOutlineInfo
+            className='text-2xl'
+          />
+        </button>
+      </div>
       <div
         className='flex-1 flex flex-col'
       >
