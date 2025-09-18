@@ -1,5 +1,5 @@
 "use client";
-import {useState, useContext, createContext, useRef} from 'react';
+import React, {useState, useContext, createContext, useRef} from 'react';
 import { SearchProfessorResponseDataItem } from '@/lib/response';
 import { appointmentData } from '@/context/ProffesorAppointMentContext';
 
@@ -11,6 +11,7 @@ interface StudentContextProps {
     setProfessors: React.Dispatch<React.SetStateAction<SearchProfessorResponseDataItem[]>>;
     sentAppointments: appointmentData[];
     setSentAppointments: React.Dispatch<React.SetStateAction<appointmentData[]>>;
+    infoDialogRef?: React.RefObject<HTMLDialogElement | null>;
 }
 
 const StudentContext = createContext<StudentContextProps>({
@@ -19,7 +20,7 @@ const StudentContext = createContext<StudentContextProps>({
     professors: [],
     setProfessors: () => {return;},
     sentAppointments: [],
-    setSentAppointments: () => {return;}
+    setSentAppointments: () => {return;},
 });
 
 export function StudentContextProvider({children}: {children: React.ReactNode}){
@@ -31,6 +32,8 @@ export function StudentContextProvider({children}: {children: React.ReactNode}){
     const [professors, setProfessors] = useState<SearchProfessorResponseDataItem[]>([]);
     //appointments that have been fetched as sent by the logged student
     const [sentAppointments, setSentAppointments] = useState<appointmentData[]>([]);
+    //ref for information dialog, to see and edit appointment
+    const infoDialogRef = useRef<HTMLDialogElement>(null);
 
     return (
         <StudentContext.Provider value={{
@@ -40,7 +43,8 @@ export function StudentContextProvider({children}: {children: React.ReactNode}){
             professors,
             setProfessors,
             sentAppointments,
-            setSentAppointments
+            setSentAppointments,
+            infoDialogRef
         }}
         >
             {children}

@@ -69,6 +69,7 @@ export default function SentAppointments(){
       </div>
     </div>
     <NewAppointmentDialog/>
+    <InfoDialog/>
   </>
   );
 
@@ -102,7 +103,7 @@ function AppointmentCard({appointment, index}:{
   const { name, day_of_week, start_time, end_time, appointment_id, status } = appointment;
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
-  const {setSentAppointments} = useStudentAppointmentContext();
+  const {setSentAppointments, infoDialogRef } = useStudentAppointmentContext();
 
   useEffect(()=>{
     if(isDeleting) deleteDialogRef.current?.showModal();
@@ -154,6 +155,7 @@ function AppointmentCard({appointment, index}:{
         >
           <button>
             <MdOutlineInfo
+              onClick={handleInfoButton}
               className='fill-blue-300 hover:fill-blue-700'
             />
           </button>
@@ -176,6 +178,10 @@ function AppointmentCard({appointment, index}:{
       </div>
     </div>
   );
+
+  function handleInfoButton(){
+    infoDialogRef?.current?.showModal();
+  }
 }
 
 // dialog pop up for deleting an appointment
@@ -267,6 +273,24 @@ function NewAppointmentDialog(){
     </dialog>
     </>
 
+  );
+}
+
+function InfoDialog(){
+  const { infoDialogRef, sentAppointments } = useStudentAppointmentContext();
+
+  return (
+    <dialog
+      ref={infoDialogRef}
+      className='sm:open:w-[30rem] sm:open:h-[80dvh] open:overflow-hidden
+      flex flex-col justify-start items-center sm:open:p-2'
+    >
+      <div className='text-right w-full'>
+        <button onClick={() => infoDialogRef?.current?.close()}>
+          <IoIosCloseCircleOutline className='text-2xl fill-red-700'/>
+        </button>
+      </div>
+    </dialog>
   );
 }
 
