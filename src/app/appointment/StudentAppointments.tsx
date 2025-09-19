@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, use, ReactElement} from 'react';
+import React, {useState, useRef, useEffect, use, ReactElement} from 'react';
 import { fetchBackend } from '@/lib/api';
 import { SearchProfessorResponse, SearchProfessorResponseDataItem } from '@/lib/response';
 import { ProcessProfData, newProfItem } from '@/lib/professorProcessor';
@@ -103,7 +103,8 @@ function AppointmentCard({appointment, index}:{
   const { name, day_of_week, start_time, end_time, appointment_id, status } = appointment;
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
-  const {setSentAppointments, infoDialogRef, setSelectedAppointment } = useStudentAppointmentContext();
+
+  const {setSentAppointments, infoDialogRef, setSelectedAppointment, setSelectedIndex } = useStudentAppointmentContext();
 
   useEffect(()=>{
     if(isDeleting) deleteDialogRef.current?.showModal();
@@ -182,6 +183,7 @@ function AppointmentCard({appointment, index}:{
   function handleInfoButton(){
     if(setSelectedAppointment && infoDialogRef){
       setSelectedAppointment(appointment);
+      setSelectedIndex(index);
       infoDialogRef?.current?.showModal();
     }
   }
@@ -294,6 +296,19 @@ function InfoDialog(){
 
   const messageSpanRef = useRef<HTMLSpanElement | null>(null);
 
+  type EditState = 'changed' | 'unchanged' | 'saved';
+  const [editState, setEditState] = useState<EditState>('unchanged');
+
+  useEffect(()=>{
+    setEditState('unchanged');
+  },[selectedIndex])
+
+  const EditButtonColor = {
+    unchanged: 'bg-blue-700',
+    changed: 'bg-yellow-700',
+    saved: 'bg-green-600'
+  }
+
   return (
     <dialog
       ref={infoDialogRef}
@@ -320,13 +335,21 @@ function InfoDialog(){
               ref={messageSpanRef}
               contentEditable={true}
               dangerouslySetInnerHTML={{__html: message || ''}}
+              onInput={e=>handleEditEvent(e)}
             >
             </span>
           </p>
 
           <div className='flex-1 flex flex-row items-center justify-end'>
-            <button type='button'>
-              <MdOutlineEdit onClick={handleEditButton}/>
+            <button type='button'
+              className={`${EditButtonColor[editState]}
+              sm:p-1 rounded-full
+              duration-500`}
+            >
+              <MdOutlineEdit
+                onClick={handleEditButton}
+                className={`text-2xl`}
+              />
             </button>
           </div>
         </div>
@@ -335,6 +358,14 @@ function InfoDialog(){
       </form>
     </dialog>
   );
+
+  function handleEditEvent(e: React.SyntheticEvent<HTMLSpanElement>){
+    const target = e.target as HTMLDivElement;
+    const typedMessage = target.textContent;
+    
+    if(typedMessage === message) {setEditState('unchanged'); return;}//stop if no changes typed;
+    setEditState('changed');  
+  }
 
   async function handleEditButton(){
     if(
@@ -350,7 +381,7 @@ function InfoDialog(){
 
     const typedMessage = messageSpanRef.current.innerHTML;
 
-    if(typedMessage === message) return;
+    if(typedMessage === message) return;//stop if no changes typed
 
     const body = {id: parseInt(appointment_id.toString()), message: typedMessage};
     const head = new Headers({"Content-Type": "application/json"});
@@ -363,7 +394,11 @@ function InfoDialog(){
     );
 
     if(response.success){
-      
+      setSentAppointments(x => {
+        x[selectedIndex].message = typedMessage;
+        return [...x];
+      });
+      setEditState('saved');
     }
   }
 }
