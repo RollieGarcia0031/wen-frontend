@@ -9,6 +9,8 @@ import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { MdOutlinePending, MdCheckCircleOutline, MdOutlineDelete } from "react-icons/md";
 import { TbCalendarUser } from "react-icons/tb";
 import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // Appointments panel rendered for students
 export default function SentAppointments(){
@@ -290,7 +292,14 @@ function InfoDialog(){
     setSentAppointments,
     selectedIndex,
   } = useStudentAppointmentContext();
+
   const { name, appointment_id, message, time_stamp, status } = selectedAppointment || {};
+  const selectedDate = selectedAppointment? new Date(time_stamp || '') : null;
+  const displayDate = selectedDate? selectedDate.toLocaleString('en-US',{
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : '';
 
   const messageSpanRef = useRef<HTMLSpanElement | null>(null);
 
@@ -310,9 +319,9 @@ function InfoDialog(){
   return (
     <dialog
       ref={infoDialogRef}
-      className='sm:open:w-[30rem] sm:open:h-[80dvh] open:overflow-hidden
+      className='sm:open:w-[30rem] open:overflow-hidden
       open:flex open:flex-col justify-start items-center
-      sm:open:p-2'
+      sm:open:p-2 sm:open:pb-8'
     >
       <div className='text-right w-full'>
         <button onClick={() => infoDialogRef?.current?.close()}>
@@ -320,7 +329,7 @@ function InfoDialog(){
         </button>
       </div>
 
-      <form
+      <div
         className='w-full sm:space-y-1
         sm:px-9 sm:[&_p>*]:ml-3
         [&_p>*]:border-b-highlight-muted [&_p>*]:border-b-[1px] [&_p>*]:border-solid [&_p>*]:px-2 [&_p>*]:focus:outline-none'
@@ -352,8 +361,19 @@ function InfoDialog(){
           </div>
         </div>
         <p>Status:  <span> {status} </span></p>
-        <p>Day: <span> {time_stamp} </span></p>
-      </form>
+        <p>Day: <span> {displayDate} </span></p>
+    
+        <div
+          className='w-full flex-row-center
+          sm:mt-4'
+        >
+          <DatePicker
+            inline={true}
+            disabled={true}
+            selected={selectedDate}
+          />
+        </div>
+      </div>
     </dialog>
   );
 
