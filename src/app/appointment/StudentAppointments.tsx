@@ -282,8 +282,6 @@ function NewAppointmentDialog(){
 }
 /**
  * shows information of selected appointment
- * TODO: add option to edit appointment message
- * TODO: fix adding function, update index first, update appointment states
  */
 function InfoDialog(){
   const {
