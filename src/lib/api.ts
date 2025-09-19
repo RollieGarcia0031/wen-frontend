@@ -1,5 +1,5 @@
 export async function fetchBackend(path: string, method: string, body?: any, headers?: any) {
-  const baseURL = "http://localhost:8080";
+  const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
   
   headers = headers || {"Content-Type": "application/json"};
 
