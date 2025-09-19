@@ -5,7 +5,7 @@ import { SearchAvailabilityResponseDataItem } from '@/lib/response';
 import { fetchBackend } from '@/lib/api';
 import { BsSkipBackwardCircle, BsSendPlus} from 'react-icons/bs';
 import Link from 'next/link';
-
+import { useRouter } from 'next/navigation';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -172,6 +172,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
   const { day_of_week, start_time, end_time, id } = availability;
   const [date, setDate] = useState<Date | null>(new Date());
   const [message, setMessage] = useState<string>("");
+  const router = useRouter();
 
   const filteredDates = (date: Date) => {
     const day = date.getDay();
@@ -276,8 +277,6 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
       return;
     }
 
-    console.log(body);
-
     const response = await fetchBackend(
       'appointment/send',
       'POST', JSON.stringify(body),
@@ -286,7 +285,7 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
 
     if(response.success){
       ref.current?.close();
-      alert('Appointment sent!');``
+      router.push('/appointment');      
     } else {
       alert(response.message);
     }
