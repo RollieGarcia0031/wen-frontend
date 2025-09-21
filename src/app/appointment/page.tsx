@@ -12,7 +12,7 @@ import { MdOutlineInfo } from 'react-icons/md';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { convertTo12Hour } from '@/lib/timeFormatter'
 
 export default function Appointment(){
   const { role } = useAuthContext();
@@ -52,7 +52,7 @@ function ReceivedAppointments(){
       if(!response.success || !response?.data || !response?.data?.appointments) return;
 
       const {appointments} = response.data;
-      console.log(appointments)
+
       if(setAppointments)setAppointments(appointments);
     }
 
@@ -94,7 +94,13 @@ function AppointmentCard({appointment, index}: {
   appointment: appointmentData
   index: number
 }){
-  const { status, name, day_of_week, start_time, end_time, appointment_id } = appointment;
+  const { status, name, day_of_week, start_time, end_time, appointment_id, time_stamp } = appointment;
+  let timeStampDisplay = time_stamp ? new Date(time_stamp).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : '';
+
   const {
     setAppointmentId,
     confirmDialogRef,
@@ -124,15 +130,13 @@ function AppointmentCard({appointment, index}: {
       <div
         className='flex-1 flex flex-col'
       >
-        <div
-          className='flex flex-row justify-start gap-6 flex-1'
-        >
-          <p
-            className='font-bold'
-          >
+          <p className='font-bold'>
             {name}
           </p>
-        </div>
+
+          <p>
+            {timeStampDisplay}
+          </p>
         <div 
           className='flex flex-row justify-between'
         >
@@ -210,7 +214,7 @@ function AppointmentCard({appointment, index}: {
 //pop up for accepting an appointment
 function ConfirmationDialog(){
   const { confirmDialogRef, selectedIndex, setAppointments, appointmentId, selectedAppointment } = useProfessorContext();
-  const {name, time_stamp, message, start_time} = selectedAppointment || {};
+  const {name, time_stamp, message, start_time, end_time} = selectedAppointment || {};
   const selected_date = selectedAppointment? new Date(time_stamp || '') : null;
   const display_date = selected_date?.toLocaleDateString('en-US',{
     month: 'long',
@@ -218,7 +222,6 @@ function ConfirmationDialog(){
     year: 'numeric'
   });
 
-  console.log(selected_date)
   return (
     <dialog 
       ref={confirmDialogRef}
@@ -230,7 +233,7 @@ function ConfirmationDialog(){
           <div className='text-left space-y-2 mb-2'>
             <p>From: {name}</p>
             <p>Purpose: {message}</p>
-            <p>Time: {start_time}</p>
+            <p>Time: {convertTo12Hour(start_time)} - {convertTo12Hour(end_time)}</p>
             <p>Date: {display_date}</p>
             <DatePicker
               selected={selected_date}
@@ -360,7 +363,7 @@ function DeclineDialog(){
 
 function InfoDialog(){
   const { infoDialogRef, selectedAppointment, setSelectedAppointment, setSelectedIndex } = useProfessorContext();
-  const {message, name, time_stamp} = selectedAppointment || {};
+  const {message, name, time_stamp, start_time, end_time} = selectedAppointment || {};
   const dateString = new Date(time_stamp || '').toLocaleDateString('en-US',{
     month: 'long',
     day: 'numeric',
@@ -385,7 +388,8 @@ function InfoDialog(){
         </div>
         <p>Name:&nbsp; {name}</p>
         <p>Message: &nbsp; {message}</p>
-        <p>Time: &nbsp; {dateString}</p>
+        <p>Date: &nbsp; {dateString}</p>
+        <p>Time: &nbsp; {convertTo12Hour(start_time)} - {convertTo12Hour(end_time)}</p>
       </div>
     </dialog>
   );
