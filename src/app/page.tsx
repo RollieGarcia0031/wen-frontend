@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { fetchBackend } from "@/lib/api";
+import Appointment from "./appointment/page";
 
 export default function Home() {
   const { role, userName } = useAuthContext();
@@ -44,12 +45,33 @@ export default function Home() {
 
       <div>
         <h2 className="text-2xl my-4">Latest Appointments</h2>
+        {latestAppointments.map((appointment, index) => (
+          <AppointmentCard
+            key={index}
+            index={index}
+            appointment={appointment}
+          >
+          </AppointmentCard>
+        ))}
       </div>
     </div>
   );
 }
 
+function AppointmentCard({index, appointment}:
+  {index: number, appointment: LatesAppointment})
+{
+  const { message, name } = appointment;
 
+  return (
+    <div>
+      <p>{name}</p>
+      <p>{message}</p>
+    </div>
+  );
+}
+
+//util functions
 function Greeting():"Good Morning"|"Good Afternoon"{
   const currentTime = new Date().getHours();
   if(currentTime >= 12) return "Good Afternoon";
