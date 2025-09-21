@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link";
 import { useAuthContext } from "@/context/AuthContext";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -58,13 +57,14 @@ function Greeting():"Good Morning"|"Good Afternoon"{
 }
 
 interface LatesAppointment {
-  id: number,
-  student_id: number,
-  professor_id: number,
-  availability_id: number,
-  status: string,
-  message: string,
-  time_stamp: string,
-  created_at: string,
-  updated_at: string
+  id: number;
+  student_id: number;
+  professor_id: number;
+  availability_id: number;
+  status: string;
+  message: string;
+  time_stamp: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
 };
