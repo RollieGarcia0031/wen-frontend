@@ -134,11 +134,13 @@ function AppointmentCard({appointment, index}: {
             {name}
           </p>
 
-          <p>
+          <p className='text-sm text-text-muted'>
             {timeStampDisplay}
           </p>
         <div 
-          className='flex flex-row justify-between'
+          className='flex flex-row justify-between *:text-text-muted
+          border-t-highlight-muted border-t-[1px] borderl-solid
+          sm:mt-2'
         >
           <p>{day_of_week}</p>
           <p>{start_time}</p>
@@ -147,9 +149,10 @@ function AppointmentCard({appointment, index}: {
       </div>
 
       <div
-        className="flex flex-row ml-10 gap-4 flex-1 justify-end
-        *:rounded-md *:p-2 *:duration-500
-        *:hover:text-text-muted"
+        className="flex flex-row ml-10 flex-1 gap-4 justify-end
+        *:rounded-md *:duration-500
+        *:hover:text-text-muted
+        [&_button]:p-2"
       >
         {status === "pending" && <AcceptButton/>}
         <DeclineButton/>
@@ -160,26 +163,30 @@ function AppointmentCard({appointment, index}: {
 
   function AcceptButton(){
     return (
-      <button
-        onClick={handleAccept}
-        className='border-green-600 border-2 border-solid rounded-md
-          bg-green-950'
-      >
-        Accept
-      </button>
+      <div>
+        <button
+          onClick={handleAccept}
+          className='border-green-600 border-2 border-solid rounded-md
+            bg-green-950'
+        >
+          Accept
+        </button>
+      </div>
     );
 
   }
 
   function DeclineButton(){
     return (
-      <button
-        onClick={handleDecline}
-        className='border-red-600 border-2 border-solid rounded-md
-          bg-red-950'
-      >
-        {status === "pending" ?"Decline":"Delete"}
-      </button>
+      <div>
+        <button
+          onClick={handleDecline}
+          className='border-red-600 border-2 border-solid rounded-md
+            bg-red-950'
+        >
+          {status === "pending" ?"Decline":"Delete"}
+        </button>
+      </div>
     );
   }
 
