@@ -43,7 +43,10 @@ export default function Home() {
         </span>
       </h1>
 
-      <div>
+      <div
+        className='border-highlight-muted border-2 border-solid rounded-md
+        sm:m-6 sm:p-4'
+      >
         <h2 className="text-2xl my-4">Latest Appointments</h2>
         {latestAppointments.map((appointment, index) => (
           <AppointmentCard
