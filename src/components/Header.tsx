@@ -101,7 +101,7 @@ function AccountOptionPanel(){
             </button>
 
             <button>
-              <Link href='/professor/profiles'><VscAccount className="text-sm"/>My Profile</Link>
+              <Link href='/profile'><VscAccount className="text-sm"/>My Profile</Link>
             </button>
           </div>
         )}
@@ -141,7 +141,7 @@ function ProfessorHeader(){
               <MdOutlineAttachEmail />
               Your Appointments
           </Link>
-          <Link href="/professor/profiles"
+          <Link href="/profile"
             className={HeaderIconClassName("professor")}
           >
             <VscAccount />Manage Your Profile
