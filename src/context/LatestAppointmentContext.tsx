@@ -5,14 +5,16 @@ export interface AppointmentContextProps {
   latestAppointments: LatestAppointment[];
   setLatestAppointments: React.Dispatch<React.SetStateAction<LatestAppointment[]>>;
   selectedIndexOfLatestAppointment: number;
-  setSelectedIndexOfLatestAppointment: React.Dispatch<React.SetStateAction<number>>
+  setSelectedIndexOfLatestAppointment: React.Dispatch<React.SetStateAction<number>>;
+  removeDialogRef: React.RefObject<HTMLDialogElement | null>;
 }
 
 const LatestAppointmentContext = createContext<AppointmentContextProps>({
   latestAppointments: [],
   setLatestAppointments: () => {},
   selectedIndexOfLatestAppointment: -1,
-  setSelectedIndexOfLatestAppointment: () => {}
+  setSelectedIndexOfLatestAppointment: () => {},
+  removeDialogRef: useRef<HTMLDialogElement | null>(null),
 });
 
 export interface LatestAppointment {
@@ -34,6 +36,8 @@ export function LatestAppointmentContextProvider({children}: {children: React.Re
     const [latestAppointments, setLatestAppointments] = useState<LatestAppointment[]>([]);
     // selected index, used for dialog to know which index of appointments[] to update
     const [selectedIndexOfLatestAppointment, setSelectedIndexOfLatestAppointment] = useState<number>(-1);
+    // dialog for removing an appointment
+    const removeDialogRef = useRef<HTMLDialogElement | null>(null);
 
     useEffect(()=>{
     const fetchLatestAppointments = async () =>  {
@@ -56,7 +60,8 @@ export function LatestAppointmentContextProvider({children}: {children: React.Re
                 latestAppointments,
                 setLatestAppointments,
                 selectedIndexOfLatestAppointment,
-                setSelectedIndexOfLatestAppointment
+                setSelectedIndexOfLatestAppointment,
+                removeDialogRef
             }}
         >
             {children}

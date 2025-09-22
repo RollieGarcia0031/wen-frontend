@@ -107,6 +107,7 @@ function LatestAppointmentPanel(){
 function AppointmentCard({index, appointment}:
   {index: number, appointment: LatestAppointment})
 {
+  const { setSelectedIndexOfLatestAppointment } = useLatestAppointmentContext();
   const { message, name, start_time } = appointment;
 
   return (
@@ -128,6 +129,7 @@ function AppointmentCard({index, appointment}:
 
       <button
         title="Remove Seen Appointment"
+        onClick={HandleRemoveSeenAppointment}
       >
         <MdOutlineRemoveRedEye
           className="sm:text-2xl fill-text-muted hover:fill-primary"
@@ -136,6 +138,10 @@ function AppointmentCard({index, appointment}:
       </button>
     </div>
   );
+
+  function HandleRemoveSeenAppointment(){
+    setSelectedIndexOfLatestAppointment(index);
+  }
 }
 
 //util functions
