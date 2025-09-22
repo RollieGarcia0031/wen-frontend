@@ -125,4 +125,5 @@ interface LatesAppointment {
   created_at: string;
   updated_at: string;
   name: string;
+  start_time: string;
 };
