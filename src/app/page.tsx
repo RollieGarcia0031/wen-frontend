@@ -180,6 +180,7 @@ function RemoveSeenAppointmentDialog(){
         >
           <button
             className="bg-green-700"
+            onClick={handleYesButton}
           >
             Yes
           </button>
@@ -197,6 +198,26 @@ function RemoveSeenAppointmentDialog(){
   function handleNoButton(){
     removeDialogRef?.current?.close();
     setSelectedIndexOfLatestAppointment(-1);
+  }
+
+  async function handleYesButton(){
+    const body = JSON.stringify({id: selectedLatestAppointment.id});
+
+    const response = await fetchBackend(
+      'appointment/delete',
+      'DELETE',
+      body,
+      new Headers({"Content-Type": "application/json"})
+    );
+
+    if(response.success){
+      removeDialogRef?.current?.close();
+      setLatestAppointments(x => x.filter((_, i) => i !== selectedIndexOfLatestAppointment));
+
+      setSelectedIndexOfLatestAppointment(-1);
+      return;
+    }
+    alert(response.message);
   }
 }
 
