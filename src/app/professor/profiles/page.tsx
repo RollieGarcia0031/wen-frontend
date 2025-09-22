@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
-import { MdOutlineEdit, MdOutlineRestartAlt } from "react-icons/md";
+import { MdOutlineEdit, MdOutlineRestartAlt, MdOutlineSave, MdOutlineSaveAlt } from "react-icons/md";
 
 interface ProfessorProfile {
   id: number
@@ -394,6 +394,9 @@ function PersonalInforPanel(){
 
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
+  const [newPasswordInput, setNewPasswordInput] = useState<string | null>(null);
+  const [oldPasswordInput, setOldPasswordInput] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(()=>{
     const getPersonalInfo = async () => {
@@ -422,6 +425,7 @@ function PersonalInforPanel(){
       </p>
 
       <form
+        ref={formRef}
         onChange={handleChange}
         className="flex flex-col
         sm:[&>div]:flex-col sm:[&>div]:flex
@@ -453,6 +457,34 @@ function PersonalInforPanel(){
           />}
         </div>
 
+        <div>
+          <FormInput type='password' label="Old Password"
+            onChange={(e) => setOldPasswordInput(e.target.value)}
+          />
+
+          <FormInput type='password' label="New Password"
+            onChange={(e) => setNewPasswordInput(e.target.value)}
+          />
+
+          { (newPasswordInput && oldPasswordInput) && (<div
+            className="flex-row-center mt-2"
+          >
+            <button
+              type="button"
+              onClick={handleEdit}
+              title="Update Password"
+              className="flex flex-row
+              hover:[&_p]:block"
+            >
+              <MdOutlineSave/>
+              <p className="hidden">
+                Update Password
+              </p>
+            </button>
+          </div>)}
+
+        </div>
+
       </form>
     </div>
   );
@@ -461,11 +493,45 @@ function PersonalInforPanel(){
     // console.log(e);
   }
 
-  function handleEdit(){
-    setPersonalInfo({
+  async function handleEdit(){
+    interface UpdateInfoBody {
+      name: string;
+      email: string;
+      new_password?: string;
+      old_password?: string;
+    }
+
+    const body: UpdateInfoBody = {
       name: nameInput,
-      email: emailInput
-    });
+      email: emailInput,
+    }
+    if(newPasswordInput && oldPasswordInput) {
+      body["new_password"] = newPasswordInput;
+      body["old_password"] = oldPasswordInput;
+    }
+
+    const response = await fetchBackend(
+      'auth/update',
+      "PUT",
+      JSON.stringify(body),
+      new Headers({"Content-Type": "application/json"})
+    );
+
+    if(response.success) {
+      setPersonalInfo({
+        name: nameInput,
+        email: emailInput
+      });
+      
+      setOldPasswordInput(null);
+      setNewPasswordInput(null);
+      formRef.current?.reset();
+
+      console.log(response);
+      return;
+    }
+
+    alert(response.message);
   }
 }
 
