@@ -53,10 +53,16 @@ export default function Profiles(){
 
   return(
     <div>
-      <ProfileContainer
-        profiles={profiles}
-        setProfiles={setProfiles}
-      />
+      <div
+        className="flex flex-row justify-center items-center"
+      >
+        <ProfileContainer
+          profiles={profiles}
+          setProfiles={setProfiles}
+        />
+
+        <PersonalInforPanel />
+      </div>
 
       <AvailabilityPanel
         availabilities={availabilities}
@@ -77,7 +83,7 @@ function ProfileContainer({profiles, setProfiles}:{
 
   return (
     <div
-      className="flex-row-center gap-4 max-w-full"
+      className="flex-row-center gap-4 max-w-full flex-1"
     >
       <form onSubmit={e=>addProfile(e)}
         className="flex flex-col border-gray-500 border-2 border-solid rounded-md
@@ -370,6 +376,64 @@ function AvailabilityCard({availability, setAvailabilities}:{
   }
 }
 
+/**
+ * contains personal information, for changing display name, email and password
+ * TODO: implement change user informations
+ */
+function PersonalInforPanel(){
+  interface PersonalInformation {
+    name: string;
+    email: string;
+    password: string;
+  }
+
+  const [perseonalInfo, setPersonalInfo] = useState<PersonalInformation>({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  useEffect(()=>{
+    const getPersonalInfo = async () => {
+      const response = await fetchBackend("professor/profile", "GET");
+      if(response.success && response.data) {
+        setPersonalInfo(response.data);
+        console.log(response.data);
+      }
+    }
+
+    getPersonalInfo();
+  }, [])
+
+  const { name, email, password } = perseonalInfo;
+
+  return (
+    <div
+      className="flex flex-col gap-4 justify-start items-center
+      border-highlight-muted border-2
+      border-solid rounded-md p-4 m-4
+      flex-1"
+    >
+      <p className="font-bold text-center text-3xl my-4">
+        Personal Information
+      </p>
+
+      <form
+        onChange={handleChange}
+        className="flex flex-col"
+      >
+        <FormInput type='text' label="Display Name" />
+        <FormInput type='email' label="Email" />
+        <FormInput type='password' label="Password" />
+      </form>
+    </div>
+  );
+
+  function handleChange(e: React.SyntheticEvent<HTMLFormElement>) {
+    console.log(e);
+  }
+}
+
 //input form
 function FormInput({type, label, value, onChange}: {
   type: string,
@@ -384,6 +448,7 @@ function FormInput({type, label, value, onChange}: {
     </label>
     <input type={type}
       value={value}
+      name={label}
       onChange={onChange}
       required
     />
