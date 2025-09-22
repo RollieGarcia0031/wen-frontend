@@ -46,8 +46,8 @@ export default function PersonalInforPanel(){
     <div
       className="flex flex-col gap-4 justify-start items-center
       border-highlight-muted border-2
-      border-solid rounded-md p-4 m-4
-      flex-1"
+      border-solid rounded-md
+      sm:p-4 sm:pb-8 sm:px-8"
     >
       <p className="font-bold text-center text-3xl my-4">
         Personal Information
