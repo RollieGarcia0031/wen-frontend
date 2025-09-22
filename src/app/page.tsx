@@ -25,7 +25,10 @@ export default function Home() {
 
   return (
     <LatestAppointmentContextProvider>
-      <div>
+      <div
+        className="space-y-8
+        sm:p-4"
+      >
         <h1 className="text-4xl">{Greeting()}
           <span className="text-3xl ml-4">
             {userName}!
@@ -45,6 +48,14 @@ function LatestAppointmentPanel(){
   // used to toggle show all appointments of current day
   const [showMoreEnabled, setShowMoreEnabled] = useState<boolean>(false);
 
+  if(latestAppointments !== undefined && latestAppointments.length === 0){
+    return (
+      <div>
+        <h2 className="text-2xl my-4">No Appointments Today</h2>
+      </div>
+    );
+
+  }
 
   return (
     <div className="flex-row-center">
