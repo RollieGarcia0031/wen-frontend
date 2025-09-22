@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { fetchBackend } from "@/lib/api";
 import Appointment from "./appointment/page";
+import { convertTo12Hour } from "@/lib/timeFormatter";
 
 export default function Home() {
   const { role, userName } = useAuthContext();
@@ -108,14 +109,21 @@ export default function Home() {
 function AppointmentCard({index, appointment}:
   {index: number, appointment: LatesAppointment})
 {
-  const { message, name } = appointment;
+  const { message, name, start_time } = appointment;
 
   return (
     <div
-      className="border-[1px] border-highlight-muted border-solid rounded-md p-4 my-2"
+      className="border-[1px] border-highlight-muted border-solid rounded-md p-4 my-2
+      flex flex-row"
     >
-      <p>{name}</p>
-      <p>{message}</p>
+      <div className="flex-1">
+        <p>{name}</p>
+        <p>{message}</p>
+      </div>
+
+      <div className="flex-row-center">
+        <p>{ convertTo12Hour(start_time)}</p>
+      </div>
     </div>
   );
 }
