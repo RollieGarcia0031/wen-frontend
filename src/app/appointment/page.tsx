@@ -307,8 +307,7 @@ function DeclineDialog(){
   return (
     <dialog ref={ref}>
       <div
-        className='flex flex-col justify-center items-center w-full rounded-md p-4 text-center
-          '
+        className='flex flex-col justify-center items-center w-full rounded-md p-4 text-center'
       >
         <h1>
           Are you sure?
@@ -359,9 +358,9 @@ function DeclineDialog(){
             return [...filtered];
           });
         };
-
-        alert(response.message);
+        return;
       }
+      alert(response.message);
     } catch (error) {
       console.error(error);
     }
