@@ -7,6 +7,7 @@ import { useState } from "react";
 import { fetchBackend } from "@/lib/api";
 import Appointment from "./appointment/page";
 import { convertTo12Hour } from "@/lib/timeFormatter";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 export default function Home() {
   const { role, userName } = useAuthContext();
@@ -112,18 +113,30 @@ function AppointmentCard({index, appointment}:
   const { message, name, start_time } = appointment;
 
   return (
-    <div
-      className="border-[1px] border-highlight-muted border-solid rounded-md p-4 my-2
-      flex flex-row"
-    >
-      <div className="flex-1">
-        <p>{name}</p>
-        <p>{message}</p>
+    <div className="flex fex-row
+    sm:gap-2">
+      <div
+        className="border-[1px] border-highlight-muted border-solid rounded-md p-4 my-2
+        flex flex-row flex-1"
+      >
+        <div className="flex-1">
+          <p>{name}</p>
+          <p>{message}</p>
+        </div>
+
+        <div className="flex-row-center">
+          <p>{ convertTo12Hour(start_time)}</p>
+        </div>
       </div>
 
-      <div className="flex-row-center">
-        <p>{ convertTo12Hour(start_time)}</p>
-      </div>
+      <button
+        title="Remove Seen Appointment"
+      >
+        <MdOutlineRemoveRedEye
+          className="sm:text-2xl fill-text-muted hover:fill-primary"
+        />
+
+      </button>
     </div>
   );
 }
