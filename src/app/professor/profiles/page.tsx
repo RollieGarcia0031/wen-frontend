@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { MdOutlineEdit, MdOutlineRestartAlt } from "react-icons/md";
 
 interface ProfessorProfile {
   id: number
@@ -386,23 +387,28 @@ function PersonalInforPanel(){
     email: string;
   }
 
-  const [perseonalInfo, setPersonalInfo] = useState<PersonalInformation>({
+  const [personalInfo, setPersonalInfo] = useState<PersonalInformation>({
     name: "",
     email: "",
   });
+
+  const [nameInput, setNameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
 
   useEffect(()=>{
     const getPersonalInfo = async () => {
       const response = await fetchBackend("user/me", "GET");
       if(response.success && response.data) {
         setPersonalInfo(response.data);
+        setNameInput(response.data.name);
+        setEmailInput(response.data.email);
       }
     }
 
     getPersonalInfo();
   }, [])
 
-  const { name, email } = perseonalInfo;
+  const { name, email } = personalInfo;
 
   return (
     <div
@@ -417,18 +423,74 @@ function PersonalInforPanel(){
 
       <form
         onChange={handleChange}
-        className="flex flex-col"
+        className="flex flex-col
+        sm:[&>div]:flex-col sm:[&>div]:flex
+        sm:gap-4 sm:sm:[&>div]:gap-1
+        sm:[&_svg]:text-2xl
+        "
       >
-        <FormInput type='text' label="Display Name" defaultValue={name}/>
-        <FormInput type='email' label="Email" defaultValue={email}/>
-        <FormInput type='password' label="Password" />
+        <div>
+          <FormInput type='text' label="Display Name"
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+          />
+
+          {nameInput.trimEnd() != name.trimEnd() && <EditPersonalInfoMiniPanel
+            handleReset={()=>setNameInput(name)}
+            handleEdit={handleEdit}
+          />}
+        </div>
+
+        <div>
+          <FormInput type='email' label="Email"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+          />
+
+          {emailInput.trimEnd() != email.trimEnd() && <EditPersonalInfoMiniPanel
+            handleReset={()=>setEmailInput(email)}
+            handleEdit={handleEdit}
+          />}
+        </div>
+
       </form>
     </div>
   );
 
   function handleChange(e: React.SyntheticEvent<HTMLFormElement>) {
-    console.log(e);
+    // console.log(e);
   }
+
+  function handleEdit(){
+    setPersonalInfo({
+      name: nameInput,
+      email: emailInput
+    });
+  }
+}
+
+function EditPersonalInfoMiniPanel({handleReset, handleEdit}:{
+  handleReset: () => void,
+  handleEdit: () => void
+}){
+  return (
+    <div className="flex-row-center gap-5">
+      <button
+        type="button"
+        onClick={handleEdit}
+      >
+        <MdOutlineEdit/>
+      </button>
+
+      <button
+        type="button"
+        onClick={handleReset}
+      >
+        <MdOutlineRestartAlt/>
+      </button>
+    </div>
+
+  );
 }
 
 //input form
