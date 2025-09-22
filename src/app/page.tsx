@@ -10,6 +10,8 @@ import Appointment from "./appointment/page";
 export default function Home() {
   const { role, userName } = useAuthContext();
   const [ latestAppointments, setLatestAppointments ] = useState<LatesAppointment[]>([]);
+  // used to toggle show all appointments of current day
+  const [showMoreEnabled, setShowMoreEnabled] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,18 +49,39 @@ export default function Home() {
         className='border-highlight-muted border-2 border-solid rounded-md
         sm:m-6 sm:p-4'
       >
-        <h2 className="text-2xl my-4">Latest Appointments</h2>
-        {latestAppointments.map((appointment, index) => (
-          <AppointmentCard
-            key={index}
-            index={index}
-            appointment={appointment}
+        <h2 className="text-2xl my-4">Appointments Today</h2>
+        {latestAppointments?.length > 0 && (<AppointmentCard
+          index={0}
+          appointment={latestAppointments[0]}
+        />)}
+
+        { latestAppointments?.length > 1 &&
+          <div
+            className={`${showMoreEnabled ?
+              "" :
+              "[&>div]:hidden"}`}
           >
-          </AppointmentCard>
-        ))}
+            <button
+              onClick={handleShowMoreButton}
+            >
+              more ...
+            </button>
+            {latestAppointments.map((appointment, index) => (
+              ( index > 0 && <AppointmentCard
+                key={index}
+                index={index}
+                appointment={appointment}
+              />)
+            ))}
+          </div>
+        }
       </div>
     </div>
   );
+
+  function handleShowMoreButton(){
+    setShowMoreEnabled(x => !showMoreEnabled);
+  }
 }
 
 function AppointmentCard({index, appointment}:
