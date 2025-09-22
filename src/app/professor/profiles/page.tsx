@@ -384,28 +384,25 @@ function PersonalInforPanel(){
   interface PersonalInformation {
     name: string;
     email: string;
-    password: string;
   }
 
   const [perseonalInfo, setPersonalInfo] = useState<PersonalInformation>({
     name: "",
     email: "",
-    password: ""
   });
 
   useEffect(()=>{
     const getPersonalInfo = async () => {
-      const response = await fetchBackend("professor/profile", "GET");
+      const response = await fetchBackend("user/me", "GET");
       if(response.success && response.data) {
         setPersonalInfo(response.data);
-        console.log(response.data);
       }
     }
 
     getPersonalInfo();
   }, [])
 
-  const { name, email, password } = perseonalInfo;
+  const { name, email } = perseonalInfo;
 
   return (
     <div
@@ -422,8 +419,8 @@ function PersonalInforPanel(){
         onChange={handleChange}
         className="flex flex-col"
       >
-        <FormInput type='text' label="Display Name" />
-        <FormInput type='email' label="Email" />
+        <FormInput type='text' label="Display Name" defaultValue={name}/>
+        <FormInput type='email' label="Email" defaultValue={email}/>
         <FormInput type='password' label="Password" />
       </form>
     </div>
@@ -435,10 +432,11 @@ function PersonalInforPanel(){
 }
 
 //input form
-function FormInput({type, label, value, onChange}: {
+function FormInput({type, label, value, onChange, defaultValue}: {
   type: string,
   label: string,
   value?: string,
+  defaultValue?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) {
   return (
@@ -448,6 +446,7 @@ function FormInput({type, label, value, onChange}: {
     </label>
     <input type={type}
       value={value}
+      defaultValue={defaultValue}
       name={label}
       onChange={onChange}
       required
