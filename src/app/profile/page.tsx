@@ -19,6 +19,8 @@ export default function Profiles(){
   const [profiles, setProfiles] = useState<ProfessorProfile[]>([]);
   const [availabilities, setAvailabilities] = useState<SearchAvailabilityResponseDataItem[]>([]);
 
+  // fetch role from session storage
+  // and fetch profiles and availabilities from backend
   useEffect(()=>{
     const sessionRole = sessionStorage.getItem("role");
 
@@ -50,7 +52,6 @@ export default function Profiles(){
     }
     
     fetchAvailabilities();
-
   },[])
 
   return(
@@ -80,6 +81,7 @@ function ProfileContainer({profiles, setProfiles}:{
   setProfiles: React.Dispatch<React.SetStateAction<ProfessorProfile[]>>
 }){
 
+  // state for inputs of adding profile 
   const [year, setYear] = useState<number>(0);
   const [department, setDepartment] = useState<string>("");
 
@@ -98,6 +100,7 @@ function ProfileContainer({profiles, setProfiles}:{
           Your Profiles
         </p>
 
+        {/* form for input of year and new department */}
         <div
           className="grid grid-cols-[7rem_auto] justify-center items-start
           sm:gap-2"
@@ -117,6 +120,7 @@ function ProfileContainer({profiles, setProfiles}:{
 
         <div className="border-gray-500 border-2 border-solid m-4 w-[full] rounded-md p-4
           flex flex-col gap-2">
+          {/* render a message for empty profile */}
           {profiles?.length === 0 && (
             <div className="text-center">
               <p>No Profiles</p>
@@ -127,6 +131,8 @@ function ProfileContainer({profiles, setProfiles}:{
                 You can add a new profile by filling the form, and clicking &quot;Add&quot;
               </p>
             </div>)}
+
+          {/* map and render cards for each profiles if it exists */}
           {profiles?.map((profile, index) =>
             <ProfileCard key={index}
               profile={profile}
@@ -151,9 +157,12 @@ function ProfileContainer({profiles, setProfiles}:{
       if(response.success) {
         setYear(0);
         setDepartment("");
+        // upon sucessful operation, the data should contain the new id of inserted profile
+        // to the database
         if(!response.data){return;}
         const new_id: number = response.data['id'];
 
+        // update the state of profiles, with the returned new id
         setProfiles(x=>{
           const newProfile: ProfessorProfile = { department, year, id: new_id };
           return [...x, newProfile];
@@ -189,6 +198,7 @@ function ProfileCard({profile, setProfiles, index, profile_id}:{
       </div>
 
       <div>
+        {/* button for removing the profile */}
         <button
           type='button'
           onClick={removeProfile}
@@ -221,6 +231,8 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
   setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
 }){
   type day = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+
+  // state variables for user input
   const [day, setDay] = useState<day>("Monday");
   const [start_time, setStartTime] = useState<string>("");
   const [end_time, setEndTime] = useState<string>("");
@@ -240,6 +252,7 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
           Availabilities
         </p>
 
+        {/* inputs for users to add new availability */}
         <div className="flex flex-row gap-4">
           <select value={day} onChange={(e) => setDay(e.target.value as day)}>
             <option value="Monday">Monday</option>
@@ -256,6 +269,7 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
           <button type="submit">Add</button>
         </div>
 
+        {/* render each fetched availibility in a card */}
         <div className="flex flex-col gap-2">
           {availabilities?.map((availability, index) =>
             <AvailabilityCard
@@ -275,7 +289,7 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 
     const body = {
       day,
-      start: `${start_time}:00`,
+      start: `${start_time}:00`,// add :00 to end of string, as required by my backend
       end: `${end_time}:00`
     };
 
@@ -285,10 +299,12 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
       const response = await fetchBackend("professor/availability", "POST", JSON.stringify(body), headers);
 
       if(response.success && response.data) {
+        //reset state variables
         setDay("Monday");
         setStartTime("");
         setEndTime("");
 
+        // update the state of availabilities, append the new saved availability
         setAvailabilities(x => {
           const id = response?.data?.id;
           if(id === undefined) return x;
@@ -320,8 +336,6 @@ function AvailabilityCard({availability, setAvailabilities}:{
   setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
 }){
   const { day_of_week, start_time, end_time, id } = availability;
-  const [isRemoving, setIsRemoving] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
     <div className="w-full">
