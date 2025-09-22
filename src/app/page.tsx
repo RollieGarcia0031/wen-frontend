@@ -62,6 +62,8 @@ export default function Home() {
               "[&>div]:hidden"}`}
           >
             <button
+              className={`
+                ${showMoreEnabled ? "hidden" : ""}`}
               onClick={handleShowMoreButton}
             >
               more ...
@@ -73,6 +75,14 @@ export default function Home() {
                 appointment={appointment}
               />)
             ))}
+
+            <button
+              className={`
+                ${showMoreEnabled ? "" : "hidden"}`}
+              onClick={handleShowMoreButton}
+            >
+              less ...
+            </button>
           </div>
         }
       </div>
