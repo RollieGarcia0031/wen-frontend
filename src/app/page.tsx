@@ -33,6 +33,8 @@ export default function Home() {
         </h1>
         <LatestAppointmentPanel />
       </div>
+
+      <RemoveSeenAppointmentDialog />
     </LatestAppointmentContextProvider>
   );
 
@@ -107,7 +109,7 @@ function LatestAppointmentPanel(){
 function AppointmentCard({index, appointment}:
   {index: number, appointment: LatestAppointment})
 {
-  const { setSelectedIndexOfLatestAppointment } = useLatestAppointmentContext();
+  const { setSelectedIndexOfLatestAppointment, removeDialogRef } = useLatestAppointmentContext();
   const { message, name, start_time } = appointment;
 
   return (
@@ -141,6 +143,60 @@ function AppointmentCard({index, appointment}:
 
   function HandleRemoveSeenAppointment(){
     setSelectedIndexOfLatestAppointment(index);
+    removeDialogRef?.current?.showModal();
+  }
+}
+
+function RemoveSeenAppointmentDialog(){
+  const {
+    latestAppointments,
+    setLatestAppointments,
+    selectedIndexOfLatestAppointment,
+    removeDialogRef,
+    setSelectedIndexOfLatestAppointment
+  } = useLatestAppointmentContext();
+
+  const selectedLatestAppointment = latestAppointments[selectedIndexOfLatestAppointment];
+  const { name } = selectedLatestAppointment || {};
+
+  return (
+    <dialog ref={removeDialogRef}>
+      <div className="flex flex-col
+        sm:p-4 leading-loose
+      ">
+        <p>Are you done?</p>
+        <p className="text-text-muted">
+          If yes, you can now discard your appointment with: <br/>
+          <i className="font-bold">
+            {name}
+          </i>
+        </p>
+
+        <div
+          className="flex-row-center
+          sm:gap-4 sm:mt-4
+          sm:[&>button]:px-8 sm:[&>button]:py-[0.05rem]
+          [&>button]:rounded-md [&>button]:font-bold"
+        >
+          <button
+            className="bg-green-700"
+          >
+            Yes
+          </button>
+
+          <button className="bg-red-700"
+            onClick={handleNoButton}
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </dialog>
+  );
+
+  function handleNoButton(){
+    removeDialogRef?.current?.close();
+    setSelectedIndexOfLatestAppointment(-1);
   }
 }
 

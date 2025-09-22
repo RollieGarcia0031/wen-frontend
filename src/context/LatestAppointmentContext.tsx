@@ -45,7 +45,7 @@ export function LatestAppointmentContextProvider({children}: {children: React.Re
             const latestAppointments = await fetchBackend("appointment/currentDayBooked", "GET");
             if(!latestAppointments.data) return;
 
-            setLatestAppointments(x => [...latestAppointments.data, ...x]);
+            setLatestAppointments(x => [...latestAppointments.data]);
         } catch (err){
             console.error(err)
         }
