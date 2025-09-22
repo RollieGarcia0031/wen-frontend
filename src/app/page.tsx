@@ -45,53 +45,57 @@ export default function Home() {
         </span>
       </h1>
 
-      {/* panel for latest appointments of the day */}
-      <div
-        className='border-highlight-muted border-2 border-solid rounded-md
-        sm:m-6 sm:p-4'
-      >
-        <h2 className="text-2xl my-4">Appointments Today</h2>
-        {/* render only the first appointment */}
-        {latestAppointments?.length > 0 && (<AppointmentCard
-          index={0}
-          appointment={latestAppointments[0]}
-        />)}
+      <div className="flex-row-center">
+        {/* panel for latest appointments of the day */}
+        <div
+          className='border-highlight-muted border-2 border-solid rounded-md
+          sm:p-4 sm:w-[30rem]'
+        >
+          <h2 className="text-2xl my-4">Appointments Today</h2>
+          {/* render only the first appointment */}
+          {latestAppointments?.length > 0 && (<AppointmentCard
+            index={0}
+            appointment={latestAppointments[0]}
+          />)}
 
-          {/* if more than one appointment is booked for the day, they are
-          rendered inside another panel with a toggle button for hide and show */}
-        { latestAppointments?.length > 1 &&
-          <div
-            className={`${showMoreEnabled ?
-              "" :
-              "[&>div]:hidden"}`}
-          >
-            {/* render the more button when other appointments are hidden */}
-            <button
-              className={`
-                ${showMoreEnabled ? "hidden" : ""}`}
-              onClick={handleShowMoreButton}
+            {/* if more than one appointment is booked for the day, they are
+            rendered inside another panel with a toggle button for hide and show */}
+          { latestAppointments?.length > 1 &&
+            <div
+              className={`${showMoreEnabled ?
+                "" :
+                "[&>div]:hidden"}`}
             >
-              more ...
-            </button>
-            {/* render the appointments with index greater than 0 */}
-            {latestAppointments.map((appointment, index) => (
-              ( index > 0 && <AppointmentCard
-                key={index}
-                index={index}
-                appointment={appointment}
-              />)
-            ))}
+              {/* render the more button when other appointments are hidden */}
+              <button
+                className={`
+                  ${showMoreEnabled ? "hidden" : ""}
+                  text-text-muted font-bold`}
+                onClick={handleShowMoreButton}
+              >
+                more ...
+              </button>
+              {/* render the appointments with index greater than 0 */}
+              {latestAppointments.map((appointment, index) => (
+                ( index > 0 && <AppointmentCard
+                  key={index}
+                  index={index}
+                  appointment={appointment}
+                />)
+              ))}
 
-            {/* render the less button when other appointments are shown */}
-            <button
-              className={`
-                ${showMoreEnabled ? "" : "hidden"}`}
-              onClick={handleShowMoreButton}
-            >
-              less ...
-            </button>
-          </div>
-        }
+              {/* render the less button when other appointments are shown */}
+              <button
+                className={`
+                  ${showMoreEnabled ? "" : "hidden"}
+                  text-text-muted font-bold`}
+                onClick={handleShowMoreButton}
+              >
+                less ...
+              </button>
+            </div>
+          }
+        </div>
       </div>
     </div>
   );
@@ -107,7 +111,9 @@ function AppointmentCard({index, appointment}:
   const { message, name } = appointment;
 
   return (
-    <div>
+    <div
+      className="border-[1px] border-highlight-muted border-solid rounded-md p-4 my-2"
+    >
       <p>{name}</p>
       <p>{message}</p>
     </div>
