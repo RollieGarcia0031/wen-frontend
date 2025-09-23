@@ -142,7 +142,7 @@ function ProfessorHeader(){
               Your Appointments
           </Link>
           <Link href="/profile"
-            className={HeaderIconClassName("professor")}
+            className={HeaderIconClassName("profile")}
           >
             <VscAccount />Manage Your Profile
           </Link>

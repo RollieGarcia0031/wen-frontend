@@ -488,7 +488,8 @@ function SearchResult(){
         flex-1 flex flex-col justify-start 
         sm:gap-6 sm:px-6 
         gap-4 p-4
-        overflow-y-auto'
+        overflow-y-auto
+        scrollbar scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500'
       >
         {
           professors?.length !== 0 &&
