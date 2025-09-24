@@ -28,7 +28,7 @@
     --background: oklch(5% 0.1 188);
     --foreground: #ededed;
     --text-muted: oklch(85% 0 0);
-    --primary: oklch(65% 0.1 188);
+    --primary: oklch(60% 0.1 188);
     --primary-hover: oklch(50% 0.09 188);
     --highlight: oklch(80% 0.05 188);
     --highlight-muted: oklch(55% 0.05 188);
