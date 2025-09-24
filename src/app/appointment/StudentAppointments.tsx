@@ -58,7 +58,10 @@ export default function SentAppointments(){
             Sent Appointments
           </h1>
 
-          <div>
+          <div
+            className='flex flex-col
+            sm:gap-4 gap-2 mt-4'
+          >
             {sentAppointments?.map((appointment, index) =>
               <AppointmentCard
                 key={index} 
@@ -107,22 +110,26 @@ function AppointmentCard({appointment, index}:{
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
 
-  const {setSentAppointments, infoDialogRef, setSelectedAppointment, setSelectedIndex } = useStudentAppointmentContext();
+  const {setSentAppointments, infoDialogRef, setSelectedAppointment, setSelectedIndex, selectedIndex } = useStudentAppointmentContext();
 
   useEffect(()=>{
     if(isDeleting) deleteDialogRef.current?.showModal();
   }, [isDeleting]);
 
   return(
-    <div className='w-full flex flex-row'>
+    // invisible container for holding card and Icon beside it
+    <div className='w-full flex flex-row sm:gap-2'>
       <div className='flex-row-center'>
         <AppointmentCardIcon status={status}/>
       </div>
+      {/* actual card holding the info and option button */}
       <div
-        className='
-        flex-row-center w-full
-        sm:p-4
-        border-highlight-muted border-2 border-solid rounded-md m-4'
+        className={`
+          flex-row-center w-full
+          ${isDeleting ? 'opacity-30' : ''}
+          sm:p-4
+          border-highlight-muted border-2 border-solid rounded-md m-4'
+          `}
       >
 
         <div
@@ -211,12 +218,14 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
 
         <div className='flex flex-row gap-4 w-full justify-center mt-4'>
           <button onClick={handleConfirm}
-            className='bg-green-500 px-2 py-1 rounded-lg text-black'
+            className='bg-green-500 px-2 py-1 rounded-lg text-black
+              hover:bg-green-700 hover:text-white'
           >
             Confirm
           </button>
           <button onClick={() => setIsDeleting(false)}
-            className='bg-red-500 px-2 py-1 rounded-lg text-black'  
+            className='bg-red-500 px-2 py-1 rounded-lg text-black
+              hover:bg-red-700'  
           >
             Cancel
           </button>
