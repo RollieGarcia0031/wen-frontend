@@ -4,15 +4,17 @@ import React, { useContext, createContext, useState, useEffect, use } from "reac
 
 interface AuthContextProps {
     userName?: string;
-    setUserName?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setUserName: React.Dispatch<React.SetStateAction<string>>;
     role?: string;
     setRole?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const AuthContext = createContext<AuthContextProps>({});
+const AuthContext = createContext<AuthContextProps>({
+  setUserName: () => {},
+});
 
 export function AuthContextProvider({children}: {children: React.ReactNode}) {
-  const [userName, setUserName] = useState<string | undefined>("");
+  const [userName, setUserName] = useState<string>("");
   const [role, setRole] = useState<string | undefined>("");
 
   useEffect(()=>{

@@ -6,6 +6,7 @@ import {
 import { MdOutlineEdit, MdOutlineRestartAlt, MdOutlineSave, MdOutlineSaveAlt } from "react-icons/md";
 import { fetchBackend } from "@/lib/api";
 import FormInput from "./FormInput";
+import { useAuthContext } from "@/context/AuthContext";
 
 /**
  * contains personal information, for changing display name, email and password
@@ -20,6 +21,8 @@ export default function PersonalInforPanel(){
     name: "",
     email: "",
   });
+
+  const { setUserName } = useAuthContext();
 
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
@@ -152,6 +155,8 @@ export default function PersonalInforPanel(){
         email: emailInput
       });
       
+      setUserName(nameInput);
+
       setOldPasswordInput(null);
       setNewPasswordInput(null);
       formRef.current?.reset();
