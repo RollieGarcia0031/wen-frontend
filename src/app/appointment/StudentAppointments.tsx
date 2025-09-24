@@ -44,6 +44,7 @@ export default function SentAppointments(){
       >
         <button  onClick={() => dialogRef?.current?.showModal()}
           className='flex-row-center gap-1 bg-secondary
+          hover:bg-seconday-hover
             px-2 py-1 rounded-md'  
         >
           <MdOutlineCreate/>New

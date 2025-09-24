@@ -18,6 +18,7 @@
   --color-primary-hover: var(--primary-hover);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-seconday-hover: var(--secondary-hover);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -31,7 +32,8 @@
     --primary-hover: oklch(50% 0.09 188);
     --highlight: oklch(80% 0.05 188);
     --highlight-muted: oklch(55% 0.05 188);
-    --secondary: oklch(69% 0.07 230);
+    --secondary: oklch(65% 0.07 230);
+    --secondary-hover: oklch(60% 0.07 230);
   }
 }
 
