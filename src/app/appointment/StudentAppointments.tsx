@@ -438,6 +438,7 @@ function SearchPanel(){
         <input type='text' className='ml-2'
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value) }
+          onKeyUp={(e) => e.key === 'Enter' && search(e)}
         />
       </label>
       <button
