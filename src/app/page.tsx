@@ -48,10 +48,17 @@ function LatestAppointmentPanel(){
   // used to toggle show all appointments of current day
   const [showMoreEnabled, setShowMoreEnabled] = useState<boolean>(false);
 
-  if(latestAppointments !== undefined && latestAppointments.length === 0){
+  if(latestAppointments?.length === 0){
     return (
-      <div>
-        <h2 className="text-2xl my-4">No Appointments Today</h2>
+      <div
+        className="flex-row-center"
+      >
+        <div
+          className='border-highlight-muted border-2 border-solid rounded-md
+          sm:p-4 sm:w-[30rem]'
+        >
+          <h2 className="text-2xl my-4">No Appointments Today</h2>
+        </div>
       </div>
     );
 
