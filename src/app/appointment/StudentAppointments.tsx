@@ -443,6 +443,7 @@ function SearchPanel(){
       <button
         type='button' onClick={e=>search(e)}
         className='bg-primary aspect-square rounded-full
+        hover:bg-primary-hover
         sm:p-2 p-2'  
       >
         <IoIosSearch className='sm:text-2xl'/>
@@ -551,7 +552,11 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
         </div>
       </div>
 
-      <button onClick={SendButtonHandler}>
+      <button onClick={SendButtonHandler}
+        className='hover:bg-primary-hover aspect-square rounded-full
+        duration-200
+        flex-row-center'
+      >
         <TbCalendarUser
           className='text-2xl'/>
       </button>
