@@ -9,6 +9,7 @@ import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { MdOutlinePending, MdCheckCircleOutline, MdOutlineDelete } from "react-icons/md";
 import { TbCalendarUser } from "react-icons/tb";
 import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
+import { convertTo12Hour } from '@/lib/timeFormatter';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -119,9 +120,11 @@ function AppointmentCard({appointment, index}:{
   return(
     // invisible container for holding card and Icon beside it
     <div className='w-full flex flex-row sm:gap-2'>
-      <div className='flex-row-center'>
+      <button className='flex-row-center cursor-help'
+        title={status}
+      >
         <AppointmentCardIcon status={status}/>
-      </div>
+      </button>
       {/* actual card holding the info and option button */}
       <div
         className={`
@@ -143,19 +146,14 @@ function AppointmentCard({appointment, index}:{
             <p className='font-bold'>
               {name}
             </p>
-            <p
-              className='italic text-xs flex-1 text-text-muted'
-            >
-              {status}
-            </p>
           </div>
           <div 
             className='flex flex-row justify-start
               sm:gap-6'
           >
             <p>{day_of_week}</p>
-            <p>{start_time}</p>
-            <p>{end_time}</p>
+            <p>{convertTo12Hour(start_time)}</p>
+            <p>{convertTo12Hour(end_time)}</p>
           </div>
         </div>
 
@@ -399,8 +397,6 @@ function InfoDialog(){
     if(
       messageSpanRef.current === null ||
       message?.length === undefined ||
-      message?.length === null ||
-      message?.length === 0 ||
       appointment_id === undefined ||
       appointment_id < 0
     ) return;
