@@ -22,6 +22,7 @@ export function LatestAppointmentPanel(){
       >
         <div
           className='border-highlight-muted border-2 border-solid rounded-md
+          bg-background-medium shadow-lg shadow-background-light/30
           sm:p-4 sm:w-[30rem]'
         >
           <h2 className="text-2xl my-4">No Appointments Today</h2>

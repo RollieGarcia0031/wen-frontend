@@ -55,7 +55,8 @@ export default function TomorrowAppointmentCount(){
   return (
     <div
       className="py-4 px-6
-      border-highlight border-[1px] border-solid rounded-md"
+      border-highlight border-[1px] border-solid rounded-md
+      from-background-light to-background-medium bg-gradient-to-b"
     >
       <p
         className="font-bold text-xl"
