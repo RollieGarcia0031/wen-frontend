@@ -43,14 +43,11 @@ export default function CurrentTotalAppointmentCount(){
 
 
   return (
-    <div
-      className="w-full flex-row-center"
-    >
+    <div>
       <div
         className="flex flex-col gap-2 items-start justify-center
         border-highlight border-[1px] border-solid rounded-md
         sm:px-4 sm:py-8"
-        
       >
         <p
           className="font-bold text-2xl"

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { LatestAppointmentContextProvider } from '@/context/LatestAppointmentContext'
 import { AppointmentCard, RemoveSeenAppointmentDialog, LatestAppointmentPanel } from '@/components/LatestAppointment';
 import CurrentTotalAppointmentCount from "@/components/CurrentAppointmentCount";
+import TomorrowAppointmentCount from "@/components/TomorrowAppointmentCount";
 
 export default function Home() {
   const { role, userName } = useAuthContext();
@@ -33,7 +34,10 @@ export default function Home() {
             {userName}!
           </span>
         </h1>
-        <CurrentTotalAppointmentCount />
+        <div className="flex flex-row-center gap-4">
+          <CurrentTotalAppointmentCount />
+          <TomorrowAppointmentCount />
+        </div>
         <LatestAppointmentPanel />
       </div>
       <RemoveSeenAppointmentDialog />
