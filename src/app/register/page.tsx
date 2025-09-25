@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { fetchBackend } from "@/lib/api"; 
 import { useRouter } from "next/navigation";
+import { MdOutlineRemoveRedEye, MdRemoveRedEye } from "react-icons/md";
+import { IoMdEye } from "react-icons/io";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
@@ -16,15 +18,15 @@ export default function Login() {
 
   return (
     <div className="flex flex-col justify-center items-center h-full">
-      <div className="card
-        sm:py-10 sm:px-8"
+      <div className="card bg-background-medium
+        sm:py-10 sm:px-8 sm:w-[22rem]"
       >
         <form
           onSubmit={e=>handleSubmit(e)}
           className="flex flex-col gap-2"
         >
           <p
-            className="font-bold sm:text-xl mb-4"
+            className="font-bold text-center sm:text-xl mb-4"
           >
             Log in with your account
           </p>
@@ -38,7 +40,10 @@ export default function Login() {
             onChange={(e) => setName(e.target.value)}
           />
           
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <label
+            className="sm:mt-4 font-bold"
+          >Select A Role</label>
+          <select value={role} onChange={(e) => setRole(e.target.value)} >
             <option value="professor">professor</option>
             <option value="student">student</option>
           </select>
@@ -84,13 +89,26 @@ export default function Login() {
 function InputForm({type, label, value, onChange}: {
   type: string, label: string, value?: string, onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex flex-col gap-1 w-full">
       <p className="font-bold text-text-muted">{label}:</p>
-      <input type={type} required
-        value={value}
-        onChange={onChange}
-      />
+      <div className="flex flex-row gap-2">
+        <input type={`${showPassword ? "text" : type}`} required
+          className="flex-1"
+          value={value}
+          onChange={onChange}
+        />
+        {type === "password" &&
+          <button
+            type='button'
+            onClick={() => setShowPassword(x=>!x)}
+          >
+            {showPassword ? <MdRemoveRedEye/> : <MdOutlineRemoveRedEye/>}
+          </button>
+        }
+      </div>
     </label>
   );
 }
