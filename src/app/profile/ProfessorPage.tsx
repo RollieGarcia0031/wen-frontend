@@ -6,6 +6,7 @@ import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response"
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import FormInput from "./FormInput";
 import PersonalInfoPanel from "./PersonalInfoPanel";
+import { convertTo12Hour } from "@/lib/timeFormatter";
 
 interface ProfessorProfile {
   id: number
@@ -262,7 +263,10 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
         </div>
 
         {/* render each fetched availibility in a card */}
-        <div className="flex flex-col gap-2">
+        <div
+          className="flex flex-col gap-4 sm:px-8
+          sm:mt-8"
+        >
           {availabilities?.map((availability, index) =>
             <AvailabilityCard
               key={index}
@@ -331,12 +335,12 @@ function AvailabilityCard({availability, setAvailabilities}:{
 
   return (
     <div className="w-full">
-      <div className="flex flex-row w-full justify-between
-        border-b-highlight-muted border-b-[1px] border-b-solid
-        sm:mt-2"
+      <div className="flex flex-row w-full justify-between items-end
+        border-b-highlight-muted border-b-2 border-b-solid rounded-md
+        sm:mt-2 sm:px-4"
       >
         <p
-          className="font-bold text-2xl"
+          className="font-bold"
         >
           {day_of_week}
         </p>
@@ -355,10 +359,11 @@ function AvailabilityCard({availability, setAvailabilities}:{
 
       </div>
       <div
-        className="flex flex-row gap-4"
+        className="flex flex-row gap-4
+        sm:pl-4"
       >
-        <p>{start_time.substring(0, 5)}</p>
-        <p>{end_time.substring(0, 5)}</p>
+        <p>{convertTo12Hour(start_time)}</p>
+        <p>{convertTo12Hour(end_time)}</p>
       </div>
 
     </div>
