@@ -54,7 +54,7 @@ export default function TomorrowAppointmentCount(){
 
   return (
     <div
-      className="p-4
+      className="py-4 px-6
       border-highlight border-[1px] border-solid rounded-md"
     >
       <p

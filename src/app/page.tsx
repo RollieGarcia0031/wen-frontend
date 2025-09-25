@@ -29,16 +29,26 @@ export default function Home() {
         className="space-y-8
         sm:p-4"
       >
-        <h1 className="text-4xl">{Greeting()}
+        <h1
+          className="text-4xl
+          sm:mt-8"
+        >
+          {Greeting()}
           <span className="text-3xl ml-4">
             {userName}!
           </span>
         </h1>
-        <div className="flex flex-row-center gap-4">
-          <CurrentTotalAppointmentCount />
-          <TomorrowAppointmentCount />
+
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center sm:w-[30rem] sm:gap-8">
+            <div className="flex flex-row justify-between">
+              <CurrentTotalAppointmentCount />
+              <TomorrowAppointmentCount />
+            </div>
+
+            <LatestAppointmentPanel />
+          </div>
         </div>
-        <LatestAppointmentPanel />
       </div>
       <RemoveSeenAppointmentDialog />
     </LatestAppointmentContextProvider>

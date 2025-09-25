@@ -31,7 +31,7 @@ export function LatestAppointmentPanel(){
   }
 
   return (
-    <div className="flex-row-center">
+    <>
       {/* panel for latest appointments of the day */}
       <div
         className='border-highlight-muted border-2 border-solid rounded-md
@@ -82,7 +82,7 @@ export function LatestAppointmentPanel(){
           </div>
         }
       </div>
-    </div>
+    </>
   );
 
   function handleShowMoreButton(){
