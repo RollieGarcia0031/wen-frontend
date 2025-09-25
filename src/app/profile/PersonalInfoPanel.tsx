@@ -48,6 +48,7 @@ export default function PersonalInforPanel(){
   return (
     <div
       className="flex flex-col gap-4 justify-start items-center
+      bg-background-medium
       border-highlight-muted border-2
       border-solid rounded-md
       sm:p-4 sm:pb-8 sm:px-8"

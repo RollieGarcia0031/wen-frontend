@@ -83,7 +83,8 @@ function ProfileContainer({profiles, setProfiles}:{
       className="flex-row-center gap-4 max-w-full flex-1"
     >
       <form onSubmit={e=>addProfile(e)}
-        className="flex flex-col border-gray-500 border-2 border-solid rounded-md
+        className="flex flex-col border-highlight-muted border-2 border-solid rounded-md
+          bg-background-medium
           p-4 m-4 gap-4 sm:w-[40rem]"
       >
         <p
@@ -235,7 +236,8 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
       className="w-full flex-row-center"
     >
       <form
-        className="flex flex-col gap-4 border-gray-500 border-2 border-solid rounded-md p-4 m-4
+        className="flex flex-col gap-4 border-highlight-muted border-2 border-solid rounded-md p-4 m-4
+        bg-background-medium
         sm:w-[40rem]"
         onSubmit={e=>handleSubmit(e)}
       >
