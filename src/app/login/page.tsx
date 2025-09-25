@@ -17,8 +17,8 @@ export default function Login() {
     <div
       className="flex flex-col justify-center items-center h-full"
     >
-      <div className="card
-        sm:p-10">
+      <div className="card bg-background-medium
+        sm:p-10 sm:mb-4">
         <form
           onSubmit={e=>handleSubmit(e)}
           className="flex flex-col gap-2"

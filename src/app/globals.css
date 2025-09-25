@@ -11,6 +11,8 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-medium: var(--background-medium);
+  --color-background-light: var(--background-light);
   --color-foreground: var(--foreground);
   --color-text-muted: var(--text-muted);
   --color-highlight: var(--highlight);
@@ -25,6 +27,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: oklch(5% 0.1 188);
+    --background-medium: oklch(15% 0.0 188);
+    --background-light: oklch(20% 0.0 0);
     --foreground: #ededed;
     --text-muted: oklch(85% 0 0);
     --primary: oklch(65% 0.1 188);
@@ -52,6 +56,7 @@ body {
   input, textarea {
     @apply border-highlight-muted border-[1px] border-solid rounded-md px-2 py-1
       outline-none
+      bg-background-light
       focus:outline-none;
   }
 
