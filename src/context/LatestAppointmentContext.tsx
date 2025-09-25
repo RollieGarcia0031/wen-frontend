@@ -7,6 +7,8 @@ export interface AppointmentContextProps {
   selectedIndexOfLatestAppointment: number;
   setSelectedIndexOfLatestAppointment: React.Dispatch<React.SetStateAction<number>>;
   removeDialogRef: React.RefObject<HTMLDialogElement | null> | null;
+  currentAppointmentCount: CurrentAppointmentCountData[];
+  setCurrentAppointmentCount: React.Dispatch<React.SetStateAction<CurrentAppointmentCountData[]>>
 }
 
 const LatestAppointmentContext = createContext<AppointmentContextProps>({
@@ -15,6 +17,8 @@ const LatestAppointmentContext = createContext<AppointmentContextProps>({
   selectedIndexOfLatestAppointment: -1,
   setSelectedIndexOfLatestAppointment: () => {},
   removeDialogRef: null,
+  currentAppointmentCount: [{count:0, status:""}],
+  setCurrentAppointmentCount: () => {},
 });
 
 export interface LatestAppointment {
@@ -31,6 +35,11 @@ export interface LatestAppointment {
   start_time: string;
 };
 
+export interface CurrentAppointmentCountData {
+  count: number
+  status: string
+}
+
 export function LatestAppointmentContextProvider({children}: {children: React.ReactNode}){
     // list of current appointments
     const [latestAppointments, setLatestAppointments] = useState<LatestAppointment[]>([]);
@@ -39,19 +48,47 @@ export function LatestAppointmentContextProvider({children}: {children: React.Re
     // dialog for removing an appointment
     const removeDialogRef = useRef<HTMLDialogElement | null>(null);
 
-    useEffect(()=>{
-    const fetchLatestAppointments = async () =>  {
-        try{
-            const latestAppointments = await fetchBackend("appointment/currentDayBooked", "GET");
-            if(!latestAppointments.data) return;
+    // count of current appointments both confirmed and pending
+    const [
+      currentAppointmentCount,
+      setCurrentAppointmentCount
+    ] = useState<CurrentAppointmentCountData[]>([]);
 
-            setLatestAppointments(x => [...latestAppointments.data]);
-        } catch (err){
-            console.error(err)
-        }
-    }
-    
-    fetchLatestAppointments();
+    useEffect(()=>{
+      const fetchLatestAppointments = async () =>  {
+          try{
+              const latestAppointments = await fetchBackend("appointment/currentDayBooked", "GET");
+              if(!latestAppointments.data) return;
+
+              setLatestAppointments(x => [...latestAppointments.data]);
+          } catch (err){
+              console.error(err)
+          }
+      }
+      
+      fetchLatestAppointments();
+
+      const fetchCurrentAppointmentCount = async () =>  {
+          const body = { time_range: "today" };
+
+          try{
+              const currentAppointmentCount = await fetchBackend(
+                "appointments/groupedCount",
+                "POST",
+                JSON.stringify(body),
+                new Headers({"Content-Type": "application/json"})
+              );
+
+              const {data, success} = currentAppointmentCount;
+              if(!data || !success) return;
+
+              setCurrentAppointmentCount(x => data);
+          } catch (err){
+              console.error(err)
+          }
+      }
+
+      fetchCurrentAppointmentCount();
     }, []);
 
     return(
@@ -61,7 +98,9 @@ export function LatestAppointmentContextProvider({children}: {children: React.Re
                 setLatestAppointments,
                 selectedIndexOfLatestAppointment,
                 setSelectedIndexOfLatestAppointment,
-                removeDialogRef
+                removeDialogRef,
+                currentAppointmentCount,
+                setCurrentAppointmentCount
             }}
         >
             {children}

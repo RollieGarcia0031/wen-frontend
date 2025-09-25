@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { LatestAppointmentContextProvider } from '@/context/LatestAppointmentContext'
 import { AppointmentCard, RemoveSeenAppointmentDialog, LatestAppointmentPanel } from '@/components/LatestAppointment';
+import CurrentTotalAppointmentCount from "@/components/CurrentAppointmentCount";
 
 export default function Home() {
   const { role, userName } = useAuthContext();
@@ -32,6 +33,7 @@ export default function Home() {
             {userName}!
           </span>
         </h1>
+        <CurrentTotalAppointmentCount />
         <LatestAppointmentPanel />
       </div>
       <RemoveSeenAppointmentDialog />

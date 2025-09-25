@@ -37,7 +37,7 @@ export function LatestAppointmentPanel(){
         className='border-highlight-muted border-2 border-solid rounded-md
         sm:p-4 sm:w-[30rem]'
       >
-        <h2 className="text-2xl my-4">Appointments Today</h2>
+        <h2 className="text-2xl my-4">Confirmed Appointments Today</h2>
         {/* render only the first appointment */}
         {latestAppointments?.length > 0 && (<AppointmentCard
           index={0}
