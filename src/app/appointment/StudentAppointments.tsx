@@ -132,6 +132,7 @@ function AppointmentCard({appointment, index}:{
           ${isDeleting ? 'opacity-30' : ''}
           sm:p-4
           border-highlight-muted border-2 border-solid rounded-md m-4'
+          from-background-medium to-background-black bg-gradient-to-b
           `}
       >
 

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { convertTo12Hour } from '@/lib/timeFormatter';
 
 export default function SendAppointment({params}: {
   params : Promise<{id: number}>
@@ -84,7 +85,8 @@ function AvailabilityPanel({id}:{
 
   return (
     <div
-      className='border-gray-500 border-2 border-solid rounded-md p-4
+      className='border-highlight-muted border-2 border-solid rounded-md p-4
+      bg-background-medium
       sm:min-w-[35rem]'
     >
         <div
@@ -134,8 +136,8 @@ function AvailabilityCard({availability, profName, prof_id}:{
       </div>
 
       <div>
-          <p>{start_time}</p>
-          <p>{end_time}</p>
+          <p>{convertTo12Hour(start_time)}</p>
+          <p>{convertTo12Hour(end_time)}</p>
 
       </div>
 
@@ -223,8 +225,8 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
                 onChange={(e) => setMessage(e.target.value)}
               />
             </div>
-            <p>{start_time}</p>
-            <p>{end_time}</p>
+            <p>{convertTo12Hour(start_time)}</p>
+            <p>{convertTo12Hour(end_time)}</p>
 
           </div>
 
