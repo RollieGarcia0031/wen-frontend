@@ -116,6 +116,7 @@ function AppointmentCard({appointment, index}: {
       w-full m-4
         flex flex-row'
     >
+      {/* left side, contatins info button */}
       <div className='flex-row-center'>
         <button
           onClick={handeInfoButton}
@@ -127,8 +128,11 @@ function AppointmentCard({appointment, index}: {
           />
         </button>
       </div>
+
+      {/* right side, main content */}
       <div
-        className='flex-1 flex flex-col'
+        className='flex-1 flex flex-col 
+        sm:min-w-[17rem]'
       >
           <p className='font-bold'>
             {name}
@@ -143,8 +147,8 @@ function AppointmentCard({appointment, index}: {
           sm:mt-2'
         >
           <p>{day_of_week}</p>
-          <p>{start_time}</p>
-          <p>{end_time}</p>
+          <p>{convertTo12Hour(start_time)}</p>
+          <p>{convertTo12Hour(end_time)}</p>
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import { IoIosCloseCircleOutline, IoIosSearch } from "react-icons/io";
 import { MdOutlinePending, MdCheckCircleOutline, MdOutlineDelete } from "react-icons/md";
 import { TbCalendarUser } from "react-icons/tb";
 import { useStudentAppointmentContext } from '@/context/StudentAppointmentContext';
+import { convertTo12Hour } from '@/lib/timeFormatter';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -44,6 +45,7 @@ export default function SentAppointments(){
       >
         <button  onClick={() => dialogRef?.current?.showModal()}
           className='flex-row-center gap-1 bg-secondary
+          hover:bg-seconday-hover
             px-2 py-1 rounded-md'  
         >
           <MdOutlineCreate/>New
@@ -57,7 +59,10 @@ export default function SentAppointments(){
             Sent Appointments
           </h1>
 
-          <div>
+          <div
+            className='flex flex-col
+            sm:gap-4 gap-2 mt-4'
+          >
             {sentAppointments?.map((appointment, index) =>
               <AppointmentCard
                 key={index} 
@@ -106,22 +111,28 @@ function AppointmentCard({appointment, index}:{
   const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
   const deleteDialogRef = useRef<HTMLDialogElement>(null);
 
-  const {setSentAppointments, infoDialogRef, setSelectedAppointment, setSelectedIndex } = useStudentAppointmentContext();
+  const {setSentAppointments, infoDialogRef, setSelectedAppointment, setSelectedIndex, selectedIndex } = useStudentAppointmentContext();
 
   useEffect(()=>{
     if(isDeleting) deleteDialogRef.current?.showModal();
   }, [isDeleting]);
 
   return(
-    <div className='w-full flex flex-row'>
-      <div className='flex-row-center'>
+    // invisible container for holding card and Icon beside it
+    <div className='w-full flex flex-row sm:gap-2'>
+      <button className='flex-row-center cursor-help'
+        title={status}
+      >
         <AppointmentCardIcon status={status}/>
-      </div>
+      </button>
+      {/* actual card holding the info and option button */}
       <div
-        className='
-        flex-row-center w-full
-        sm:p-4
-        border-highlight-muted border-2 border-solid rounded-md m-4'
+        className={`
+          flex-row-center w-full
+          ${isDeleting ? 'opacity-30' : ''}
+          sm:p-4
+          border-highlight-muted border-2 border-solid rounded-md m-4'
+          `}
       >
 
         <div
@@ -135,19 +146,14 @@ function AppointmentCard({appointment, index}:{
             <p className='font-bold'>
               {name}
             </p>
-            <p
-              className='italic text-xs flex-1 text-text-muted'
-            >
-              {status}
-            </p>
           </div>
           <div 
             className='flex flex-row justify-start
               sm:gap-6'
           >
             <p>{day_of_week}</p>
-            <p>{start_time}</p>
-            <p>{end_time}</p>
+            <p>{convertTo12Hour(start_time)}</p>
+            <p>{convertTo12Hour(end_time)}</p>
           </div>
         </div>
 
@@ -210,12 +216,14 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
 
         <div className='flex flex-row gap-4 w-full justify-center mt-4'>
           <button onClick={handleConfirm}
-            className='bg-green-500 px-2 py-1 rounded-lg text-black'
+            className='bg-green-500 px-2 py-1 rounded-lg text-black
+              hover:bg-green-700 hover:text-white'
           >
             Confirm
           </button>
           <button onClick={() => setIsDeleting(false)}
-            className='bg-red-500 px-2 py-1 rounded-lg text-black'  
+            className='bg-red-500 px-2 py-1 rounded-lg text-black
+              hover:bg-red-700'  
           >
             Cancel
           </button>
@@ -389,8 +397,6 @@ function InfoDialog(){
     if(
       messageSpanRef.current === null ||
       message?.length === undefined ||
-      message?.length === null ||
-      message?.length === 0 ||
       appointment_id === undefined ||
       appointment_id < 0
     ) return;
@@ -438,11 +444,13 @@ function SearchPanel(){
         <input type='text' className='ml-2'
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value) }
+          onKeyUp={(e) => e.key === 'Enter' && search(e)}
         />
       </label>
       <button
         type='button' onClick={e=>search(e)}
         className='bg-primary aspect-square rounded-full
+        hover:bg-primary-hover
         sm:p-2 p-2'  
       >
         <IoIosSearch className='sm:text-2xl'/>
@@ -551,7 +559,11 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
         </div>
       </div>
 
-      <button onClick={SendButtonHandler}>
+      <button onClick={SendButtonHandler}
+        className='hover:bg-primary-hover aspect-square rounded-full
+        duration-200
+        flex-row-center'
+      >
         <TbCalendarUser
           className='text-2xl'/>
       </button>
