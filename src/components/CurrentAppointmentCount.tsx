@@ -21,7 +21,6 @@ export default function CurrentTotalAppointmentCount(){
   const { confirmed, pending, total } = currentCount;
 
   useEffect(()=>{
-    console.log(currentAppointmentCount);
     if (currentAppointmentCount.length === 0) return;
 
     // update the current count

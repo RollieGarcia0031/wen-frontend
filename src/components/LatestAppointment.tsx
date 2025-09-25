@@ -203,8 +203,7 @@ export function RemoveSeenAppointmentDialog(){
 
       setSelectedIndexOfLatestAppointment(-1);
 
-      console.log('recalculating the current apt');
-
+      // recalculate the confirmed and total count of appointments
       const newCount = currentAppointmentCount.map(x => {
         if (x.status === 'confirmed') x.count -= 1;
         return x;
