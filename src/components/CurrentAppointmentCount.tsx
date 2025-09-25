@@ -61,7 +61,7 @@ export default function CurrentTotalAppointmentCount(){
           w-full
           [&>p]:font-light[&>p]:text-lg
           [&>span]:font-bold [&>span]:text-lg
-          [&>span]:flex  [&>span]:flex-row [&>span]:items-center
+          [&>span]:flex  [&>span]:flex-row [&>span]:items-center [&>span]:justify-end
           sm:[&>span]:gap-2"
         >
           <p>Confirmed:</p>

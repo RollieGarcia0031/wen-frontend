@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useLatestAppointmentContext } from "@/context/LatestAppointmentContext";
+import { CurrentAppointmentCountData, useLatestAppointmentContext } from "@/context/LatestAppointmentContext";
 import { fetchBackend } from "@/lib/api";
 import { convertTo12Hour } from "@/lib/timeFormatter";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { LatestAppointment } from "@/context/LatestAppointmentContext";
+import { count } from "console";
 
 /**
  * used in main dashboard to display the appointements booked for the current day
@@ -137,7 +138,9 @@ export function RemoveSeenAppointmentDialog(){
     setLatestAppointments,
     selectedIndexOfLatestAppointment,
     removeDialogRef,
-    setSelectedIndexOfLatestAppointment
+    setSelectedIndexOfLatestAppointment,
+    setCurrentAppointmentCount,
+    currentAppointmentCount
   } = useLatestAppointmentContext();
 
   const selectedLatestAppointment = latestAppointments[selectedIndexOfLatestAppointment];
@@ -199,6 +202,16 @@ export function RemoveSeenAppointmentDialog(){
       setLatestAppointments(x => x.filter((_, i) => i !== selectedIndexOfLatestAppointment));
 
       setSelectedIndexOfLatestAppointment(-1);
+
+      console.log('recalculating the current apt');
+
+      const newCount = currentAppointmentCount.map(x => {
+        if (x.status === 'confirmed') x.count -= 1;
+        return x;
+      });
+
+      setCurrentAppointmentCount(newCount);
+
       return;
     }
     alert(response.message);
