@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { CurrentAppointmentCountData, useLatestAppointmentContext } from "@/context/LatestAppointmentContext";
+import { useLatestAppointmentContext } from "@/context/LatestAppointmentContext";
 import { fetchBackend } from "@/lib/api";
 import { convertTo12Hour } from "@/lib/timeFormatter";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { LatestAppointment } from "@/context/LatestAppointmentContext";
-import { count } from "console";
 
 /**
  * used in main dashboard to display the appointements booked for the current day
