@@ -73,7 +73,7 @@ export function LatestAppointmentContextProvider({children}: {children: React.Re
 
           try{
               const currentAppointmentCount = await fetchBackend(
-                "appointments/groupedCount",
+                "appointment/groupedCount",
                 "POST",
                 JSON.stringify(body),
                 new Headers({"Content-Type": "application/json"})

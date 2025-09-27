@@ -22,7 +22,7 @@ export default function TomorrowAppointmentCount(){
       const body = { time_range: "tomorrow" };
 
       const response = await fetchBackend(
-        "appointments/groupedCount",
+        "appointment/groupedCount",
         "POST",
         JSON.stringify(body),
         new Headers({"Content-Type": "application/json"})
