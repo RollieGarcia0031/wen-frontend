@@ -265,10 +265,13 @@ function ConfirmationDialog({ref, availability, profName, prof_id}: {
     const month = date?.getMonth() || 0;
     const day = date?.getDate() || 0;
 
+    const profIdStr = prof_id.toString();
+    const prof_processed_id = /^\d+$/.test(profIdStr)? parseInt(profIdStr) : profIdStr;
+
     const dateString = `${year}-${month + 1}-${day}`;
 
     const body = {
-      prof_id: parseInt(prof_id.toString()),
+      prof_id: prof_processed_id,
       availability_id: id,
       time_stamp: dateString,
       message: message,
