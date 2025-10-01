@@ -50,8 +50,12 @@ function AvailabilityPanel({id}:{
   const [profName, setProfName] = useState<string>("");
   
   useEffect(()=>{
-    const body = {id: parseInt(id.toString())};
+    const idStr = id.toString();
 
+    const body = {
+      id: /^\d+$/.test(idStr)? parseInt(idStr) : idStr
+    };
+    
     const fetchAvailabilities = async () =>  {
       const response = await fetchBackend(
         'search/availability',
@@ -65,7 +69,7 @@ function AvailabilityPanel({id}:{
       } 
     }
 
-    fetchAvailabilities().catch(console.error);
+    fetchAvailabilities().catch(er => console.error(er));
 
     const fetchProfName = async () =>  {
       const response = await fetchBackend(
