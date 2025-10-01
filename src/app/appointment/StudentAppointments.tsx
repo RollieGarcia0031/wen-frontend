@@ -75,7 +75,7 @@ export default function SentAppointments(){
 
       </div>
     </div>
-    <NewAppointmentDialog/>
+    <SearchDialog/>
     <InfoDialog/>
   </>
   );
@@ -261,7 +261,7 @@ function DeleteDialog({ref, setIsDeleting, appointment_id, index, setSentAppoint
 }
 
 // dialog pop up for adding a new appointment and searching for professors
-function NewAppointmentDialog(){
+function SearchDialog(){
     const {professors, setProfessors, dialogRef, setNameInput, nameInput} = useStudentAppointmentContext();
 
   return(
@@ -481,11 +481,11 @@ function SearchPanel(){
  */
 function SearchResult(){
   const {professors} = useStudentAppointmentContext();
-  const processProfessorList = ProcessProfData(professors);
   const [selectedButtonIndex, setSelectedButtonIndex] = useState<number>(-1);
   const [searchMessage, setSearchMessage] = useState<string>("Search Result");
 
   useEffect(()=>{
+    console.log(professors);
     if(professors.length === 0){
       setSearchMessage("No professors found");
     }
@@ -502,11 +502,11 @@ function SearchResult(){
       >
         {
           professors?.length !== 0 &&
-          Object.values(processProfessorList).map((professor: newProfItem, index: number) => (
+          professors?.map((professor, index: number) => (
             <SearchResultCard
               key={index}
               index={index}
-              professor={professor.data}
+              professor={professor}
               selectedSendButton={selectedButtonIndex}
               setSelectedButtonIndex={setSelectedButtonIndex}
             />
@@ -529,16 +529,14 @@ function SearchResult(){
  * boxes holding the individual professor information 
  */
 function SearchResultCard({professor, selectedSendButton, index, setSelectedButtonIndex}:{
-  professor: SearchProfessorResponseDataItem[],
+  professor: SearchProfessorResponseDataItem,
   index: number,
   selectedSendButton: number,
   setSelectedButtonIndex: React.Dispatch<React.SetStateAction<number>>
 }){
-  const { name } = professor[0];
+  const { name, departments } = professor || {};
 
-  const departments = professor.map((prof) => prof.department);
-  const years = professor.map((prof) => prof.year);
-  const department = Array.from(new Set(departments)).join(", ");
+  const departmentDisplayText = departments?.join(", ") || "";
 
   const isSelectedToSend = selectedSendButton === index;
 
@@ -556,7 +554,7 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
       <div className='flex-1'>
         <p className='font-bold'>{name}</p>
         <div className='flex flex-row gap-4'>
-          <p className='text-xs'>department: {department}</p>
+          <p className='text-xs'>department: {departmentDisplayText}</p>
         </div>
       </div>
 
@@ -576,7 +574,7 @@ function SearchResultCard({professor, selectedSendButton, index, setSelectedButt
 
   function SendConfirmDialog(){
     const router = useRouter();
-    const { user_id } = professor[0]
+    const { user_id } = professor;
 
     return (
       <div
