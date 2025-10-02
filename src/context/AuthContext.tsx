@@ -2,15 +2,18 @@
 
 import React, { useContext, createContext, useState, useEffect, use } from "react";
 
+type Role = 'student' | 'professor' | 'default';
+
 interface AuthContextProps {
     userName?: string;
     setUserName: React.Dispatch<React.SetStateAction<string>>;
-    role?: string;
+    role: Role;
     setRole?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const AuthContext = createContext<AuthContextProps>({
   setUserName: () => {},
+  role: 'default'
 });
 
 export function AuthContextProvider({children}: {children: React.ReactNode}) {

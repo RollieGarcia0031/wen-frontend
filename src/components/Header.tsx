@@ -22,9 +22,15 @@ export default function Header(){
 
   if(protectedRoutes.includes(pathname)) return null;
 
+  const rolesHeader = {
+    professor: <ProfessorHeader/>,
+    student: <StudentHeader/>,
+    default: null
+  }
+
   return (
     <header>
-      {role === "professor" ? <ProfessorHeader /> : <StudentHeader />}
+      {rolesHeader[role]}
     </header>
   );
 }
