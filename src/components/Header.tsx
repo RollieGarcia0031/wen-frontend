@@ -22,9 +22,15 @@ export default function Header(){
 
   if(protectedRoutes.includes(pathname)) return null;
 
+  const rolesHeader = {
+    professor: <ProfessorHeader/>,
+    student: <StudentHeader/>,
+    default: null
+  }
+
   return (
     <header>
-      {role === "professor" ? <ProfessorHeader /> : <StudentHeader />}
+      {rolesHeader[role]}
     </header>
   );
 }
@@ -33,6 +39,7 @@ function StudentHeader(){
   const pathname = usePathname().split("/");
   const basePath = pathname[1];
 
+  /** checks the basepath of the url, if matched to the anchor href, it toggles primary color */
   const HeaderIconAnchorDesign = (requiredPath: string) =>{
     return `${basePath === requiredPath ? "bg-primary" : ""}`;
   }
@@ -42,19 +49,24 @@ function StudentHeader(){
       className="flex flex-row justify-center items-center h-full p-2
       border-b-2 border-b-primary"
     >
-      <nav className="w-full flex flex-row
+      <h1 className="sm:text-3xl">
+        Wen
+      </h1>
+      {/* this navbar holds the whole header elements */}
+      <nav className="flex flex-row flex-1
         [&_svg]:text-2xl [&_svg]:cursor-pointer [&_a]:duration-200
-        sm:[&_a]:rounded-xl">
+        sm:[&_a]:rounded-xl sm:mt-2">
+        {/* contains the main options in the header, home button and send apt button */}
         <div
-          className="flex gap-4 flex-row
+          className="flex gap-4 flex-row flex-1
           justify-center items-center
           *:flex-row *:flex *:justify-center *:items-center *:gap-2
-          sm:[&_a]:p-2
-          "
-        
+          sm:[&_a]:p-2"
         >
           <Link href="/"
-            className={HeaderIconAnchorDesign("")}
+            className={
+              HeaderIconAnchorDesign("")
+            }
           >
             <IoHomeOutline />
           </Link>
@@ -76,7 +88,7 @@ function AccountOptionPanel(){
   const [ isOpened, setIsOpened ] = useState(false);
 
   return (
-    <div className='flex-1 flex flex-row justify-end items-center'>
+    <div className='flex flex-row justify-end items-center'>
       <div
         className='overflow-hidden'
       >
@@ -84,7 +96,7 @@ function AccountOptionPanel(){
           onClick={()=>setIsOpened(x=>!x)}
         >
           <VscAccount />
-          <p>{userName}</p>
+          <p className="sm:text-xl">{userName}</p>
           <TbLayoutBottombarCollapse/>
         </button>
 
@@ -123,12 +135,19 @@ function ProfessorHeader(){
   return (
     <header>
       <nav
-        className="flex flex-row justify-center items-center h-full p-4
+        className="flex flex-row justify-center items-center h-full
+          sm:px-4 sm:py-2 sm:mt-3
           [&_a]:flex-row [&_a]:flex [&_a]:justify-center [&_a]:items-center [&_a]:gap-2
           sm:[&_a]:p-2"
       >
+        <h1 className="sm:text-3xl">
+          Wen
+        </h1>
+        {/* holds the primary buttons in the header */}
         <div 
-          className="flex gap-4 flex-row [&_svg]:text-2xl [&_svg]:cursor-pointer"
+          className="flex-1 flex-row-center
+            sm:gap-4
+            [&_svg]:text-2xl [&_svg]:cursor-pointer"
         >
           <Link href="/"
             className={HeaderIconClassName("")}
@@ -146,8 +165,6 @@ function ProfessorHeader(){
           >
             <VscAccount />Manage Your Profile
           </Link>
-          <div className='flex-1 text-right'>
-          </div>
         </div>
 
         <AccountOptionPanel />
