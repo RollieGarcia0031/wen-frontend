@@ -8,7 +8,7 @@ interface AuthContextProps {
     userName?: string;
     setUserName: React.Dispatch<React.SetStateAction<string>>;
     role: Role;
-    setRole?: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setRole?: React.Dispatch<React.SetStateAction<Role>>;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -18,11 +18,11 @@ const AuthContext = createContext<AuthContextProps>({
 
 export function AuthContextProvider({children}: {children: React.ReactNode}) {
   const [userName, setUserName] = useState<string>("");
-  const [role, setRole] = useState<string | undefined>("");
+  const [role, setRole] = useState<Role>("default");
 
   useEffect(()=>{
     const sessionName = sessionStorage.getItem("name");
-    const sessionRole = sessionStorage.getItem("role");
+    const sessionRole = sessionStorage.getItem("role") as Role;
     if(sessionName && sessionRole) setUserName(sessionName), setRole(sessionRole);
   },[]);
 
