@@ -39,6 +39,7 @@ function StudentHeader(){
   const pathname = usePathname().split("/");
   const basePath = pathname[1];
 
+  /** checks the basepath of the url, if matched to the anchor href, it toggles primary color */
   const HeaderIconAnchorDesign = (requiredPath: string) =>{
     return `${basePath === requiredPath ? "bg-primary" : ""}`;
   }
@@ -48,19 +49,24 @@ function StudentHeader(){
       className="flex flex-row justify-center items-center h-full p-2
       border-b-2 border-b-primary"
     >
-      <nav className="w-full flex flex-row
+      <h1 className="sm:text-3xl">
+        Wen
+      </h1>
+      {/* this navbar holds the whole header elements */}
+      <nav className="flex flex-row flex-1
         [&_svg]:text-2xl [&_svg]:cursor-pointer [&_a]:duration-200
-        sm:[&_a]:rounded-xl">
+        sm:[&_a]:rounded-xl sm:mt-2">
+        {/* contains the main options in the header, home button and send apt button */}
         <div
-          className="flex gap-4 flex-row
+          className="flex gap-4 flex-row flex-1
           justify-center items-center
           *:flex-row *:flex *:justify-center *:items-center *:gap-2
-          sm:[&_a]:p-2
-          "
-        
+          sm:[&_a]:p-2"
         >
           <Link href="/"
-            className={HeaderIconAnchorDesign("")}
+            className={
+              HeaderIconAnchorDesign("")
+            }
           >
             <IoHomeOutline />
           </Link>
@@ -82,7 +88,7 @@ function AccountOptionPanel(){
   const [ isOpened, setIsOpened ] = useState(false);
 
   return (
-    <div className='flex-1 flex flex-row justify-end items-center'>
+    <div className='flex flex-row justify-end items-center'>
       <div
         className='overflow-hidden'
       >
