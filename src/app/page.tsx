@@ -27,18 +27,8 @@ export default function Home() {
     <LatestAppointmentContextProvider>
       <div
         className="space-y-8
-        sm:p-4"
+        sm:p-4 sm:mt-20"
       >
-        <h1
-          className="text-4xl
-          sm:mt-8"
-        >
-          {Greeting()}
-          <span className="text-3xl ml-4">
-            {userName}!
-          </span>
-        </h1>
-
         <div className="flex flex-col justify-center items-center">
           <div className="flex flex-col justify-center sm:w-[30rem] sm:gap-8">
             <div className="flex flex-row justify-between">
