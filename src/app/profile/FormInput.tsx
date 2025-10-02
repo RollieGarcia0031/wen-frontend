@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
-export default function FormInput({type, label, value, onChange, defaultValue}: {
+export default function FormInput({type, label, value, onChange, defaultValue, editable=true}: {
   type: string,
   label: string,
   value?: string,
-  defaultValue?: string
+  defaultValue?: string,
+  editable?: boolean,
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -46,8 +47,9 @@ export default function FormInput({type, label, value, onChange, defaultValue}: 
       value={value}
       defaultValue={defaultValue}
       name={label}
-      onChange={onChange}
+      onChange={editable? onChange : ()=>{}}
       required
+      contentEditable={`${editable}`}
     />
     </>
   );

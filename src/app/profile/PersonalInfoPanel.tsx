@@ -79,7 +79,7 @@ export default function PersonalInforPanel(){
         </div>
 
         <div>
-          <FormInput type='email' label="Email"
+          <FormInput type='email' label="Email" editable={false}
             value={emailInput}
             onChange={(e) => setEmailInput(e.target.value)}
           />
