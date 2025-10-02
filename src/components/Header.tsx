@@ -96,7 +96,7 @@ function AccountOptionPanel(){
           onClick={()=>setIsOpened(x=>!x)}
         >
           <VscAccount />
-          <p>{userName}</p>
+          <p className="sm:text-xl">{userName}</p>
           <TbLayoutBottombarCollapse/>
         </button>
 
@@ -135,12 +135,19 @@ function ProfessorHeader(){
   return (
     <header>
       <nav
-        className="flex flex-row justify-center items-center h-full p-4
+        className="flex flex-row justify-center items-center h-full
+          sm:px-4 sm:py-2 sm:mt-3
           [&_a]:flex-row [&_a]:flex [&_a]:justify-center [&_a]:items-center [&_a]:gap-2
           sm:[&_a]:p-2"
       >
+        <h1 className="sm:text-3xl">
+          Wen
+        </h1>
+        {/* holds the primary buttons in the header */}
         <div 
-          className="flex gap-4 flex-row [&_svg]:text-2xl [&_svg]:cursor-pointer"
+          className="flex-1 flex-row-center
+            sm:gap-4
+            [&_svg]:text-2xl [&_svg]:cursor-pointer"
         >
           <Link href="/"
             className={HeaderIconClassName("")}
@@ -158,8 +165,6 @@ function ProfessorHeader(){
           >
             <VscAccount />Manage Your Profile
           </Link>
-          <div className='flex-1 text-right'>
-          </div>
         </div>
 
         <AccountOptionPanel />
