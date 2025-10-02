@@ -95,7 +95,7 @@ function AppointmentCard({appointment, index}: {
   index: number
 }){
   const { status, name, day_of_week, start_time, end_time, appointment_id, time_stamp } = appointment;
-  let timeStampDisplay = time_stamp ? new Date(time_stamp).toLocaleDateString('en-US', {
+  const timeStampDisplay = time_stamp ? new Date(time_stamp).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
