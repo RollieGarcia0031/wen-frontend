@@ -166,13 +166,13 @@ export function RemoveSeenAppointmentDialog(){
           [&>button]:rounded-md [&>button]:font-bold"
         >
           <button
-            className="bg-green-700"
+            className="bg-green-500 hover:bg-green-700 text-black hover:text-white"
             onClick={handleYesButton}
           >
             Yes
           </button>
 
-          <button className="bg-red-700"
+          <button className="bg-red-800 hover:bg-red-600 hover:text-black"
             onClick={handleNoButton}
           >
             No
