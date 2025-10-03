@@ -3,7 +3,7 @@ export async function fetchBackend(path: string, method: string, body?: any, hea
   
   headers = headers || {"Content-Type": "application/json"};
 
-  const response = await fetch(
+  let response = await fetch(
     `${baseURL}/${path}`,
     {
       method,
@@ -12,6 +12,27 @@ export async function fetchBackend(path: string, method: string, body?: any, hea
       credentials: "include",
     }
   );
+
+  if (response.status === 401){
+    const tokenResponse = await fetch(`${baseURL}/auth/refresh`, {
+      method: "POST",
+      headers,
+      credentials: "include"
+    })
+
+    if (tokenResponse.status === 200 || tokenResponse.success) {
+      response = await fetch(
+        `${baseURL}/${path}`,
+          {
+            method,
+            headers,
+            body: body,
+            credentials: "include",
+          }
+      );
+     
+    }
+  }
 
   return await response.json();
 } 
