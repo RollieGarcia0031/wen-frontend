@@ -20,7 +20,9 @@ export async function fetchBackend(path: string, method: string, body?: any, hea
       credentials: "include"
     })
 
-    if (tokenResponse.status === 200 || tokenResponse.success) {
+    const jsonTokenResponse = await tokenResponse.json();
+
+    if (tokenResponse.status === 200 || jsonTokenResponse.success) {
       response = await fetch(
         `${baseURL}/${path}`,
           {
