@@ -79,12 +79,20 @@ function ReceivedAppointments(){
       >
         Received Appointments
       </h1>
-
       <div
         className='flex flex-col justify-center items-center w-[40rem]
-        border-highlight-muted border-2 border-solid rounded-md
+        border-highlight border-2 border-solid rounded-md
         sm:p-6'
       >
+        {/* message for empty apppointments */}
+        {appointments?.length === 0 && (
+          <div
+            className='text-xl text-text-muted('
+          >
+            You haven't recieve any appointments yet :(            
+          </div>
+        )}
+
         {appointments?.map((appointment, index) =>
           <AppointmentCard
             key={index}
