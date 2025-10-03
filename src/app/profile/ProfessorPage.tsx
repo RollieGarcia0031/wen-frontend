@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Dispatch, SetStateAction, RefObject } from "react";
 import { fetchBackend } from '@/lib/api';
 import { ApiResponse, SearchAvailabilityResponseDataItem } from "@/lib/response";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
@@ -18,6 +18,8 @@ export default function ProfessorPage(){
   //profiles and availability that will render
   const [profiles, setProfiles] = useState<ProfessorProfile[]>([]);
   const [availabilities, setAvailabilities] = useState<SearchAvailabilityResponseDataItem[]>([]);
+  const [selectedAvailabilityIndex, setSelectedAvailabilityIndex] = useState(-1);
+  const deleteDialogRef = useRef<HTMLDialogElement>(null);
 
   // fetch role from session storage
   // and fetch profiles and availabilities from backend
@@ -63,6 +65,15 @@ export default function ProfessorPage(){
       <AvailabilityPanel
         availabilities={availabilities}
         setAvailabilities={setAvailabilities}
+        deleteDialogRef={deleteDialogRef}
+        setSelectedAvailabilityIndex={setSelectedAvailabilityIndex}
+      />
+
+      <DeleteAvailabilityDialog
+        availabilties={availabilities}
+        setAvailabilities={setAvailabilities}
+        selectedAvailabilityIndex={selectedAvailabilityIndex}
+        ref={deleteDialogRef}
       />
     </div>
   );
@@ -133,6 +144,7 @@ function ProfileContainer({profiles, setProfiles}:{
               setProfiles={setProfiles}
               index={index}
               profile_id={profile.id}
+              
             />
           )}
         </div>
@@ -220,9 +232,11 @@ function ProfileCard({profile, setProfiles, index, profile_id}:{
 }
 
 
-function AvailabilityPanel({availabilities, setAvailabilities}:{
+function AvailabilityPanel({availabilities, setAvailabilities, setSelectedAvailabilityIndex, deleteDialogRef}:{
   availabilities: SearchAvailabilityResponseDataItem[],
-  setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
+  setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>,
+  setSelectedAvailabilityIndex: Dispatch<SetStateAction<number>>,
+  deleteDialogRef: RefObject<HTMLDialogElement | null>
 }){
   type day = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
 
@@ -272,8 +286,10 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
           {availabilities?.map((availability, index) =>
             <AvailabilityCard
               key={index}
+              index={index}
               availability={availability}
-              setAvailabilities={setAvailabilities}
+              deleteDialogRef={deleteDialogRef}
+              setSelectedAvailabilityIndex={setSelectedAvailabilityIndex}
             />
           )}
         </div>
@@ -329,9 +345,11 @@ function AvailabilityPanel({availabilities, setAvailabilities}:{
 }
 
 
-function AvailabilityCard({availability, setAvailabilities}:{
+function AvailabilityCard({availability, setSelectedAvailabilityIndex, deleteDialogRef, index}:{
   availability: SearchAvailabilityResponseDataItem,
-  setAvailabilities: React.Dispatch<React.SetStateAction<SearchAvailabilityResponseDataItem[]>>
+  setSelectedAvailabilityIndex: Dispatch<SetStateAction<number>>,
+  deleteDialogRef: RefObject<HTMLDialogElement | null>,
+  index: number
 }){
   const { day_of_week, start_time, end_time, id } = availability;
 
@@ -372,21 +390,46 @@ function AvailabilityCard({availability, setAvailabilities}:{
   );
 
   async function handleRemove(){
-    
+    deleteDialogRef?.current?.showModal();
+    setSelectedAvailabilityIndex(index)
+  }
+}
+
+function DeleteAvailabilityDialog({setAvailabilities, availabilties, selectedAvailabilityIndex, ref}: {
+  setAvailabilities: Dispatch<SetStateAction<SearchAvailabilityResponseDataItem[]>>,
+  availabilties: SearchAvailabilityResponseDataItem[]
+  selectedAvailabilityIndex: number,
+  ref: RefObject<HTMLDialogElement | null>
+}){
+
+  const id = availabilties[selectedAvailabilityIndex]?.id;
+
+  return (
+    <dialog ref={ref}>
+      <h1>Are you sure you want to delete this?</h1>
+      <button
+        type='button'
+        onClick={handleConfirm}
+      >
+        Yes
+      </button>
+    </dialog>
+  );
+
+  async function handleConfirm(){   
     try{
       const body = {id};
       const response = await fetchBackend(`professor/availability`, "DELETE", JSON.stringify(body));
 
       if(response.success && response.data.id === id) {
         setAvailabilities(x => x.filter(availability => availability.id !== id));
+        ref?.current?.close();
         return;
       }
-
       alert(response.message);
 
     } catch (err) {
       console.error(err);
     }
-    
   }
-}
+} 
