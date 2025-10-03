@@ -89,7 +89,7 @@ function ReceivedAppointments(){
           <div
             className='text-xl text-text-muted('
           >
-            You haven't recieve any appointments yet :(            
+            You haven't recieve any appointments yet &lsquo;(            
           </div>
         )}
 
