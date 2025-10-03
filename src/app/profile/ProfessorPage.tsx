@@ -7,6 +7,7 @@ import { IoIosRemoveCircleOutline } from "react-icons/io";
 import FormInput from "./FormInput";
 import PersonalInfoPanel from "./PersonalInfoPanel";
 import { convertTo12Hour } from "@/lib/timeFormatter";
+import { MdOutlineClose } from "react-icons/md";
 
 interface ProfessorProfile {
   id: number
@@ -405,14 +406,33 @@ function DeleteAvailabilityDialog({setAvailabilities, availabilties, selectedAva
   const id = availabilties[selectedAvailabilityIndex]?.id;
 
   return (
-    <dialog ref={ref}>
+    <dialog ref={ref}
+      className="sm:open:p-4"
+    >
+      <div className="flex flex-row justify-end sm:mb-2">
+        <button onClick={handleClose}>
+          <MdOutlineClose />
+        </button>
+      </div>
       <h1>Are you sure you want to delete this?</h1>
-      <button
-        type='button'
-        onClick={handleConfirm}
+      <p
+        className="text-sm text-text-muted text-justify
+        sm:mt-2 sm:mb-4"
       >
-        Yes
-      </button>
+        If you delete this, this would also <br/>
+        delete all of the appointments <br/>
+        assigned to this day and time
+      </p>
+
+      <div className="flex-row-center sm:mt-2">
+        <button
+          type='button'
+          onClick={handleConfirm}
+          className="bg-primary px-4 py-1 rounded-md hover:bg-primary-hover"
+        >
+          Yes
+        </button>
+      </div>
     </dialog>
   );
 
@@ -431,5 +451,9 @@ function DeleteAvailabilityDialog({setAvailabilities, availabilties, selectedAva
     } catch (err) {
       console.error(err);
     }
+  }
+
+  function handleClose(){
+    ref.current?.close();
   }
 } 
