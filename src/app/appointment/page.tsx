@@ -16,24 +16,35 @@ import { convertTo12Hour } from '@/lib/timeFormatter'
 
 export default function Appointment(){
   const { role } = useAuthContext();
-  
-  useEffect(()=>{
-    console.log(role);
-  }, [role]);
 
-  return(
-    <div>
-      {role === "student" ? (
-        <StudentContextProvider>
-        <SentAppointments />
-        </StudentContextProvider>
-      ):(
-        <ProfessorContextProvider>
-          <ReceivedAppointments />
-        </ProfessorContextProvider>
-      )}
-    </div>
-  );
+
+  switch (role){
+    case 'student':
+      return (
+        <div>
+          <StudentContextProvider>
+          <SentAppointments />
+          </StudentContextProvider>
+        </div>
+      );
+
+    case 'professor':
+      return(
+        <div>
+            <ProfessorContextProvider>
+              <ReceivedAppointments />
+            </ProfessorContextProvider>
+        </div>
+      );
+      
+    default:
+      return (
+        <div>
+          LOADING...
+        </div>
+      );
+  }
+
 }
 
 /**
