@@ -1,40 +1,34 @@
-export async function fetchBackend(path: string, method: string, body?: any, headers?: any) {
+export async function fetchBackend(path: string, method: string, body?: any, headers?: HeadersInit) {
   const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
   
-  headers = headers || {"Content-Type": "application/json"};
+  headers = headers || { "Content-Type": "application/json" }
 
-  let response = await fetch(
-    `${baseURL}/${path}`,
-    {
-      method,
-      headers,
-      body: body,
-      credentials: "include",
-    }
-  );
+  const options: RequestInit = {
+    method,
+    body: body,
+    headers,
+    credentials: "include",
+  }
 
-  if (response.status === 401){
-    const tokenResponse = await fetch(`${baseURL}/auth/refresh`, {
+  let response = await fetch(`${baseURL}/${path}`, options);
+
+  if (response.status === 401) {
+    const refreshToken = await fetch(`${baseURL}/auth/refresh`, {
       method: "POST",
-      headers,
       credentials: "include"
     })
 
-    const jsonTokenResponse = await tokenResponse.json();
-
-    if (tokenResponse.status === 200 || jsonTokenResponse.success) {
-      response = await fetch(
-        `${baseURL}/${path}`,
-          {
-            method,
-            headers,
-            body: body,
-            credentials: "include",
-          }
-      );
-     
+    if (refreshToken.ok) {
+      response = await fetch(`${baseURL}/${path}`, options);
+    } else {
+      window.location.href = '/login';
+      return refreshToken;
     }
   }
 
-  return await response.json();
+  const contentType = response.headers.get('content-type');
+
+  if (contentType && contentType.includes('application/json')) return await response.json()
+
+  return response;
 } 
