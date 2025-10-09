@@ -18,7 +18,8 @@ export default function SendAppointment({params}: {
   const { id } = use(params);
   return (
     <div
-      className='w-full h-full flex flex-col justify-center items-center'
+      className='w-full h-full flex flex-col justify-start items-center
+      mt-10'
     >
       <button>
         <Link href='/appointment'>
