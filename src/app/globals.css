@@ -54,31 +54,6 @@ body {
   * {
     @apply text-foreground
   }
-
-  input, textarea {
-    @apply border-highlight-muted border-[1px] border-solid rounded-md px-2 py-1
-      outline-none
-      bg-background-light
-      focus:outline-none;
-  }
-
-  select, option {
-    @apply border-highlight-muted border-[1px] border-solid rounded-md px-3 py-2 bg-black;
-  }
-  button, input[type="submit"], a {
-    @apply cursor-pointer;
-  }
-
-  dialog:open {
-    @apply block fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-      bg-background text-foreground border-highlight-muted border-[1px] border-solid rounded-md px-2 py-1
-      focus:outline-none backdrop-blur-3xl backdrop-brightness-200
-      shadow-2xl shadow-black/50;
-  }
-
-  dialog:not([open]) {
-    @apply hidden;
-  }
 }
 
 @layer components {
@@ -86,8 +61,12 @@ body {
     @apply border-highlight border-[1px] border-solid rounded-2xl px-2 py-1 bg-black;
   }
 
-  .flex-row-center {
+  .flex-rc {
     @apply flex flex-row justify-center items-center;
+  }
+
+  .flex-cc {
+    @apply flex flex-col justify-center items-center;
   }
 }
 
