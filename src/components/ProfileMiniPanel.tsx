@@ -36,6 +36,7 @@ export default function ProfileMiniPanel(){
       [&>*]:flex [&>*]:flex-items-end [&>*]:gap-2
       [&_*]:pl-1
       min-w-[8rem] [&_svg]:text-2xl
+      animate-fade-in
     ">
       <p className="mb-2">{user?.name}</p>
 
