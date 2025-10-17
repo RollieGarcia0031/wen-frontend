@@ -28,7 +28,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: oklch(20% 0.0 188);
-    --background-medium: oklch(20% 0.0 188);
+    --background-medium: oklch(10% 0.0 188);
     --background-light: oklch(35% 0.0 0);
     --foreground: #ededed;
     --text-muted: oklch(85% 0 0);
@@ -103,6 +103,19 @@ body {
       px-2 py-1
       bg-primary text-white
       hover:bg-primary-hover;
+  }
+
+  .common-button {
+    @apply cursor-pointer
+      duration-150
+      px-2 py-1
+      bg-background-light text-white
+      hover:bg-background-medium;
+  }
+
+  .svg-btn-sm {
+    @apply cursor-pointer
+      [&_svg]:text-2xl;
   }
 }
 
