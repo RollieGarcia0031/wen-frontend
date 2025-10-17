@@ -12,6 +12,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-background-medium: var(--background-medium);
+  --color-background-medium2: var(--background-medium2);
   --color-background-light: var(--background-light);
   --color-foreground: var(--foreground);
   --color-text-muted: var(--text-muted);
@@ -29,6 +30,7 @@
   :root {
     --background: oklch(20% 0.0 188);
     --background-medium: oklch(10% 0.0 188);
+    --background-medium2: oklch(25% 0.0005 188);
     --background-light: oklch(35% 0.0 0);
     --foreground: #ededed;
     --text-muted: oklch(85% 0 0);
@@ -48,11 +50,15 @@ body {
 }
 
 @layer base {
+}
   html, body {
     @apply h-full;
-  }
   * {
     @apply text-foreground;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
   }
 
   input, select, option {
@@ -68,6 +74,15 @@ body {
   h1 {
     @apply text-3xl;
   }
+
+  dialog {
+    @apply
+      open:fixed open:top-1/2 open:left-1/2 open:-translate-x-1/2 open:-translate-y-1/2
+      [&::backdrop]:bg-black/50 [&::backdrop]:fixed [&::backdrop]:top-0 [&::backdrop]:left-0 [&::backdrop]:w-full [&::backdrop]:h-full
+      focus:outline-none
+      open:bg-background-medium open:p-4 rounded-md
+      open:border-highlight-muted open:border-[1px] open:border-solid;
+  }
 }
 
 @layer components {
@@ -80,7 +95,7 @@ body {
   .card2 {
     @apply
       rounded-md px-2 py-1
-      bg-background-medium;
+      bg-background-medium2;
   }
 
   .flex-rc {
@@ -103,6 +118,10 @@ body {
     @apply flex flex-row justify-center items-center min-w-full min-h-full;
   }
 
+  .flex-rr {
+    @apply flex flex-row justify-end items-center;
+  }
+
 
   .primary-button {
     @apply cursor-pointer
@@ -121,7 +140,7 @@ body {
 
   .svg-btn-sm {
     @apply cursor-pointer
-      [&_svg]:text-2xl;
+      [&_svg]:text-xl;
   }
 }
 
