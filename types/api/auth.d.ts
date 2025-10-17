@@ -24,9 +24,11 @@ interface auth_register_request {
     role: UserRole
 }
 
-interface auth_profile_response {
-    id: number,
-    name: string,
-    email: string,
-    role: UserRole
+interface auth_profile_response extends common_response {
+    data: {
+        id: number,
+        name: string,
+        email: string,
+        role: UserRole
+    }
 }
