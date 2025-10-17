@@ -27,9 +27,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(5% 0.1 188);
-    --background-medium: oklch(15% 0.0 188);
-    --background-light: oklch(30% 0.0 0);
+    --background: oklch(20% 0.0 188);
+    --background-medium: oklch(20% 0.0 188);
+    --background-light: oklch(35% 0.0 0);
     --foreground: #ededed;
     --text-muted: oklch(85% 0 0);
     --primary: oklch(60% 0.1 188);
@@ -52,21 +52,57 @@ body {
     @apply h-full;
   }
   * {
-    @apply text-foreground
+    @apply text-foreground;
+  }
+
+  input, select, option {
+    @apply focus:outline-none
+      px-2 py-1 rounded-sm
+      bg-background-medium;
+  }
+
+  input[type='button'], input[type='submit'], button {
+    @apply cursor-pointer;
+  }
+
+  h1 {
+    @apply text-3xl;
   }
 }
 
 @layer components {
   .card {
-    @apply border-highlight border-[1px] border-solid rounded-2xl px-2 py-1 bg-black;
+    @apply border-highlight border-[1px] border-solid
+      rounded-2xl px-2 py-1
+      bg-background-light;
   }
 
   .flex-rc {
     @apply flex flex-row justify-center items-center;
   }
 
+  .flex-rl {
+    @apply flex flex-row justify-start;
+  }
+
   .flex-cc {
     @apply flex flex-col justify-center items-center;
+  }
+
+  .flex-cl {
+    @apply flex flex-col items-start;
+  }
+
+  .flex-full-center{
+    @apply flex flex-row justify-center items-center min-w-full min-h-full;
+  }
+
+
+  .primary-button {
+    @apply cursor-pointer
+      px-2 py-1
+      bg-primary text-white
+      hover:bg-primary-hover;
   }
 }
 
