@@ -12,7 +12,7 @@ export default function Login(){
   const [option, setOption] = useState<logOption>('login');
 
   return (
-    <div className='flex-full-center'>
+    <div className='flex-full-center min-h-screen'>
       <main
         className='flex-rc card
         px-5 py-15 gap-15'
