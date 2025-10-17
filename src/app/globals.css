@@ -77,6 +77,12 @@ body {
       bg-background-light;
   }
 
+  .card2 {
+    @apply
+      rounded-md px-2 py-1
+      bg-background-medium;
+  }
+
   .flex-rc {
     @apply flex flex-row justify-center items-center;
   }

@@ -1,13 +1,24 @@
 "use client"
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import { usePathname } from "next/navigation";
+import React, { useState } from "react";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { HiOutlineUserCircle } from "react-icons/hi";
 
+import ProfileMiniPanel from "./ProfileMiniPanel";
+
 export default function Header() {
   const router = useRouter();
+
+  const pathname = usePathname();
+
+  const [miniLogPanelIsOpened, setMiniLogPanelIsOpened] = useState(false);
+
+  if (pathname === "/login" || pathname === "/signup") {
+    return null;
+  }
 
   return (
     <header
@@ -26,9 +37,14 @@ export default function Header() {
           <IoMdNotificationsOutline />
         </button>
 
-        <button className="svg-btn-sm common-button">
-          <HiOutlineUserCircle/>
-        </button>
+        <div>
+          <button className="svg-btn-sm common-button"
+            onClick={() => setMiniLogPanelIsOpened(x=>!x)}
+          >
+            <HiOutlineUserCircle/>          
+          </button>
+          {  miniLogPanelIsOpened && <ProfileMiniPanel/>}
+        </div>
       </div>
     </header>
   );
