@@ -5,13 +5,15 @@ interface course_create_response extends common_response {
     }
 }
 
+interface courseListItem {
+    id: number;
+    created_by: string;
+    name: string;
+    description: string;
+}
+
 interface course_list_response extends common_response {
-    data: {
-        id: number;
-        created_by: string;
-        name: string;
-        description: string;
-    }[]
+    data: courseListItem[]
 }
 
 interface SelfCourseItem {
