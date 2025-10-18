@@ -53,9 +53,9 @@ function CustomCourseDialog({ref}:{
     <dialog ref={ref} className="w-[40rem] open:h-[70dvh] rounded-2xl
       overflow-x-hidden"
     >
-      <div className="flex-cr space-y-4 px-10">
+      <div className="flex-cr space-y-4">
         {/* close button */}
-        <div className="flex-rr">
+        <div className="flex-rr sticky top-0">
           <button className="svg-btn-sm *:fill-red-600"
             onClick={()=>ref.current?.close()}
           >
@@ -69,7 +69,7 @@ function CustomCourseDialog({ref}:{
 
       {/* form for adding a new course */}
         <form
-          className="card2 py-4 px-8"
+          className="card2 py-4 px-8 mx-10"
           onSubmit={addCourse}
         >
           <div className="flex-cl gap-2">
@@ -92,57 +92,59 @@ function CustomCourseDialog({ref}:{
         </form>
 
       {/* contains the list of the created course by the user */}
-        <div className="card2 px-8 py-4">
-          <p>Your Courses Created</p>
+        <div className="px-10">
+          <div className="card2 px-8 py-4">
+            <p>Your Courses Created</p>
 
-          <div className="py-4 px-6 bg-background-medium flex-cc gap-4 rounded-md
-            mt-4"
-          >
-          {
-            courseList?.map(course =>
-              <div className={`flex-rc duration-150 pt-2 rounded-t-md
-                ${selectedCourseId === course.id ? 'bg-background-light': ''}`}
-                key={course.id}
-              >
-                <div className="relative
-                  grid grid-cols-[max-content_auto] grid-flow-row
-                  space-x-4 border-b-highlight-muted border-b-[1px] border-b-solid
-                  pb-2 px-4"
+            <div className="py-4 px-6 bg-background-medium flex-cc gap-4 rounded-md
+              mt-4"
+            >
+            {
+              courseList?.map(course =>
+                <div className={`flex-rc duration-150 pt-2 rounded-t-md
+                  ${selectedCourseId === course.id ? 'bg-background-light': ''}`}
+                  key={course.id}
                 >
-                  <p>Name: </p> <p>{course.name}</p>
-                  <p className="text-sm">Description:</p>
-                  <p className="text-sm">{course.description}</p>
-                </div>
-                <span>
-                  {
-                    selectedCourseId === course.id && 
-                    <div className="absolute translate-x-[-8rem] max-w-[8rem] flex-cc
-                    card2 p-2
-                    ">
-                      <p>Are you sure?</p>
-                      <div className="flex flex-row items-center justify-around
-                        mt-2
-                        [&_button]:hover:bg-background-medium [&_button]:p-1 [&_button]:rounded-full"
-                      >
-                        <button className="svg-btn-sm" onClick={deleteCourse}
-                          title="Warning! deleting this in the database can affect the other users that are using this course"
+                  <div className="relative
+                    grid grid-cols-[max-content_auto] grid-flow-row
+                    space-x-4 border-b-highlight-muted border-b-[1px] border-b-solid
+                    pb-2 px-4"
+                  >
+                    <p>Name: </p> <p>{course.name}</p>
+                    <p className="text-sm">Description:</p>
+                    <p className="text-sm">{course.description}</p>
+                  </div>
+                  <span>
+                    {
+                      selectedCourseId === course.id && 
+                      <div className="absolute translate-x-[-8rem] max-w-[8rem] flex-cc
+                      card2 p-2
+                      ">
+                        <p>Are you sure?</p>
+                        <div className="flex flex-row items-center justify-around
+                          mt-2
+                          [&_button]:hover:bg-background-medium [&_button]:p-1 [&_button]:rounded-full"
                         >
-                          <MdOutlineCheck className="fill-green-600"/>
-                        </button>
+                          <button className="svg-btn-sm" onClick={deleteCourse}
+                            title="Warning! deleting this in the database can affect the other users that are using this course"
+                          >
+                            <MdOutlineCheck className="fill-green-600"/>
+                          </button>
 
-                        <button className="svg-btn-sm" onClick={()=>setSelectedCourseId(-1)}>
-                          <MdOutlineCancel className="fill-red-600"/>
-                        </button>
+                          <button className="svg-btn-sm" onClick={()=>setSelectedCourseId(-1)}>
+                            <MdOutlineCancel className="fill-red-600"/>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  }
-                  <button className="svg-btn-sm" onClick={()=>setSelectedCourseId(course.id)}>
-                    <MdOutlineDeleteOutline className="fill-red-700"/>
-                  </button>
-                </span>
-              </div>
-            )
-          }
+                    }
+                    <button className="svg-btn-sm" onClick={()=>setSelectedCourseId(course.id)}>
+                      <MdOutlineDeleteOutline className="fill-red-700"/>
+                    </button>
+                  </span>
+                </div>
+              )
+            }
+            </div>
           </div>
         </div>
       </div>
