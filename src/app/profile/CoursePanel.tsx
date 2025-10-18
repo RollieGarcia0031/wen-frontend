@@ -1,8 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
 import fetchBackend from "@/lib/fetchBackend";
 import { useEffect, useRef, useState } from "react";
-import { IoMdAddCircleOutline, IoMdCloseCircleOutline, IoMdCreate } from "react-icons/io";
-import { MdDeleteForever, MdOutlineCancel, MdOutlineCheck, MdOutlineDeleteOutline } from "react-icons/md";
+import { IoMdAddCircleOutline, IoMdCloseCircleOutline, IoMdCreate, IoMdSettings } from "react-icons/io";
+import { MdOutlineCancel, MdOutlineCheck, MdOutlineDeleteOutline } from "react-icons/md";
 
 export default function CoursePanel(){
   const customCourseDialogRef = useRef<HTMLDialogElement>(null);
@@ -15,7 +15,7 @@ export default function CoursePanel(){
           title="You can add your own course if not listed in the options"
           onClick={()=>customCourseDialogRef.current?.showModal()}
         >
-          <IoMdAddCircleOutline/>
+          <IoMdSettings/>
         </button>
         <h3>Courses</h3>
       </div>
@@ -25,6 +25,9 @@ export default function CoursePanel(){
   );
 }
 
+/**
+ * Dialog box for creating and deleting a customized course
+ */
 function CustomCourseDialog({ref}:{
   ref: React.RefObject<HTMLDialogElement | null>
 }){
