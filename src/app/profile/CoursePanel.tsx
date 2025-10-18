@@ -100,7 +100,10 @@ function CustomCourseDialog({ref}:{
           >
           {
             courseList?.map(course =>
-              <div className="flex-rc" key={course.id}>
+              <div className={`flex-rc duration-150 pt-2 rounded-t-md
+                ${selectedCourseId === course.id ? 'bg-background-light': ''}`}
+                key={course.id}
+              >
                 <div className="relative
                   grid grid-cols-[max-content_auto] grid-flow-row
                   space-x-4 border-b-highlight-muted border-b-[1px] border-b-solid
@@ -121,7 +124,9 @@ function CustomCourseDialog({ref}:{
                         mt-2
                         [&_button]:hover:bg-background-medium [&_button]:p-1 [&_button]:rounded-full"
                       >
-                        <button className="svg-btn-sm" onClick={deleteCourse}>
+                        <button className="svg-btn-sm" onClick={deleteCourse}
+                          title="Warning! deleting this in the database can affect the other users that are using this course"
+                        >
                           <MdOutlineCheck className="fill-green-600"/>
                         </button>
 
