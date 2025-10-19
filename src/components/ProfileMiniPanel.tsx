@@ -40,7 +40,7 @@ export default function ProfileMiniPanel(){
     ">
       <p className="mb-2">{user?.name}</p>
 
-      <Link href="/login">
+      <Link href="/profile">
         <MdSettings/>
         Profile
       </Link>
