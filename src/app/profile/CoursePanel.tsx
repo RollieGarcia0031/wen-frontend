@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { IoMdSettings } from "react-icons/io";
+import { IoMdRemoveCircle, IoMdSettings } from "react-icons/io";
 import CustomCourseDialog from "./CustomCourseDialog";
 import { BiCollapseVertical } from "react-icons/bi";
 import fetchBackend from "@/lib/fetchBackend";
@@ -9,10 +9,15 @@ import { MdOutlineAdd } from "react-icons/md";
 export default function CoursePanel(){
   const customCourseDialogRef = useRef<HTMLDialogElement>(null);
 
+  // courses that will appear as options
   const [ courseList, setCourseList ] = useState<courseListItem[]>([]);
   const [ coursePickerIsOpen, setCoursePickerIsOpen ] = useState<boolean>(false);
   const [ selectedCourseIndex, setSelectedCourseIndex ] = useState<number>(-99);
   const selectedCourse = courseList[selectedCourseIndex];
+
+  // owned courses
+  const [ ownedCourses, setOwnedCourse ] = useState<course_assigned_item[]>([]);
+
 
   useEffect(()=>{
     const fetchCourses = async ()=>{
@@ -29,6 +34,20 @@ export default function CoursePanel(){
     }
 
     fetchCourses();
+
+    const fetchOwnedCourses = async ()=>{
+      const response = await fetchBackend("course/assigned", {
+        method: "GET",
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      if (response.ok){
+        const { data } = await response.json() as course_assigned_response;
+        setOwnedCourse(data);
+      }
+    }
+
+    fetchOwnedCourses();
   }, []);
 
   return (
@@ -44,6 +63,26 @@ export default function CoursePanel(){
         <h3>Courses</h3>
       </div>
 
+      <div className="bg-background-medium px-4 py-2 rounded-md
+        [&>*]:grid [&>*]:grid-cols-[3rem_6rem_auto_3rem] grid-rows-1
+        space-y-4"
+      >
+        <div>
+          <p>Year</p>
+          <p>Name</p>
+          <p>Desc</p>
+          <p></p>
+        </div>
+
+        {ownedCourses.map(course =>
+          <div key={course.id}>
+            <p>{course.year}</p>
+            <p>{course.name}</p>
+            <p>{course.description}</p>
+            <button><IoMdRemoveCircle/></button>
+          </div>
+        )}
+      </div>
       {/* shows the available course with option to use/add it */}
       <div className="[&>*]:bg-background-medium [&>*]:rounded-md">
         {/* contains input for adding a course */}
@@ -76,7 +115,7 @@ export default function CoursePanel(){
             <MdOutlineAdd/>
           </button>
         </form>
-        <div className={`duration-150 [&>*]:px-4 space-y-1
+        <div className={`duration-150 [&>*]:px-4
           ${ coursePickerIsOpen?
             'max-h-50 overflow-y-auto'
             :'max-h-0 overflow-y-hidden'
@@ -92,6 +131,7 @@ export default function CoursePanel(){
             {courseList.map((course, index) =>
               <button className={`grid grid-cols-[6rem_auto] space-x-7
                 hover:bg-background-light justify-items-start w-full
+                py-1
                 ${selectedCourseIndex === index? 'bg-primary':''}
                 `}
                 key={course.id}
@@ -130,6 +170,15 @@ export default function CoursePanel(){
 
     if (response.ok){
       setSelectedCourseIndex(-99);
+      const { data: { new_id } } = await response.json() as course_use_response;
+
+      const newOwnedCourse: course_assigned_item = {
+        id: new_id,
+        description: selectedCourse.description,
+        name: selectedCourse.name,
+        year: parseInt(data['year'] as string)
+      };
+      setOwnedCourse(x => [...x, newOwnedCourse]);
     } else {
       const json = await response.json() as common_response;
       alert(json.message);
