@@ -7,11 +7,11 @@ import CoursePanel from "./CoursePanel";
 
 export default function Profile(){
   const { user, setUser } = useAuth();
-  
-  const [username, Setusername] = useState<string>("");
+  const { name } = user || {};
+  const [username, Setusername] = useState<string>(name || '');
 
   useEffect(() => {
-    if (user) Setusername(user.name);
+    if (name) {Setusername(name); console.log('updated name to', name)}
   }, [user]);
 
   return (
@@ -34,10 +34,7 @@ export default function Profile(){
             <h3>User Info</h3>
             <div>
               <label>Username</label>
-              <input type='text' name='name'
-                value={username} onChange={(e) => Setusername(e.target.value)}
-                required
-              />
+              {user && <input type="text" value={username} onChange={(e) => Setusername(e.target.value)}/>}
             </div>
 
             <div>
