@@ -16,6 +16,7 @@ export default function CoursePanel(){
   const selectedCourse = courseList[selectedCourseIndex];
 
   // owned courses
+  // this is used to render the list of which course does the logged user belong to
   const [ ownedCourses, setOwnedCourse ] = useState<course_assigned_item[]>([]);
 
 
@@ -79,7 +80,9 @@ export default function CoursePanel(){
             <p>{course.year}</p>
             <p>{course.name}</p>
             <p>{course.description}</p>
-            <button><IoMdRemoveCircle/></button>
+            <button
+              onClick={()=>{}}
+            ><IoMdRemoveCircle/></button>
           </div>
         )}
       </div>
@@ -155,12 +158,12 @@ export default function CoursePanel(){
     e.preventDefault();
     if(!selectedCourse)return;
 
+    // use the data from the input
     const formData =  new FormData(e.currentTarget);
+    // append the dynamic input
     formData.append('course_id', `${selectedCourse.id}`);
 
     const data = Object.fromEntries(formData);
-
-    console.log(data);
 
     const response = await fetchBackend("course/use",{
       method: "POST",
@@ -169,15 +172,18 @@ export default function CoursePanel(){
     });
 
     if (response.ok){
+      // make sure to remove the selected course for next use
       setSelectedCourseIndex(-99);
       const { data: { new_id } } = await response.json() as course_use_response;
 
+      // construct a new course, to update the hook
       const newOwnedCourse: course_assigned_item = {
         id: new_id,
         description: selectedCourse.description,
         name: selectedCourse.name,
         year: parseInt(data['year'] as string)
       };
+
       setOwnedCourse(x => [...x, newOwnedCourse]);
     } else {
       const json = await response.json() as common_response;
