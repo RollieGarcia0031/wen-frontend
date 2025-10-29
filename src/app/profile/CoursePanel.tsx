@@ -81,7 +81,7 @@ export default function CoursePanel(){
             <p>{course.name}</p>
             <p>{course.description}</p>
             <button
-              onClick={()=>{}}
+              onClick={()=>handleRemoveCourse(course.id)}
             ><IoMdRemoveCircle/></button>
           </div>
         )}
@@ -189,5 +189,31 @@ export default function CoursePanel(){
       const json = await response.json() as common_response;
       alert(json.message);
     }
+  }
+
+  /**
+   * Used to remove a course a course in the database and update the UI
+   */
+  async function handleRemoveCourse(courseId: number):Promise<void>{
+    // remove from the database
+    const response = await fetchBackend("course/unuse", {
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({course_id: courseId})
+    });
+
+    // handle error if no rows are deleted
+    if (!response.ok || response.status === 400){
+      const {message} = await response.json() as common_response;
+      alert(message);
+      return;
+    }
+
+    const {success} = await response.json() as common_response;
+    if (success){
+      // remove from the ui
+      setOwnedCourse(x => x.filter(course => course.id !== courseId));
+    }
+
   }
 }
