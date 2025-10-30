@@ -27,7 +27,7 @@ export default function Header() {
 
   return (
     <header
-      className="flex-rc px-4 py-2"
+      className="flex-rc py-2"
     >
       {/* link button/app name, shortcut to return to home */}
       <h1>

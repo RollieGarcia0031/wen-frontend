@@ -4,6 +4,7 @@ import "./globals.css";
 import React from "react";
 import { AuthContextProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +32,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
         >
           <AuthContextProvider>
-            <div className="flex-rc">
-              <div>
-                Sidebar
-              </div>
+            <div className="grid grid-cols-[4.5rem_auto] max-h-screen h-screen w-full">
+              
+              <Sidebar/>
+
               <main
-                className="flex-1"
+                className="overflow-y-auto px-3"
               >
                 <Header/>
                 {children}
