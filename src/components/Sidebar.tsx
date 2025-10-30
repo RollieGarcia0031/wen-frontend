@@ -3,6 +3,9 @@
 import { HiOutlineHome } from "react-icons/hi2";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { MdOutlineScheduleSend } from "react-icons/md";
+import { IoPeopleOutline } from "react-icons/io5";
+import { IoIosNotificationsOutline } from "react-icons/io";
 
 export default function Sidebar(){
   const path = usePathname();
@@ -13,7 +16,7 @@ export default function Sidebar(){
 
   return (
     <div
-      className="flex-rt
+      className="flex-ct gap-3
         py-4
         [&_svg]:text-2xl
         [&_button]:bg-black [&_button]:p-3 [&_button]:rounded-full
@@ -25,6 +28,25 @@ export default function Sidebar(){
           <HiOutlineHome/>
         </Link>
       </button>
+
+      <button>
+        <Link href="/appointment">
+          <MdOutlineScheduleSend />
+        </Link>
+      </button>
+
+      <button>
+        <Link href="/appointment">
+          <IoPeopleOutline /> 
+        </Link>
+      </button>
+
+      <button>
+        <Link href="/appointment">
+          <IoIosNotificationsOutline /> 
+        </Link>
+      </button>
+
     </div>
   );
 }
