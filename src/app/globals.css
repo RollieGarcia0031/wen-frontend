@@ -107,7 +107,7 @@ body {
   }
 
   .flex-rt {
-    @apply flex flex-row justify-center items-start;
+    @apply flex flex-row; 
   }
 
   .flex-cc {
