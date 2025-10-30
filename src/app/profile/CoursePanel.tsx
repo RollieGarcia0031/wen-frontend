@@ -9,19 +9,35 @@ import { MdOutlineAdd } from "react-icons/md";
 export default function CoursePanel(){
   const customCourseDialogRef = useRef<HTMLDialogElement>(null);
 
-  // courses that will appear as options
+  /** the array of courses created by other users, serving as option for users to enroll */
   const [ courseList, setCourseList ] = useState<courseListItem[]>([]);
+  
+  /**
+  * state of the coursePicker, a panel below the course
+  * & year input, that can be collapsed
+  */
   const [ coursePickerIsOpen, setCoursePickerIsOpen ] = useState<boolean>(false);
+
+  /**
+   * the index of the course in the courseList hook, it will be used to assign
+   * which course to delete or which course can be operated specifically
+   */
   const [ selectedCourseIndex, setSelectedCourseIndex ] = useState<number>(-99);
   const selectedCourse = courseList[selectedCourseIndex];
 
-  // owned courses
-  // this is used to render the list of which course does the logged user belong to
+  /**
+   * owned courses
+   * this is used to render the list of which course does the logged user belong to
+   */
   const [ ownedCourses, setOwnedCourse ] = useState<course_assigned_item[]>([]);
 
 
   useEffect(()=>{
-    const fetchCourses = async ()=>{
+    /**
+     * Fetch the list of the available courses to be enrolled
+     */
+    const fetchCourses = async (): Promise<void>=>
+    {
       const response = await fetchBackend("course/list", {
         method: "GET",
         headers: { 'Content-type': 'application/json' }
@@ -36,7 +52,11 @@ export default function CoursePanel(){
 
     fetchCourses();
 
-    const fetchOwnedCourses = async ()=>{
+    /**
+     * retrieves the class where the logged user is enrolled/teaching
+     */
+    const fetchOwnedCourses = async ():Promise<void> =>
+    {
       const response = await fetchBackend("course/assigned", {
         method: "GET",
         headers: {'Content-Type': 'application/json'}
@@ -54,6 +74,7 @@ export default function CoursePanel(){
   return (
     <>
     <div className="card2 space-y-4">
+      {/* header part of the courses panel */}
       <div className="flex-rl gap-2 items-center">
         <button className="svg-btn-sm common-button rounded-full aspect-square"
           title="You can add your own course if not listed in the options"
@@ -64,10 +85,12 @@ export default function CoursePanel(){
         <h3>Courses</h3>
       </div>
 
+      {/*This contains the list of courses that the user is enrolled/teaching*/}
       <div className="bg-background-medium px-4 py-2 rounded-md
         [&>*]:grid [&>*]:grid-cols-[3rem_6rem_auto_3rem] grid-rows-1
         space-y-4"
       >
+        {/* The headings of the table */}
         <div>
           <p>Year</p>
           <p>Name</p>
@@ -75,6 +98,7 @@ export default function CoursePanel(){
           <p></p>
         </div>
 
+        {/* The cells of table containing the course list */}
         {ownedCourses.map(course =>
           <div key={course.id}>
             <p>{course.year}</p>
@@ -86,13 +110,17 @@ export default function CoursePanel(){
           </div>
         )}
       </div>
+
       {/* shows the available course with option to use/add it */}
       <div className="[&>*]:bg-background-medium [&>*]:rounded-md">
         {/* contains input for adding a course */}
         <form onSubmit={handleAddCourse}
           className="flex-rl items-center mb-2 px-4 py-2"
         >
-          {/* trigger button for picking a course */}
+          {/*
+          * trigger button for picking a courses 
+          * collapse/uncollapse the list containing the available courses
+          */}
           <label className="flex-rl gap-2 min-w-[7rem]
             border-r-highlight-muted border-r-[1px] border-r-solid"
           >
@@ -103,7 +131,8 @@ export default function CoursePanel(){
               <p>{selectedCourse?.name}</p>
             </button>
           </label>
-
+          
+          {/* Takes user input as year (1,2,3,4) */}
           <label className="px-5 flex-1">
             Year:
             <select name="year">
@@ -113,24 +142,30 @@ export default function CoursePanel(){
               <option value="4">4</option>
             </select>
           </label>
+
           {/* button for adding/using an available course */}
           <button type='submit'>
             <MdOutlineAdd/>
           </button>
         </form>
+
+        {/* list containing the available courses to enroll */}
         <div className={`duration-150 [&>*]:px-4
           ${ coursePickerIsOpen?
             'max-h-50 overflow-y-auto'
             :'max-h-0 overflow-y-hidden'
           }
           `}>
-          
+         
+            {/* table headers of course list container */}
             <div className="grid grid-cols-[6rem_auto] space-x-7 rounded-none
               sticky top-0 bg-background-medium py-2"
             >
               <p>Name</p>
               <p>Description</p>
             </div>
+
+            {/* table cell containing all available courses */}
             {courseList.map((course, index) =>
               <button className={`grid grid-cols-[6rem_auto] space-x-7
                 hover:bg-background-light justify-items-start w-full
@@ -140,8 +175,10 @@ export default function CoursePanel(){
                 key={course.id}
                 onClick={()=>setSelectedCourseIndex(index)}
               >
+
                 <p>{course.name}</p>
                 <p>{course.description}</p>
+
               </button>
             )}
         </div>
@@ -160,9 +197,9 @@ export default function CoursePanel(){
 
     // use the data from the input
     const formData =  new FormData(e.currentTarget);
-    // append the dynamic input
-    formData.append('course_id', `${selectedCourse.id}`);
 
+    // append the dynamic input from the course list table
+    formData.append('course_id', `${selectedCourse.id}`);
     const data = Object.fromEntries(formData);
 
     const response = await fetchBackend("course/use",{
@@ -172,8 +209,10 @@ export default function CoursePanel(){
     });
 
     if (response.ok){
-      // make sure to remove the selected course for next use
+      // make sure to reset/remove the selected course for next use
       setSelectedCourseIndex(-99);
+
+      // extract the new id
       const { data: { new_id } } = await response.json() as course_use_response;
 
       // construct a new course, to update the hook
@@ -193,6 +232,7 @@ export default function CoursePanel(){
 
   /**
    * Used to remove a course a course in the database and update the UI
+   * @param courseId the id of the course to be remove from user_class
    */
   async function handleRemoveCourse(courseId: number):Promise<void>{
     // remove from the database
@@ -211,9 +251,8 @@ export default function CoursePanel(){
 
     const {success} = await response.json() as common_response;
     if (success){
-      // remove from the ui
+      // remove from the ui list
       setOwnedCourse(x => x.filter(course => course.id !== courseId));
     }
-
   }
 }
