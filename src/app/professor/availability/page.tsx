@@ -1,10 +1,12 @@
 "use client"
 
-import { AvailabilityContextProvider } from "@/context/AvailabilityContext";
+import { AvailabilityContextProvider, useAvailabilityContext } from "@/context/AvailabilityContext";
 
 const DayOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export default function Availability(){
+  const { availabilityList, setAvailabilityList } = useAvailabilityContext();
+
   return (
     <AvailabilityContextProvider>
       <div>

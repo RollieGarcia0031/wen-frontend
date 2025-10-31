@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, SetStateAction, useContext, useState } from "react"
+import fetchBackend from "@/lib/fetchBackend";
+import { createContext, SetStateAction, useContext, useEffect, useState } from "react"
 
 type AvailabilityItem = {
   day_of_week: number;
@@ -10,12 +11,14 @@ type AvailabilityItem = {
 
 interface AvailabilityProps {
   availabilityList: AvailabilityItem[];
-  setAvailabilityList: React.Dispatch< SetStateAction<AvailabilityItem[]> > 
+  setAvailabilityList: React.Dispatch< SetStateAction<AvailabilityItem[]> >;
+  fetchAvailabilityList: (arg: any) => Promise<void>
 }
 
 const AvailabilityContext = createContext<AvailabilityProps>({
   availabilityList: [],
-  setAvailabilityList: () => {} 
+  setAvailabilityList: () => {},
+  fetchAvailabilityList: (arg) => arg
 });
 
 export function AvailabilityContextProvider({children}:{
@@ -24,14 +27,42 @@ export function AvailabilityContextProvider({children}:{
  
   const [ availabilityList, setAvailabilityList ] = useState<AvailabilityItem[]>([]);
 
+  useEffect(()=>{
+    fetchAvailabilityList(setAvailabilityList);
+  },[])
+
   return (
     <AvailabilityContext.Provider
-      value={{availabilityList, setAvailabilityList}}
+      value={{availabilityList, setAvailabilityList, fetchAvailabilityList}}
     >
       {children}
     </AvailabilityContext.Provider>
   );
 }
+
+/**
+ * Retrieve the availability of user from the availability table 
+ */
+const fetchAvailabilityList = async (
+    setAvailabilityList: React.Dispatch<SetStateAction<AvailabilityItem[]>>
+): Promise<void> =>
+{
+  const response = await fetchBackend("availability/list", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+  });
+
+  if (!response.ok) return;
+
+  const { success, data } = await response.json() as common_response;
+
+  if (!success){
+    return;
+  }
+  
+  setAvailabilityList(data);
+}
+
 
 export function useAvailabilityContext(){
   return useContext(AvailabilityContext);
