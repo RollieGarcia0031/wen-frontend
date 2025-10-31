@@ -27,7 +27,7 @@ export default function LoginForm({setOption}: {
       <input type='email' placeholder='example@email.com' name="email" required/>
     </div>
 
-    <div>
+    <div className="shadow-black">
       <label>Password</label> <br/>
       <input type='password' name="password"required/>
     </div>
@@ -35,13 +35,13 @@ export default function LoginForm({setOption}: {
     <button
       className='primary-button mt-4
       py-2 rounded-md w-full
-      mb-8'
+      mb-8 shadow-black shadow-lg'
       type='submit'
     >
       Login
     </button>
 
-    <p>
+    <p className="w-full text-center">
       Don&apos;t have an account yet?
         <span
           className='text-highlight ml-2
