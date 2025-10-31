@@ -6,10 +6,14 @@ import Link from "next/link";
 import { MdOutlineScheduleSend } from "react-icons/md";
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { useAuth } from "@/context/AuthContext";
+import { RiCalendarScheduleLine } from "react-icons/ri";
 
 export default function Sidebar(){
   const path = usePathname();
-  
+
+  const { user } = useAuth();
+
   if (path.includes("/login")){
     return <span> </span>; 
   }
@@ -46,7 +50,15 @@ export default function Sidebar(){
           <IoIosNotificationsOutline /> 
         </Link>
       </button>
-
+      
+      {/* side bar options exclusive to professors */}
+      { user?.role == 'professor' &&
+        <button>
+          <Link href="/professor/availability">
+            <RiCalendarScheduleLine /> 
+          </Link>
+        </button>
+      }
     </div>
   );
 }
