@@ -17,10 +17,15 @@ export default function Login(){
         className={`card w-[60rem]
         ${option == 'signup'? 'h-[35rem]': 'h-[25rem]'}
         duration-700 overflow-y-hidden
-        grid grid-cols-[25rem_auto]
-        px-5 py-10 gap-15`}
+        grid grid-cols-[6fr_7fr]
+        px-5 py-10 gap-15
+        shadow-black shadow-xl
+        `}
       >
-        <AuthForm option={option} setOption={setOption}/>
+        <div>
+          <AuthForm option={option} setOption={setOption}/>
+        </div>
+
         <div className='flex-full-center h-full'>
           <Image src='/student-teacher.svg' width={400} height={400} alt='student-teacher'/>
         </div>

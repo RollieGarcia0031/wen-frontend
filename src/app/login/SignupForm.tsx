@@ -14,14 +14,14 @@ export default function SignupForm({setOption}: {
     const passwordMatched = password === confirmPassword;
 
   return (
-      <form className='flex-cc justify-between gap-2 h-full
+      <form className='flex-cl justify-between gap-2 h-full
       px-15 min-w-30
       [&_input]:w-full [&_div]:w-full
       border-r-[1px] border-r-solid border-r-highlight-muted'
 
       onSubmit={(e) => handleSubmit(e)}
     >
-      <h1 className='font-bold mb-4'>Sign Up</h1>
+      <h1 className='font-bold mb-4 text-left'>Sign Up</h1>
 
       <div>
         <label>Username</label><br/>
@@ -65,14 +65,15 @@ export default function SignupForm({setOption}: {
 
       <button
         className='primary-button mt-4 
-        py-2 rounded-md w-full mb-8'
+        py-2 rounded-md w-full mb-8
+        shadow-black shadow-lg'
         type='submit'
         disabled={!passwordMatched}
       >
         Sign Up
       </button>
 
-      <p>
+      <p className="text-center w-full">
         Already have an account?
           <span
             className='text-highlight ml-2
