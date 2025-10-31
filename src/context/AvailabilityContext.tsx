@@ -3,10 +3,10 @@
 import fetchBackend from "@/lib/fetchBackend";
 import { createContext, SetStateAction, useContext, useEffect, useState } from "react"
 
-type AvailabilityItem = {
+export interface AvailabilityItem {
   day_of_week: number;
-  time_start: string;
-  time_end: string;
+  start_time: string;
+  end_time: string;
 }
 
 interface AvailabilityProps {
