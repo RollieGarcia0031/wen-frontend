@@ -150,6 +150,10 @@ body {
     @apply cursor-pointer
       [&_svg]:text-xl;
   }
+
+  .text-main-big {
+    @apply text-4xl font-bold;
+  }
 }
 
 dialog::backdrop {
