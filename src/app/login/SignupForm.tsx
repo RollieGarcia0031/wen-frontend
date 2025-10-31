@@ -49,9 +49,11 @@ export default function SignupForm({setOption}: {
 
       {
         !passwordMatched &&
-        <p className='text-red-500'>
-          Passwords do not match
-        </p>
+        <span className="text-red-400">
+          <p className='text-red-500'>
+            Passwords do not match
+          </p>
+        </span>
       }
 
       <div className='flex-rl items-center gap-2
