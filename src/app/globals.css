@@ -154,6 +154,10 @@ body {
   .text-main-big {
     @apply text-4xl font-bold;
   }
+
+  .border-mute-theme {
+    @apply border-highlight-muted border-[1px] border-solid;
+  }
 }
 
 dialog::backdrop {
