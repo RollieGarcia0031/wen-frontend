@@ -45,7 +45,12 @@ export default function Availability(){
 }
 
 function SaveChangesButton(){
-  const { temporaryAvailabilityList } = useAvailabilityContext();
+  const {
+    temporaryAvailabilityList,
+    fetchAvailabilityList,
+    setAvailabilityList,
+    setTemporaryAvailabilityList
+  } = useAvailabilityContext();
 
   if (temporaryAvailabilityList?.length <= 0) return null;
 
@@ -55,11 +60,46 @@ function SaveChangesButton(){
       border-highlight-muted border-[1px] px-3 py-1 rounded-md
       bg-primary hover:bg-primary-hover
       shadow-md shadow-black
-    ">
+    "
+      onClick={handleSave}
+    >
       Save Changes 
     </button>
 
   );
+
+  async function handleSave(){
+    // construct a request body, containing all of
+    // requested new availability
+    const RequestBody = {
+      availability_list: temporaryAvailabilityList.map(item => {
+        const newItem = {
+          day_of_week: item.day_of_week,
+          start_time: item.start_time,
+          end_time: item.end_time
+        }
+
+        return newItem;
+      }) 
+    } 
+
+    const response = await fetchBackend("availability/createAll", {
+      method: "POST",
+      headers: { 'Content-Type' : 'application/json' },
+      body: JSON.stringify(RequestBody)
+    });
+
+    if (!response.ok) {
+      alert( (await response.json() as common_response).message );
+      return;
+    }
+    
+    // remove the temporary list in UI
+    setTemporaryAvailabilityList([]);
+
+    // rerender the list of availability from database
+    fetchAvailabilityList(setAvailabilityList);
+  }
 }
 
 /**
