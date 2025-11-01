@@ -65,18 +65,29 @@ function AvailabilityDayCard({day, index}:{
       `}
     >
 
-    <button onClick={()=>setIsCollapsed(true)}
-      className="flex-rl items-center gap-2"
-    >
-      <BiCircle/>
-      <p>{day}</p>
-    </button>
+      <button onClick={()=>setIsCollapsed(x => !x)}
+        className="flex-rl items-center gap-2"
+      >
+        <BiCircle
+          className={`${containedList?.length > 0? 'fill-green-500' : 'fill-highlight-muted'}`}
+        />
+        <p>{day}</p>
+      </button>
 
-      { 
-        containedList?.map((availability, index) =>
-          isCollapsed && <AvailabilityListCard key={index} availability={availability} /> 
-        )
-      }
+      <div className="mx-4 space-y-2">
+        { 
+          containedList?.map((availability, index) =>
+            !isCollapsed && <AvailabilityListCard key={index} availability={availability} /> 
+          )
+        }
+
+        {
+          !isCollapsed && 
+          <button className="border-mute-theme px-2 py-sm rounded-md bg-primary">
+            Add
+          </button>
+        }
+      </div>
     </div>
   );
 }
@@ -93,12 +104,14 @@ function AvailabilityListCard({availability}: {
 
   return (
     <div
-      className="grid grid-cols-[1fr_1fr_auto] px-4 space-x-2"
+      className="grid grid-cols-[1fr_auto_1fr_auto] space-x-2 items-center"
     >
 
       <div className="border-mute-theme px-2 py-1 rounded-md">
         {start_time} 
       </div>
+
+      <p> - </p>
 
       <div className="border-mute-theme px-2 py-1 rounded-md">
         {end_time}
