@@ -5,7 +5,6 @@ import fetchBackend from "@/lib/fetchBackend";
 import { useEffect, useRef, useState } from "react";
 import { BiCircle } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
-import { ImTerminal } from "react-icons/im";
 
 const DayOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -213,26 +212,23 @@ function AvailabilityListCard({availability, containedList}: {
   const { setAvailabilityList } = useAvailabilityContext();
   const { end_time, start_time, id } = availability;
 
-  const startTimeRef = useRef<HTMLInputElement | null>(null);
-
   return (
     <div
       className="grid grid-cols-[1fr_auto_1fr_auto] space-x-2 items-center"
     >
 
       <div
-        className={`border-mute-theme px-2 py-1 rounded-md`}
+        className={`border-mute-theme rounded-md`}
       >
         <input
-          ref={startTimeRef}
-          type='time' defaultValue={start_time}
+          type='time' defaultValue={start_time} disabled
           className="w-full rounded-md"
         />
       </div>
 
       <p> - </p>
 
-      <div className={`border-mute-theme px-2 py-1 rounded-md
+      <div className={`border-mute-theme rounded-md
         'border-highlight-muted`}
       >
         <input type='time' defaultValue={end_time}
