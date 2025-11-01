@@ -10,7 +10,6 @@ import { ImTerminal } from "react-icons/im";
 const DayOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export default function Availability(){
-  const { availabilityList, setAvailabilityList } = useAvailabilityContext();
 
   return (
     <AvailabilityContextProvider>
@@ -26,6 +25,7 @@ export default function Availability(){
               Set your recurring available time slots for students to book
             </p>
 
+            {/* contains the card for each day in a week */}
             <div
               className="mt-2 flex-cl space-y-2"
             >
@@ -35,11 +35,30 @@ export default function Availability(){
               )}
 
             </div>
-
+            
+            <SaveChangesButton/>
           </div>
         </div>
       </div>
     </AvailabilityContextProvider>
+  );
+}
+
+function SaveChangesButton(){
+  const { temporaryAvailabilityList } = useAvailabilityContext();
+
+  if (temporaryAvailabilityList?.length <= 0) return null;
+
+  return (
+
+    <button className="mt-4
+      border-highlight-muted border-[1px] px-3 py-1 rounded-md
+      bg-primary hover:bg-primary-hover
+      shadow-md shadow-black
+    ">
+      Save Changes 
+    </button>
+
   );
 }
 
@@ -53,7 +72,7 @@ function AvailabilityDayCard({day, index}:{
   index: number;
 }){
 
-  const { availabilityList, setAvailabilityList, setTemporaryAvailabilityList, temporaryAvailabilityList } = useAvailabilityContext();
+  const { availabilityList, setTemporaryAvailabilityList, temporaryAvailabilityList } = useAvailabilityContext();
 
   /** Filtered list of availability grouped by day_of_week */
   const containedList = availabilityList.filter(availability => availability.day_of_week === index);
@@ -80,6 +99,7 @@ function AvailabilityDayCard({day, index}:{
       </button>
 
       <div className="mx-4 space-y-2">
+
         {/* render the set of availability from database */}
         { 
           containedList?.map((availability, index) =>
@@ -91,7 +111,6 @@ function AvailabilityDayCard({day, index}:{
               /> 
           )
         }
-
 
         {/* render list of availability to be saved */
           containedTemporaryList?.map(( temporaryItem, index) =>
@@ -107,13 +126,15 @@ function AvailabilityDayCard({day, index}:{
         {
           !isCollapsed && 
           <button
-            className="border-mute-theme px-2 py-sm rounded-md bg-primary"
+            className="border-mute-theme px-2 py-sm rounded-md bg-primary mt-2"
             onClick={()=>handleAddAvailability()}
           >
             Add
           </button>
         }
+
       </div>
+
     </div>
   );
 
