@@ -51,7 +51,7 @@ function AvailabilityDayCard({day, index}:{
   index: number;
 }){
 
-  const { availabilityList } = useAvailabilityContext();
+  const { availabilityList, setAvailabilityList } = useAvailabilityContext();
 
   /** Filtered list of availability grouped by day_of_week */
   const containedList = availabilityList.filter(availability => availability.day_of_week === index);
@@ -83,13 +83,35 @@ function AvailabilityDayCard({day, index}:{
 
         {
           !isCollapsed && 
-          <button className="border-mute-theme px-2 py-sm rounded-md bg-primary">
+          <button
+            className="border-mute-theme px-2 py-sm rounded-md bg-primary"
+            onClick={()=>handleAddAvailability()}
+          >
             Add
           </button>
         }
       </div>
     </div>
   );
+
+  /**
+   * Temporarily display row in the avaiability table
+   * in which the user has the option to discard/save
+   * it in the database
+   */
+  function handleAddAvailability(){
+    const lastAvailability = containedList[containedList.length - 1];
+
+    const newAvailability: AvailabilityItem = {
+      artificial: true,
+      start_time: lastAvailability?.end_time || "07:00:00",
+      end_time: lastAvailability?.end_time || "08:00:00",
+      day_of_week: index
+    };
+
+    setAvailabilityList(x => [...x, newAvailability]);
+    
+  }
 }
 
 /**
@@ -100,21 +122,31 @@ function AvailabilityListCard({availability}: {
   availability: AvailabilityItem;
 }){
   
-  const { end_time, start_time } = availability;
+  const { end_time, start_time, artificial } = availability;
 
   return (
     <div
       className="grid grid-cols-[1fr_auto_1fr_auto] space-x-2 items-center"
     >
 
-      <div className="border-mute-theme px-2 py-1 rounded-md">
-        {start_time} 
+      <div
+        className={`border-[1px] border-solid px-2 py-1 rounded-md
+        ${artificial? 'border-background-light' : 'border-highlight-muted'}
+        `}
+      >
+        <input type='time' defaultValue={start_time}
+          className="w-full rounded-md"
+        />
       </div>
 
       <p> - </p>
 
-      <div className="border-mute-theme px-2 py-1 rounded-md">
-        {end_time}
+      <div className={`border-mute-theme px-2 py-1 rounded-md
+        ${artificial? 'border-background-light' : 'border-highlight-muted'}`}
+      >
+        <input type='time' defaultValue={end_time}
+          className="w-full rounded-md"
+        />
       </div>
 
       <button>
