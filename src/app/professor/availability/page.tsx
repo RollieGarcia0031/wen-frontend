@@ -1,6 +1,7 @@
 "use client"
 
 import { AvailabilityContextProvider, AvailabilityItem, useAvailabilityContext, TemporaryAvailabilityItem } from "@/context/AvailabilityContext";
+import fetchBackend from "@/lib/fetchBackend";
 import { useEffect, useRef, useState } from "react";
 import { BiCircle } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
@@ -189,6 +190,19 @@ function AvailabilityListCard({availability, containedList}: {
    *  Deletes the availability from the UI and database
    */
   async function handleDelete(){
+    const body = { id };
+
+    const response = await fetchBackend("availability/delete", {
+      method: "DELETE",
+      headers: { 'Content-Type' : 'application/json' },
+      body: JSON.stringify(body)
+    })
+
+    if (!response.ok) {
+      const { message } = await response.json() as common_response;
+      alert(message);
+      return;
+    }
 
     //delete from the UI
     setAvailabilityList(list => list.filter(item =>
@@ -196,7 +210,11 @@ function AvailabilityListCard({availability, containedList}: {
     ));  
   }
 }
-
+/**
+ * Component holding a row of temporary availabilty
+ * Temporary availability is listed in the UI can
+ * be saved if desired by user
+ */
 function TemporaryAvailabilityCard({index, temporaryAvailability}: {
   index: number,
   temporaryAvailability: TemporaryAvailabilityItem
@@ -254,6 +272,5 @@ function TemporaryAvailabilityCard({index, temporaryAvailability}: {
 
       return list;
     })    
-  
   }
 }
