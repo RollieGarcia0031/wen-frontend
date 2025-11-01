@@ -1,5 +1,6 @@
 "use client"
 
+import { removeSeconds } from '@/util/TimeFormat';
 import { AvailabilityContextProvider, AvailabilityItem, useAvailabilityContext, TemporaryAvailabilityItem } from "@/context/AvailabilityContext";
 import fetchBackend from "@/lib/fetchBackend";
 import { useEffect, useRef, useState } from "react";
@@ -221,7 +222,7 @@ function AvailabilityListCard({availability, containedList}: {
         className={`border-mute-theme rounded-md`}
       >
         <input
-          type='time' defaultValue={start_time} disabled
+          type='time' defaultValue={removeSeconds(start_time)} disabled
           className="w-full rounded-md"
         />
       </div>
@@ -231,7 +232,7 @@ function AvailabilityListCard({availability, containedList}: {
       <div className={`border-mute-theme rounded-md
         'border-highlight-muted`}
       >
-        <input type='time' defaultValue={end_time}
+        <input type='time' defaultValue={removeSeconds(end_time)} disabled
           className="w-full rounded-md"
         />
       </div>
