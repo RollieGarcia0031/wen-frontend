@@ -4,32 +4,41 @@ import fetchBackend from "@/lib/fetchBackend";
 import { createContext, SetStateAction, useContext, useEffect, useState } from "react"
 
 export interface AvailabilityItem {
+  id: number;
   day_of_week: number;
   start_time: string;
   end_time: string;
-  /**
-   * A property that is not applied to fetched availability
-   * but will be used as temporary attribute, so the system
-   * will be able to determine if the part of list is saved
-   * in database or saved in buffer
-   *
-   * While in artificial = true, the UI will display that item
-   * differently so user knows which is from database, which is
-   * made-up
-   */
-  artificial: boolean;
+}
+
+/**
+ * Contains the temporary custom avaiability
+ * Used to update UI, while user haven't decided
+ * weather to delete or remove the custom
+ * availability
+ */
+export interface TemporaryAvailabilityItem {
+  id: number;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
 }
 
 interface AvailabilityProps {
   availabilityList: AvailabilityItem[];
   setAvailabilityList: React.Dispatch< SetStateAction<AvailabilityItem[]> >;
-  fetchAvailabilityList: (arg: any) => Promise<void>
+  fetchAvailabilityList: (arg: any) => Promise<void>,
+
+  temporaryAvailabilityList: TemporaryAvailabilityItem[];
+  setTemporaryAvailabilityList: React.Dispatch<SetStateAction<TemporaryAvailabilityItem[]>>
 }
 
 const AvailabilityContext = createContext<AvailabilityProps>({
   availabilityList: [],
   setAvailabilityList: () => {},
-  fetchAvailabilityList: (arg) => arg
+  fetchAvailabilityList: (arg) => arg,
+
+  temporaryAvailabilityList: [],
+  setTemporaryAvailabilityList: (arg) => arg
 });
 
 export function AvailabilityContextProvider({children}:{
@@ -37,6 +46,7 @@ export function AvailabilityContextProvider({children}:{
 }){
  
   const [ availabilityList, setAvailabilityList ] = useState<AvailabilityItem[]>([]);
+  const [ temporaryAvailabilityList, setTemporaryAvailabilityList ] = useState<TemporaryAvailabilityItem[]>([]);
 
   useEffect(()=>{
     fetchAvailabilityList(setAvailabilityList);
@@ -44,7 +54,11 @@ export function AvailabilityContextProvider({children}:{
 
   return (
     <AvailabilityContext.Provider
-      value={{availabilityList, setAvailabilityList, fetchAvailabilityList}}
+      value={{
+        availabilityList, setAvailabilityList,
+        fetchAvailabilityList,
+        temporaryAvailabilityList, setTemporaryAvailabilityList
+      }}
     >
       {children}
     </AvailabilityContext.Provider>
