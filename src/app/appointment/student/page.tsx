@@ -3,14 +3,17 @@
 import { FaPlus } from "react-icons/fa";
 import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
+import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
 
 export default function Student(){
 
   return (
     <AppointmentContextProvider>
-      <div className="px-10 mt-4">
-        <AppointmentHeader />
-      </div>
+      <SearchProfessorContextProvider>
+        <div className="px-10 mt-4">
+          <AppointmentHeader />
+        </div>
+      </SearchProfessorContextProvider>
     </AppointmentContextProvider>
   );
 }
