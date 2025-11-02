@@ -1,11 +1,13 @@
 "use cient"
 
-import { useAppointment } from "@/context/AppointmentContext"
+import Link from "next/link";
+import { useAppointment } from "@/context/AppointmentContext";
 import { useSearchProfessor } from "@/context/SearchProfessorContext";
 import fetchBackend from "@/lib/fetchBackend";
 import { useEffect, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import { IoSend } from "react-icons/io5";
 
 export default function SearchProfessorDialog(){
   const { searchDialogOpened, setSearchDialogOpened} = useAppointment();
@@ -48,14 +50,14 @@ export default function SearchProfessorDialog(){
               </button>
            </form>
 
-           <div>
-              <p>Results:</p>
+           <div className="space-y-4">
               {/* Render the search results */
-                searchResults.map(item =>
-                  <div key={item.id}>
-                    {item.name}
-                  </div>
-                )
+                searchResults.map(item =>(
+                  <SearchResultCard
+                    key={item.id}
+                    searchResultItem={item}
+                  />
+                ))
               }
            </div>
         </div>
@@ -92,4 +94,44 @@ export default function SearchProfessorDialog(){
     setSearchResults(jsonData);
 
   }
+}
+
+export function SearchResultCard({searchResultItem}:{
+  searchResultItem: search_professor_response_item
+}){
+
+  const { name, classes, id } = searchResultItem;
+
+  return (
+
+    <div
+      className="card2 mx-10 py-2 px-4
+      grid grid-cols-[1fr_auto] items-center"
+    > 
+
+      <div>
+        <p className="text-md font-bold">
+          {name}
+        </p>
+
+        <div className="flex-rl gap-2 text-xs">
+          { 
+            classes.map((item, index) => (
+              <p key={index}>
+                {item.class}
+              </p>
+            ))
+          }
+        </div>
+      </div>
+
+      <Link href={`/appointment/send/${id}`}>
+        <button>
+          <IoSend />
+        </button>
+      </Link>
+
+    </div>
+
+  );
 }
