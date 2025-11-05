@@ -3,7 +3,7 @@
 import Link from "next/link";
 import fetchBackend from "@/lib/fetchBackend";
 import { useParams } from "next/navigation";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 import { IoMdReturnLeft } from "react-icons/io";
 import DatePicker from "react-datepicker";
@@ -132,24 +132,29 @@ function CalendarInput(){
  */
 function TimeOptions(){
   const { userInfo: { availabilities }, selectedDate } = useSendAppointment();
-  
-  const newAvailabilities = useRef<search_professor_user_availability[]>(null);
+
+  const [ newAvailabilites, setNewAvailabilites ] = useState<search_professor_user_availability[]>([]);
 
   useEffect( () => {
+    // set a new value for the availability time based on the selected
+    // day of week
+    setNewAvailabilites(
+      availabilities?.filter(item => {
+        const inputDayOfWeek = selectedDate?.getDay();
 
-    newAvailabilities.current = availabilities?.filter(item => {
-      const inputDayOfWeek = selectedDate?.getDay();
-
-      return item.day_of_week === inputDayOfWeek;
-    });
-
-    console.log(newAvailabilities.current);
+        return item.day_of_week === inputDayOfWeek;
+      })
+    );
 
   }, [selectedDate]);
 
   return (
     <div>
-      <div> 9:00AM </div>
+      {newAvailabilites?.map((item: search_professor_user_availability) => (
+        <div key={item.availability_id}>
+          {item.start_time}
+        </div>
+      ))} 
     </div>
 
   );
