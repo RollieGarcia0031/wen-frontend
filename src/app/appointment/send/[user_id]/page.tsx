@@ -77,8 +77,11 @@ export function SendAppointment(){
       >
         <CalendarInput />
 
-        <div>
+        <div
+          className="grid grid-rows-[1fr_auto] gap-5 pb-5" 
+        >
           <TimeOptions />
+          <MessageInput />
         </div>
 
       </div>
@@ -111,20 +114,24 @@ function SendAptHeader(){
  * Takes the date input of user
  */
 function CalendarInput(){
-  const { setSelectedDate, selectedDate } = useSendAppointment();
+  const { setSelectedDate, selectedDate, setSelectedAvailability } = useSendAppointment();
 
   return (
     <div>
 
       <DatePicker
         selected={selectedDate}
-        onChange={date => setSelectedDate(date)}
+        onChange={date => handleChange(date)}
         inline
       />
 
     </div>
   );
 
+  function handleChange(date: Date | null){
+    setSelectedDate(date);
+    setSelectedAvailability(null);
+  }
 }
 
 /**
@@ -132,9 +139,13 @@ function CalendarInput(){
  * selected date from CalenderInput
  */
 function TimeOptions(){
-  const { userInfo: { availabilities }, selectedDate } = useSendAppointment();
+  const { userInfo: { availabilities }, selectedDate  } = useSendAppointment();
 
-  const [ newAvailabilites, setNewAvailabilites ] = useState<search_professor_user_availability[]>([]);
+  /**
+   * holds an array of filtered availability time slots based
+   * on the selected date
+   */
+  const [ newAvailabilities, setNewAvailabilites ] = useState<search_professor_user_availability[]>([]);
 
   useEffect( () => {
     // set a new value for the availability time based on the selected
@@ -149,10 +160,13 @@ function TimeOptions(){
 
   }, [selectedDate]);
 
+  if(!newAvailabilities || newAvailabilities?.length <= 0) return null;
+
   return (
-    <div className="grid grid-cols-3 gap-x-2 gap-y-2"
+    <div className="grid grid-cols-3 gap-x-2 gap-y-2
+    card p-6 items-start auto-rows-min"
     >
-      {newAvailabilites?.map((item: search_professor_user_availability) => (
+      {newAvailabilities?.map((item: search_professor_user_availability) => (
         <TimeSlotCard availabilityItem={item} key={item.availability_id}/>
       ))}
     </div>
@@ -171,10 +185,6 @@ function TimeSlotCard(availabilityItem: {
 
   const { selectedAvailability, setSelectedAvailability } = useSendAppointment();
   const isSelected = selectedAvailability?.availability_id === availability_id;
-
-  useEffect(()=>{
-    console.log(selectedAvailability);
-  }, [selectedAvailability])
 
   return (
     <button className={`flex-rc gap-2 card rounded-sm
@@ -195,5 +205,54 @@ function TimeSlotCard(availabilityItem: {
 
   function handleSelect(){
     setSelectedAvailability({availability_id, day_of_week, start_time, end_time});
+  }
+}
+
+function MessageInput(){
+  const { selectedAvailability } = useSendAppointment();
+
+  if (!selectedAvailability) return null;
+
+  return (
+    <form className="grid grid-cols-[1fr_auto] gap-2 min-h-[2rem]
+      card rounded-md py-2"
+      onSubmit={e=>handleSubmit(e)}
+    >
+      <input type='text'
+        className="px-4"
+        placeholder="Message"
+      />
+
+      <button
+        className="bg-primary hover:bg-primary-hover px-2 rounded-md"
+        type='submit'
+      >
+        Send
+      </button>
+    </form>
+  );
+
+  async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>){
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const reqBody = Object.fromEntries(formData);
+
+    const response = await fetchBackend("",{
+      method: "POST",
+      headers: { 'Content-Type' : 'application/json' },
+      body: JSON.stringify(reqBody)
+    });
+
+    if (!response.ok) {
+      const { message } = await response.json() as common_response;
+      alert(message);
+      return;
+    }
+
+    const { data } = await response.json() as common_response;
+
+    console.log(data);
   }
 }
