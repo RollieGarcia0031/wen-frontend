@@ -15,7 +15,7 @@ interface AppointmentProps {
 
 const AppointmentContext = createContext<AppointmentProps>({
   searchDialogOpened: false,
-  setSearchDialogOpened: (arg) => arg
+  setSearchDialogOpened: (arg: any) =>{} 
 });
 
 export function AppointmentContextProvider({children}: {

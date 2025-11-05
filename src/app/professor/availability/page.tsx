@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { BiCircle } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
 
-const DayOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const DayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function Availability(){
 
@@ -81,7 +81,7 @@ function SaveChangesButton(){
 
         return newItem;
       }) 
-    } 
+    }
 
     const response = await fetchBackend("availability/createAll", {
       method: "POST",
@@ -282,6 +282,7 @@ function TemporaryAvailabilityCard({index, temporaryAvailability}: {
   const { start_time, end_time, id } = temporaryAvailability;
 
   const [ startInput, setStartInput ] = useState(start_time);
+  const [ endInput , setEndInput ] = useState(end_time);
 
   useEffect(()=>{
     setTemporaryAvailabilityList(list => list.map(item => {
@@ -289,9 +290,14 @@ function TemporaryAvailabilityCard({index, temporaryAvailability}: {
       return item;
     }))
   
-    console.log(temporaryAvailabilityList);
-    console.log('changed startinput', startInput);
-  }, [startInput])
+  }, [startInput]);
+
+  useEffect(() => {
+    setTemporaryAvailabilityList(list => list.map(item => {
+      if (item.id === id) item.end_time = endInput;
+      return item;
+    }))
+  }, [endInput]);
 
   return (
     <div
@@ -312,7 +318,7 @@ function TemporaryAvailabilityCard({index, temporaryAvailability}: {
       <div className={`px-2 py-1 rounded-md
         'border-highlight-muted`}
       >
-        <input type='time' defaultValue={end_time}
+        <input type='time' value={endInput} onChange={e=>setEndInput(e.target.value)}
           className="w-full rounded-md"
         />
       </div>
