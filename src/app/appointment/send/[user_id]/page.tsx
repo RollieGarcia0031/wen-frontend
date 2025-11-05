@@ -3,8 +3,9 @@
 import Link from "next/link";
 import fetchBackend from "@/lib/fetchBackend";
 import { useParams } from "next/navigation";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
+import { removeSeconds } from '@/util/TimeFormat';
 import { IoMdReturnLeft } from "react-icons/io";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -149,14 +150,50 @@ function TimeOptions(){
   }, [selectedDate]);
 
   return (
-    <div>
+    <div className="grid grid-cols-3 gap-x-2 gap-y-2"
+    >
       {newAvailabilites?.map((item: search_professor_user_availability) => (
-        <div key={item.availability_id}>
-          {item.start_time}
-        </div>
-      ))} 
+        <TimeSlotCard availabilityItem={item} key={item.availability_id}/>
+      ))}
     </div>
 
   );
 
+}
+
+function TimeSlotCard(availabilityItem: {
+  availabilityItem: search_professor_user_availability
+}){
+  
+  const {
+    availabilityItem: {end_time, start_time, availability_id, day_of_week}
+  } = availabilityItem || {};
+
+  const { selectedAvailability, setSelectedAvailability } = useSendAppointment();
+  const isSelected = selectedAvailability?.availability_id === availability_id;
+
+  useEffect(()=>{
+    console.log(selectedAvailability);
+  }, [selectedAvailability])
+
+  return (
+    <button className={`flex-rc gap-2 card rounded-sm
+      ${isSelected? 'bg-primary' : ''}
+      `}
+      onClick={handleSelect}
+    >
+
+      <p>
+        {removeSeconds(start_time)}
+      </p>
+      <p>
+        {removeSeconds(end_time)}
+      </p>
+
+    </button>
+  );
+
+  function handleSelect(){
+    setSelectedAvailability({availability_id, day_of_week, start_time, end_time});
+  }
 }
