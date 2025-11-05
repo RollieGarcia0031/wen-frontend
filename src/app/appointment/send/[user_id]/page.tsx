@@ -3,9 +3,17 @@
 import fetchBackend from "@/lib/fetchBackend";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import { useSendAppointment } from "@/context/SendAppointment";
+import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 
-export default function SendAppointment(){
+export default function Main () {
+  return (
+    <SendAppointmentContextProvider>
+      <SendAppointment />
+    </SendAppointmentContextProvider>
+  );
+}
+
+export function SendAppointment(){
   
   const { user_id } = useParams();
 
@@ -39,8 +47,21 @@ export default function SendAppointment(){
 
   return (
     <div>
-      Hello
+      <SendAptHeader />
     </div>
   );
 
+}
+
+function SendAptHeader(){
+  const { userInfo } = useSendAppointment();
+
+  return (
+    <div
+      className=""
+    >
+      <p> {userInfo.name} </p>
+
+    </div>
+  );
 }
