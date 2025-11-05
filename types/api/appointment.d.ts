@@ -1,13 +1,15 @@
+interface search_professor_user_availability {
+  end_time: string;
+  start_time: string;
+  day_of_week: number;
+  availability_id: number;
+}
+
 interface search_professor_user_response_item {
   name: string;
   email: string;
   id: string;
-  availabilities: {
-    end_time: string;
-    start_time: string;
-    day_of_week: number;
-    availability_id: number;
-  }[];
+  availabilities: search_professor_user_availability[];
   classes: {
     course: string;
     description: string;

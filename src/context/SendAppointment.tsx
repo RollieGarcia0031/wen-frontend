@@ -10,7 +10,15 @@ interface Props {
    * availability prior to sending an appointment
    */
   userInfo: search_professor_user_response_item;
-  setUserInfo: React.Dispatch< React.SetStateAction< search_professor_user_response_item> >
+  setUserInfo: React.Dispatch< React.SetStateAction< search_professor_user_response_item> >;
+
+  /**
+   * The selected date of student
+   * This date will be the exact date on when the student
+   * will request the appointment
+   */
+  selectedDate: Date | null;
+  setSelectedDate: React.Dispatch< React.SetStateAction<Date | null> >;
 }
 
 const Context = createContext<Props>({
@@ -23,7 +31,10 @@ const Context = createContext<Props>({
     availabilities: []
   },
 
-  setUserInfo: function(arg){arg}
+  setUserInfo: function(arg){arg},
+
+  selectedDate: new Date(),
+  setSelectedDate: ()=>{}
 });
 
 /**
@@ -42,10 +53,14 @@ export function SendAppointmentContextProvider({children}:{
     id: ''
   });
 
+  const [ selectedDate, setSelectedDate ] = useState<Date | null>(new Date());
+
   return (
     <Context.Provider value={{
       userInfo,
-      setUserInfo
+      setUserInfo,
+      selectedDate,
+      setSelectedDate
     }}>
       {children}
     </Context.Provider>

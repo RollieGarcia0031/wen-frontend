@@ -3,9 +3,11 @@
 import Link from "next/link";
 import fetchBackend from "@/lib/fetchBackend";
 import { useParams } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 import { IoMdReturnLeft } from "react-icons/io";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Main () {
   return (
@@ -108,13 +110,20 @@ function SendAptHeader(){
  * Takes the date input of user
  */
 function CalendarInput(){
-  const { userInfo } = useSendAppointment();
+  const { setSelectedDate, selectedDate } = useSendAppointment();
 
   return (
     <div>
-      <input type='date' />
+
+      <DatePicker
+        selected={selectedDate}
+        onChange={date => setSelectedDate(date)}
+        inline
+      />
+
     </div>
   );
+
 }
 
 /**
@@ -122,7 +131,21 @@ function CalendarInput(){
  * selected date from CalenderInput
  */
 function TimeOptions(){
-  const { userInfo: { availabilities }} = useSendAppointment();
+  const { userInfo: { availabilities }, selectedDate } = useSendAppointment();
+  
+  const newAvailabilities = useRef<search_professor_user_availability[]>(null);
+
+  useEffect( () => {
+
+    newAvailabilities.current = availabilities?.filter(item => {
+      const inputDayOfWeek = selectedDate?.getDay();
+
+      return item.day_of_week === inputDayOfWeek;
+    });
+
+    console.log(newAvailabilities.current);
+
+  }, [selectedDate]);
 
   return (
     <div>
