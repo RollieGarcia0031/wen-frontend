@@ -9,6 +9,7 @@ import { removeSeconds } from '@/util/TimeFormat';
 import { IoMdReturnLeft } from "react-icons/io";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from "react-toastify";
 
 export default function Main () {
   return (
@@ -261,6 +262,7 @@ function MessageInput(){
 
     if (!success) return;
 
+    toast.success("Appointment Sent!");
     router.push('/appointment');
   }
 }
