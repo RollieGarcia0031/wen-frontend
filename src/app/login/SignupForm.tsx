@@ -103,11 +103,13 @@ export default function SignupForm({setOption}: {
     });
 
     if (response.ok){
-        alert('Signup successful');
-        return setOption('login');
+      toast.info('Signup successful');
+      return setOption('login');
+
     } else {
-        const json = await response.json() as common_response;
-        toast.error(json.message);
+      const json = await response.json() as common_response;
+      toast.error(json.message);
     }
   }
+
 }
