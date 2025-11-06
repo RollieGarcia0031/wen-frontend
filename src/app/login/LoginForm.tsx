@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { logOption } from "./page";
 import fetchBackend from "@/lib/fetchBackend";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function LoginForm({setOption}: {
   setOption: React.Dispatch<React.SetStateAction<logOption>>
@@ -70,10 +71,10 @@ export default function LoginForm({setOption}: {
 
     if (response.ok){
       refreshAuth();
-        return router.push('/');
+      return router.push('/');
     } else {
-        const json = await response.json() as common_response;
-        alert(json.message);
+      const json = await response.json() as common_response;
+      toast.error(json.message);
     }
   }
 }
