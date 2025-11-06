@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import fetchBackend from "@/lib/fetchBackend";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 import { removeSeconds } from '@/util/TimeFormat';
@@ -209,7 +209,8 @@ function TimeSlotCard(availabilityItem: {
 }
 
 function MessageInput(){
-  const { selectedAvailability } = useSendAppointment();
+  const { selectedAvailability, selectedDate } = useSendAppointment();
+  const router = useRouter();
 
   if (!selectedAvailability) return null;
 
@@ -221,6 +222,7 @@ function MessageInput(){
       <input type='text'
         className="px-4"
         placeholder="Message"
+        name='message'
       />
 
       <button
@@ -235,11 +237,15 @@ function MessageInput(){
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>){
     event.preventDefault();
 
+    if (!selectedDate || !selectedAvailability) return;
+
     const formData = new FormData(event.currentTarget);
+    formData.append('availability_id', selectedAvailability?.availability_id.toString());
+    formData.append('target_date', selectedDate.toISOString());
 
     const reqBody = Object.fromEntries(formData);
 
-    const response = await fetchBackend("",{
+    const response = await fetchBackend("appointment/send",{
       method: "POST",
       headers: { 'Content-Type' : 'application/json' },
       body: JSON.stringify(reqBody)
@@ -251,8 +257,10 @@ function MessageInput(){
       return;
     }
 
-    const { data } = await response.json() as common_response;
+    const { success } = await response.json() as common_response;
 
-    console.log(data);
+    if (!success) return;
+
+    router.push('/appointment');
   }
 }
