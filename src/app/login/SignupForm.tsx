@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { logOption } from "./page";
 import fetchBackend from "@/lib/fetchBackend";
+import { toast } from "react-toastify";
 
 export default function SignupForm({setOption}: {
   setOption: React.Dispatch<React.SetStateAction<logOption>>
@@ -106,7 +107,7 @@ export default function SignupForm({setOption}: {
         return setOption('login');
     } else {
         const json = await response.json() as common_response;
-        alert(json.message);
+        toast.error(json.message);
     }
   }
 }
