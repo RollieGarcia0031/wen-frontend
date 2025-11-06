@@ -20,3 +20,18 @@ interface search_professor_user_response_item {
 interface search_professor_user_response extends common_response {
   data: search_professor_user_response_item[];
 }
+
+interface appointment_list_response_item {
+  id: string;
+  status: number;
+  message: string;
+  target_date: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+  name: string;
+}
+
+interface appointment_list_response extends common_response {
+  data: appointment_list_response_item[];
+}
