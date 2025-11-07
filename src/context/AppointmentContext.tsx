@@ -10,12 +10,22 @@ interface AppointmentProps {
    * Control the visilibility of search dialog
    * to search for professors
    */
-  setSearchDialogOpened: Dispatch<SetStateAction<boolean>>
+  setSearchDialogOpened: Dispatch<SetStateAction<boolean>>;
+
+  /**
+   * Contains list of fetched appointments sent by the
+   * logged user
+   */
+  sentAppointments: appointment_list_response_item[];
+  setSentAppointments: Dispatch<SetStateAction<appointment_list_response_item[]>>;
 }
 
 const AppointmentContext = createContext<AppointmentProps>({
   searchDialogOpened: false,
-  setSearchDialogOpened: (arg: any) =>{} 
+  setSearchDialogOpened: (arg: any) =>{},
+
+  sentAppointments: [],
+  setSentAppointments: ()=>{}
 });
 
 export function AppointmentContextProvider({children}: {
@@ -23,10 +33,15 @@ export function AppointmentContextProvider({children}: {
 }){
 
   const [ searchDialogOpened, setSearchDialogOpened ] = useState(false);
-
+  const [ sentAppointments, setSentAppointments ] = useState<appointment_list_response_item[]>([]);
   return (
     <AppointmentContext.Provider
-      value={{ setSearchDialogOpened, searchDialogOpened }}
+      value={{
+        setSearchDialogOpened,
+        searchDialogOpened,
+        sentAppointments,
+        setSentAppointments
+      }}
     >
       {children}
     </AppointmentContext.Provider>
