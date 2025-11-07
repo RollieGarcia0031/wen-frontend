@@ -5,6 +5,7 @@ import { AppointmentContextProvider, refreshSentAppointments, useAppointment } f
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
 import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Student(){
 
@@ -65,14 +66,15 @@ function AppointmentsTable(){
     >
 
       <div
-        className="w-[30rem] card p-4 space-y-4"
+        className="w-[30rem] card p-4"
       >
-        
+        <AnimatePresence> 
         {sentAppointments.map(item => (
           <AppointmentCard item={item} key={item.id}/> 
         ))}
+        </AnimatePresence>
       </div>
-
+      
     </div>
   );
 }
@@ -84,9 +86,13 @@ function AppointmentCard({item}:{
   const { setSentAppointments } = useAppointment();
   const { name, id } = item;
   return (
-    <div
+    <motion.div
       className="grid grid-cols-[1fr_auto] card
-      px-4 py-4"
+      px-4 py-4 my-4"
+      initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+      exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      transition={{ duration: 0.3}}
     >
       <div>
 
@@ -99,7 +105,7 @@ function AppointmentCard({item}:{
       >
         <FaTrashAlt />
       </button>
-    </div>
+    </motion.div>
   );
 
   function handleDelete(){
