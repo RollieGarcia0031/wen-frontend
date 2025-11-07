@@ -1,9 +1,10 @@
 "use client"
 
-import { FaPlus } from "react-icons/fa";
-import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
+import { FaPlus, FaTrashAlt } from "react-icons/fa";
+import { AppointmentContextProvider, refreshSentAppointments, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
+import { useEffect } from "react";
 
 export default function Student(){
 
@@ -11,10 +12,13 @@ export default function Student(){
     <AppointmentContextProvider>
       <SearchProfessorContextProvider>
         <div className="px-10 mt-4">
+
           <AppointmentHeader />
+
+          <AppointmentsTable />
+
         </div>
 
-        <AppointmentsTable />
       </SearchProfessorContextProvider>
     </AppointmentContextProvider>
   );
@@ -49,14 +53,26 @@ function AppointmentHeader(){
 }
 
 function AppointmentsTable(){
-  const { sentAppointments } = useAppointment();
+  const { sentAppointments, setSentAppointments} = useAppointment();
+
+  useEffect(()=>{
+    refreshSentAppointments(setSentAppointments);
+  }, []);
 
   return (
-    <div>
-      
-      {sentAppointments.map(item => (
-        <AppointmentCard item={item} key={item.id}/> 
-      ))}
+    <div
+      className="flex-cc mt-10"
+    >
+
+      <div
+        className="w-[30rem] card p-4 space-y-4"
+      >
+        
+        {sentAppointments.map(item => (
+          <AppointmentCard item={item} key={item.id}/> 
+        ))}
+      </div>
+
     </div>
   );
 }
@@ -65,9 +81,31 @@ function AppointmentCard({item}:{
   item: appointment_list_response_item
 }){
   
+  const { setSentAppointments } = useAppointment();
+  const { name, id } = item;
   return (
-    <div>
-      {item.name}
+    <div
+      className="grid grid-cols-[1fr_auto] card
+      px-4 py-4"
+    >
+      <div>
+
+        {name}
+
+      </div>
+
+      <button
+        onClick={handleDelete}
+      >
+        <FaTrashAlt />
+      </button>
     </div>
   );
+
+  function handleDelete(){
+    setSentAppointments(appointments => {
+      return appointments.filter(apt => apt.id !== id)
+    });
+
+  }
 }

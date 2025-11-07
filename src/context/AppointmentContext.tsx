@@ -1,4 +1,6 @@
+import fetchBackend from "@/lib/fetchBackend";
 import { useContext, createContext, useState, Dispatch, SetStateAction } from "react";
+import { toast } from "react-toastify";
 
 interface AppointmentProps {
   /**
@@ -25,7 +27,7 @@ const AppointmentContext = createContext<AppointmentProps>({
   setSearchDialogOpened: (arg: any) =>{},
 
   sentAppointments: [],
-  setSentAppointments: ()=>{}
+  setSentAppointments: (arg: any) => {} 
 });
 
 export function AppointmentContextProvider({children}: {
@@ -47,6 +49,24 @@ export function AppointmentContextProvider({children}: {
     </AppointmentContext.Provider>
   );
 
+}
+
+/**
+ * Reset the state of the list of sent appointments
+ */
+export async function refreshSentAppointments(
+  setState: Dispatch<SetStateAction<appointment_list_response_item[]>>
+){
+  const response = await fetchBackend('appointment/list',{
+    method: "POST",
+    headers: { 'Content-Type' : 'application/json' }
+  });
+
+  const { data, message } = await response.json() as appointment_list_response;
+
+  if (!response.ok) return toast.error(message);
+
+  setState(data);
 }
 
 export const useAppointment = () => useContext(AppointmentContext);
