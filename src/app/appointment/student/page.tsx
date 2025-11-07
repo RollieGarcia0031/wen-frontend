@@ -13,11 +13,16 @@ export default function Student(){
         <div className="px-10 mt-4">
           <AppointmentHeader />
         </div>
+
+        <AppointmentsTable />
       </SearchProfessorContextProvider>
     </AppointmentContextProvider>
   );
 }
 
+/**
+ * Header and quick opttion bar in sending appointment
+ */
 function AppointmentHeader(){
   const { setSearchDialogOpened } = useAppointment();
 
@@ -39,6 +44,30 @@ function AppointmentHeader(){
       </button>
 
       <SearchProfessorDialog />
+    </div>
+  );
+}
+
+function AppointmentsTable(){
+  const { sentAppointments } = useAppointment();
+
+  return (
+    <div>
+      
+      {sentAppointments.map(item => (
+        <AppointmentCard item={item} key={item.id}/> 
+      ))}
+    </div>
+  );
+}
+
+function AppointmentCard({item}:{
+  item: appointment_list_response_item
+}){
+  
+  return (
+    <div>
+      {item.name}
     </div>
   );
 }
