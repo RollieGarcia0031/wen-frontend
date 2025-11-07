@@ -3,7 +3,7 @@
 import Link from "next/link";
 import fetchBackend from "@/lib/fetchBackend";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 import { removeSeconds } from '@/util/TimeFormat';
 import { IoMdReturnLeft } from "react-icons/io";
@@ -213,6 +213,9 @@ function MessageInput(){
   const { selectedAvailability, selectedDate } = useSendAppointment();
   const router = useRouter();
 
+  // used to limit outgoing api request
+  const isSending = useRef(false);
+
   if (!selectedAvailability) return null;
 
   return (
@@ -229,6 +232,7 @@ function MessageInput(){
       <button
         className="bg-primary hover:bg-primary-hover px-2 rounded-md"
         type='submit'
+        disabled={isSending.current}
       >
         Send
       </button>
@@ -238,6 +242,10 @@ function MessageInput(){
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>){
     event.preventDefault();
 
+    if (isSending.current) return;
+
+    isSending.current = true; 
+
     if (!selectedDate || !selectedAvailability) return;
 
     const formData = new FormData(event.currentTarget);
@@ -246,23 +254,23 @@ function MessageInput(){
 
     const reqBody = Object.fromEntries(formData);
 
-    const response = await fetchBackend("appointment/send",{
-      method: "POST",
-      headers: { 'Content-Type' : 'application/json' },
-      body: JSON.stringify(reqBody)
-    });
+    try {
+      const response = await fetchBackend("appointment/send",{
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(reqBody)
+      });
 
-    if (!response.ok) {
-      const { message } = await response.json() as common_response;
-      alert(message);
-      return;
+      const { message, success } = await response.json() as common_response;
+
+      if (!response.ok || !success) throw new Error(message);
+      
+      toast.success("Appointment Sent!");
+      router.push('/appointment');
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      isSending.current = false;
     }
-
-    const { success } = await response.json() as common_response;
-
-    if (!success) return;
-
-    toast.success("Appointment Sent!");
-    router.push('/appointment');
   }
 }
