@@ -14,6 +14,10 @@ export default function SignupForm({setOption}: {
 
     const passwordMatched = password === confirmPassword;
 
+    // used to limit the api request at a time, only one api
+    // request will be allowed to be sent, before each responses
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
+
   return (
       <form className='flex-cl justify-between gap-2 h-full
       px-15 min-w-30
@@ -92,9 +96,13 @@ export default function SignupForm({setOption}: {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>){
     e.preventDefault();
 
+    if (isSubmitting) return;
+
     const formdata = new FormData(e.currentTarget);
 
     const data = Object.fromEntries(formdata);
+
+    setIsSubmitting(true);
 
     const response = await fetchBackend('auth/register', {
       method: 'POST',
@@ -104,12 +112,14 @@ export default function SignupForm({setOption}: {
 
     if (response.ok){
       toast.info('Signup successful');
+
+      setIsSubmitting(false);
       return setOption('login');
 
     } else {
       const json = await response.json() as common_response;
       toast.error(json.message);
+      setIsSubmitting(false);
     }
   }
-
 }
