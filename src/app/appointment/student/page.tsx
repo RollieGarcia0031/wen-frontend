@@ -1,9 +1,11 @@
 "use client"
 
-import { FaPlus } from "react-icons/fa";
-import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
+import { FaPlus, FaTrashAlt } from "react-icons/fa";
+import { AppointmentContextProvider, refreshSentAppointments, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Student(){
 
@@ -11,13 +13,21 @@ export default function Student(){
     <AppointmentContextProvider>
       <SearchProfessorContextProvider>
         <div className="px-10 mt-4">
+
           <AppointmentHeader />
+
+          <AppointmentsTable />
+
         </div>
+
       </SearchProfessorContextProvider>
     </AppointmentContextProvider>
   );
 }
 
+/**
+ * Header and quick opttion bar in sending appointment
+ */
 function AppointmentHeader(){
   const { setSearchDialogOpened } = useAppointment();
 
@@ -41,4 +51,67 @@ function AppointmentHeader(){
       <SearchProfessorDialog />
     </div>
   );
+}
+
+function AppointmentsTable(){
+  const { sentAppointments, setSentAppointments} = useAppointment();
+
+  useEffect(()=>{
+    refreshSentAppointments(setSentAppointments);
+  }, []);
+
+  return (
+    <div
+      className="flex-cc mt-10"
+    >
+
+      <div
+        className="w-[30rem] card p-4"
+      >
+        <AnimatePresence> 
+        {sentAppointments.map(item => (
+          <AppointmentCard item={item} key={item.id}/> 
+        ))}
+        </AnimatePresence>
+      </div>
+      
+    </div>
+  );
+}
+
+function AppointmentCard({item}:{
+  item: appointment_list_response_item
+}){
+  
+  const { setSentAppointments } = useAppointment();
+  const { name, id } = item;
+  return (
+    <motion.div
+      className="grid grid-cols-[1fr_auto] card
+      px-4 py-4 my-4"
+      initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+      exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      transition={{ duration: 0.3}}
+    >
+      <div>
+
+        {name}
+
+      </div>
+
+      <button
+        onClick={handleDelete}
+      >
+        <FaTrashAlt />
+      </button>
+    </motion.div>
+  );
+
+  function handleDelete(){
+    setSentAppointments(appointments => {
+      return appointments.filter(apt => apt.id !== id)
+    });
+
+  }
 }
