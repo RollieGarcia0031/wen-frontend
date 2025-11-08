@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -10,7 +10,7 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 
 import ProfileMiniPanel from "./ProfileMiniPanel";
 import NotifMiniPanel from "./NotifMiniPanel";
-
+import { NotificationContextProvider, useNotification } from "@/context/NotificationContext";
 /**
  * Contains the main header, rendered to both students and professors
  * @returns header, or null in some routes
@@ -68,16 +68,15 @@ export default function Header() {
         gap-2
         [&_button]:aspect-square [&_button]:rounded-full"
       >
-        {/* shows the unread/fresh notfications */}
-        <div>
 
-          <button className="svg-btn-sm common-button"
-            onClick={()=>setMiniNotifPanelIsOpened(x=>!x)}
-          >
-            <IoMdNotificationsOutline />
-          </button>
-          { miniNotifPanelIsOpened && <NotifMiniPanel ref={notifPanelRef} /> }
-        </div>
+        {/* shows the unread/fresh notfications */}
+        <NotificationContextProvider>
+          <NotificationButton
+            notifPanelRef={notifPanelRef}
+            setMiniNotifPanelIsOpened={setMiniNotifPanelIsOpened}
+            miniNotifPanelIsOpened={miniNotifPanelIsOpened}
+          />
+        </NotificationContextProvider>
 
         {/* shows the mini profile panel */}
         <div>
@@ -90,5 +89,34 @@ export default function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+function NotificationButton({setMiniNotifPanelIsOpened, miniNotifPanelIsOpened, notifPanelRef}:{
+  setMiniNotifPanelIsOpened: Dispatch<SetStateAction<boolean>>,
+  miniNotifPanelIsOpened: boolean,
+  notifPanelRef: RefObject<HTMLDivElement | null>
+}){
+
+  const { unreadNotifications } = useNotification();
+  const unreadCount = unreadNotifications.length;
+
+  return (
+    <div>
+      <button className="svg-btn-sm common-button"
+        onClick={()=>setMiniNotifPanelIsOpened(x=>!x)}
+      >
+        <IoMdNotificationsOutline />
+
+        { unreadCount > 0 && <span
+          className="absolute top-0 bg-primary rounded-full px-2 text-sm"
+        >
+          { unreadCount }   
+        </span>
+        }
+      </button>
+
+        { miniNotifPanelIsOpened && <NotifMiniPanel ref={notifPanelRef} /> }
+    </div>
   );
 }
