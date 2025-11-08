@@ -14,7 +14,7 @@ export default function NotifMiniPanel({ref}:{
     <div
       ref={ref}
       className="card p-4 absolute right-[5rem]
-      w-[20rem]"
+      w-[20rem] max-h-[50dvh] overflow-y-auto"
     >
       <AnimatePresence>
         {
@@ -47,7 +47,7 @@ function NotifCard({item}:{
 
   return (
     <motion.div
-      className="card2 text-sm"
+      className="card2 text-sm my-2"
     >
       <p>
         {message}
