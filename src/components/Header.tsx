@@ -11,6 +11,7 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import ProfileMiniPanel from "./ProfileMiniPanel";
 import NotifMiniPanel from "./NotifMiniPanel";
 import { NotificationContextProvider, useNotification } from "@/context/NotificationContext";
+import fetchBackend from "@/lib/fetchBackend";
 /**
  * Contains the main header, rendered to both students and professors
  * @returns header, or null in some routes
@@ -98,25 +99,60 @@ function NotificationButton({setMiniNotifPanelIsOpened, miniNotifPanelIsOpened, 
   notifPanelRef: RefObject<HTMLDivElement | null>
 }){
 
+  const [ unreadCount, setUnreadCount ] = useState(0);
   const { unreadNotifications } = useNotification();
-  const unreadCount = unreadNotifications.length;
+
+  useEffect(()=>{
+    const fetchUnreadCount = async()=>{
+      const response = await fetchBackend("notification/count/unread", {
+        method: "GET",
+        headers: { 'Content-Type' : 'application/json' }
+      });
+
+      if (!response.ok) return;
+
+      const { data } = await response.json() as notification_count_unread;
+
+      setUnreadCount(data.count);
+    }
+
+    fetchUnreadCount();
+  }, []);
 
   return (
     <div>
       <button className="svg-btn-sm common-button"
-        onClick={()=>setMiniNotifPanelIsOpened(x=>!x)}
+        onClick={handleOpenNotif}
       >
         <IoMdNotificationsOutline />
 
-        { unreadCount > 0 && <span
-          className="absolute top-0 bg-primary rounded-full px-2 text-sm"
-        >
-          { unreadCount }   
-        </span>
+        { unreadCount > 0 &&
+          <span
+            className="absolute top-0 bg-primary rounded-full px-2 text-sm"
+          >
+           { unreadCount }   
+          </span>
         }
       </button>
 
         { miniNotifPanelIsOpened && <NotifMiniPanel ref={notifPanelRef} /> }
     </div>
   );
+
+  async function handleOpenNotif(){
+    setMiniNotifPanelIsOpened(x=>!x);
+
+    try {
+      const response = await fetchBackend("notification/mark-all-read", {
+        method: "GET",
+        headers: { 'Content-Type' : 'application/json' }
+      });
+
+      if (!response.ok) return;
+
+      setUnreadCount(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
