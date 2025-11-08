@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import React, { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import ProfileMiniPanel from "./ProfileMiniPanel";
 import NotifMiniPanel from "./NotifMiniPanel";
 import { NotificationContextProvider, useNotification } from "@/context/NotificationContext";
 import fetchBackend from "@/lib/fetchBackend";
+
 /**
  * Contains the main header, rendered to both students and professors
  * @returns header, or null in some routes
@@ -100,7 +100,6 @@ function NotificationButton({setMiniNotifPanelIsOpened, miniNotifPanelIsOpened, 
 }){
 
   const [ unreadCount, setUnreadCount ] = useState(0);
-  const { unreadNotifications } = useNotification();
 
   useEffect(()=>{
     const fetchUnreadCount = async()=>{
