@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, RefObject } from "react";
 import { MdLogout, MdSettings } from "react-icons/md";
 
 import fetchBackend from "@/lib/fetchBackend";
 import Link from "next/link";
 
-export default function ProfileMiniPanel(){
+export default function ProfileMiniPanel({ref}:{
+  ref: RefObject<HTMLDivElement | null>
+}){
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(()=>{
@@ -29,7 +31,9 @@ export default function ProfileMiniPanel(){
   }, []);
 
   return (
-    <div className="absolute mt-4 right-5 card2 rounded-sm
+    <div
+      ref={ref}
+      className="absolute mt-4 right-5 card2 rounded-sm
       flex-cl p-4
       [&>*]:border-b-highlight-muted [&>*]:border-b-[1px] [&>*]:border-b-solid
       [&>*]:py-1 [&>*]:w-full
