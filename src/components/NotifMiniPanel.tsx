@@ -22,6 +22,12 @@ export default function NotifMiniPanel({ref}:{
             <NotifCard key={item.notification_id} item={item} />
           ))
         }
+
+        {
+          unreadNotifications.length === 0 && (
+            <p> No notification Availabile </p>
+          )
+        }
       </AnimatePresence>
     </div>
   );
