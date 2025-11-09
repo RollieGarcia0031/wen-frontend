@@ -33,12 +33,21 @@ function AppointmentTable(){
 
   return (
     <div
-      className="flex-cc"
+      className="flex-cc pb-8"
     >
-
       <div
         className="card w-[57rem] rounded-md p-8"
       >
+
+        <div>
+          <p className="text-4xl font-extrabold">
+            Appointment History
+          </p>
+          <p className="mb-12">
+            A complete record of all your scheduled meetings.
+          </p>
+        </div>
+
         {/* table header */}
         <div
           className="grid grid-cols-[13rem_15rem_10rem_7rem_5rem]
@@ -91,6 +100,11 @@ function AppointmentCard({item}: {
 
   return (
     <motion.div
+      initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+      exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      transition={{ duration: 0.3}}
+
       className="border-t-highlight-muted border-t-[1px] py-4 px-4
       grid grid-cols-[13rem_15rem_10rem_7rem_5rem]"
     >
