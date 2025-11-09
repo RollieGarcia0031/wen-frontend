@@ -105,28 +105,34 @@ function AppointmentCard({item}: {
       exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
       transition={{ duration: 0.3}}
 
-      className="border-t-highlight-muted border-t-[1px] py-4 px-4
-      grid grid-cols-[13rem_15rem_10rem_7rem_5rem]"
+      className="border-t-highlight-muted border-t-[1px]"
     >
+      <div
+        className=" py-4 px-4
+        grid grid-cols-[13rem_15rem_10rem_7rem_5rem] my-1
+        hover:bg-highlight-muted duration-100 rounded-md cursor-pointer"
+      >
 
-      <p>
-        {name}
-      </p>
+        <p>
+          {name}
+        </p>
 
-      <p>
-        {message}
-      </p>
+        <p>
+          {message}
+        </p>
 
-      <p>
-        {displayDate}
-      </p>
+        <p>
+          {displayDate}
+        </p>
 
-      <p>
-        {displayTime}
-      </p>
+        <p>
+          {displayTime}
+        </p>
 
-      <div className="flex-cc [&_svg]:text-2xl">
-        <StatusIcon statusNumber={status} />
+        <div className="flex-cc [&_svg]:text-2xl">
+          <StatusIcon statusNumber={status} />
+        </div>
+
       </div>
     </motion.div>
   );
