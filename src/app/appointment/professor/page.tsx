@@ -115,7 +115,8 @@ function AppointmentCard({item}: {
         onClick={handleClick}
         className=" py-4 px-4
         grid grid-cols-[13rem_15rem_10rem_7rem_5rem] my-1
-        hover:bg-highlight-muted duration-100 rounded-md cursor-pointer"
+        hover:bg-highlight-muted duration-100 rounded-md cursor-pointer
+        text-left"
       >
 
         <p>
