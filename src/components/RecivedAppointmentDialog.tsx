@@ -172,16 +172,32 @@ export default function RecivedAppointmentDialog(){
 
     isDeclining.current = true;
 
+    const reqBody = { id : selectedAppointment.id };
+
     try {
 
-      const response = await fetchBackend('', {
-
+      const response = await fetchBackend('appointment/decline', {
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(reqBody)
       });
 
       const { data, message, success } = await response.json() as common_response;
 
       if (!response.ok || !success)
         throw new Error(message);
+
+      setRecievedAppointments(items => items.map(item => {
+        if (item.id === selectedAppointment.id) {
+          item = {...item, status: 2 }
+        }
+
+        handleClose();
+
+        return item;
+      }));
+
+      toast.info("Appointment has been declined");
 
 
     } catch (error) {
