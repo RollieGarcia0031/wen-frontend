@@ -17,7 +17,8 @@ export default function RecivedAppointmentDialog(){
     setMainDialogOpened,
     selectedAppointmentId,
     setSelectedAppointmentId,
-    recievedAppointments
+    recievedAppointments,
+    setRecievedAppointments
   } = useProfAppointment();
 
   const ref = useRef<HTMLDialogElement | null>(null);
@@ -132,15 +133,30 @@ export default function RecivedAppointmentDialog(){
     if (isAccepting.current) return;
 
     isAccepting.current = true;
+    
+    const reqBody = { id : selectedAppointment.id };
 
     try {
 
-      const response = await fetchBackend("",{
-
+      const response = await fetchBackend("appointment/accept",{
+        method: "POST",
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(reqBody)
       });
 
       const { message, data } = await response.json() as common_response;
       if (!response.ok) throw new Error(message);
+
+      setRecievedAppointments(items => items.map(item => {
+        if (item.id === selectedAppointment.id) {
+          item = {...item, status: 1 }
+        }
+
+        handleClose();
+
+        return item;
+      }))
+      toast.success("Appointment has been approved");
 
     } catch (error) {
       if (error instanceof Error)
