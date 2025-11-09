@@ -8,7 +8,7 @@ type appointmentDispatch = Dispatch<SetStateAction<appointment_list_response_ite
 
 interface ProfAppointmentContextProps {
   /**
-   * Array recieved appointments by the logged user
+   * Array of recieved appointments by the logged user
    */
   recievedAppointments: appointment_list_response_item[];
   setRecievedAppointments: appointmentDispatch;
