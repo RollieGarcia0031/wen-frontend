@@ -160,5 +160,6 @@ function StatusIcon({statusNumber}:{
     1: <p> Approved </p>,
 
     2: <p> Decilined </p>
+
   }[statusNumber]
 }

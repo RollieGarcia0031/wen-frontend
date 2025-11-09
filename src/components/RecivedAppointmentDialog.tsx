@@ -7,6 +7,8 @@ import { BsPersonCircle } from "react-icons/bs";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { LuClock } from "react-icons/lu";
+import fetchBackend from "@/lib/fetchBackend";
+import { toast } from "react-toastify";
 
 export default function RecivedAppointmentDialog(){
   
@@ -33,6 +35,9 @@ export default function RecivedAppointmentDialog(){
 
   const displayStartTime = selectedAppointment? removeSeconds(selectedAppointment?.start_time): '';
   const displayEndTime = selectedAppointment? removeSeconds(selectedAppointment?.end_time): '';
+
+  const isAccepting = useRef(false);
+  const isDeclining = useRef(false);
 
   useEffect(()=>{
     if (mainDialogOpened) ref.current?.showModal();
@@ -94,13 +99,19 @@ export default function RecivedAppointmentDialog(){
           >
             
             <button
-              className="bg-green-800"
+              className={`bg-green-800`}
+              onClick={handleAccept}
+              disabled={isAccepting.current}
             >
-              Accept
+              { !isAccepting.current ? 
+                <p>Accept</p>
+                : <p>plese wait </p>
+              }
             </button>
 
             <button
               className="bg-red-800"
+              onClick={handleDecline}
             >
               Decline
             </button>
@@ -114,5 +125,54 @@ export default function RecivedAppointmentDialog(){
   function handleClose(){
     setMainDialogOpened(false);
     setSelectedAppointmentId(-1);
+    isAccepting.current = false;
+  }
+
+  async function handleAccept(){
+    if (isAccepting.current) return;
+
+    isAccepting.current = true;
+
+    try {
+
+      const response = await fetchBackend("",{
+
+      });
+
+      const { message, data } = await response.json() as common_response;
+      if (!response.ok) throw new Error(message);
+
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    } finally {
+      isAccepting.current = false;
+    }
+
+  }
+
+  async function handleDecline(){
+    if (isDeclining.current) return;
+
+    isDeclining.current = true;
+
+    try {
+
+      const response = await fetchBackend('', {
+
+      });
+
+      const { data, message, success } = await response.json() as common_response;
+
+      if (!response.ok || !success)
+        throw new Error(message);
+
+
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    } finally {
+      isDeclining.current = false;
+    }
   }
 }
