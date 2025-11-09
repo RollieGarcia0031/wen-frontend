@@ -8,28 +8,49 @@ type appointmentDispatch = Dispatch<SetStateAction<appointment_list_response_ite
 
 interface ProfAppointmentContextProps {
   /**
-   * Array recieved appointments by the logged user
+   * Array of recieved appointments by the logged user
    */
   recievedAppointments: appointment_list_response_item[];
   setRecievedAppointments: appointmentDispatch;
+
+  /**
+   * Selected ID of the appointment,
+   * used in delete and update operations
+   */
+  selectedAppointmentId: number;
+  setSelectedAppointmentId: Dispatch<SetStateAction<number>>;
+
+  mainDialogOpened: boolean;
+  setMainDialogOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 const Context = createContext<ProfAppointmentContextProps>({
   recievedAppointments: [],
-  setRecievedAppointments: ()=>{}
+  setRecievedAppointments: ()=>{},
+
+  selectedAppointmentId: -1,
+  setSelectedAppointmentId: ()=>{},
+
+  mainDialogOpened: false,
+  setMainDialogOpened: ()=>{}
 });
 
 export function ProfAppointmentContextProvider({children}:{
   children: React.ReactNode
 }){
-
+  const [ mainDialogOpened, setMainDialogOpened ] = useState(false);
+  const [ selectedAppointmentId, setSelectedAppointmentId ] = useState(-1);
   const [ recievedAppointments, setRecievedAppointments ] = useState<appointment_list_response_item[]>([]);
 
   return (
     <Context.Provider
       value={{
         recievedAppointments,
-        setRecievedAppointments
+        setRecievedAppointments,
+        selectedAppointmentId,
+        setSelectedAppointmentId,
+        mainDialogOpened,
+        setMainDialogOpened
       }}
     >
       {children}

@@ -5,6 +5,7 @@ import { removeSeconds } from "@/util/TimeFormat";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { MdOutlinePending } from "react-icons/md";
+import RecivedAppointmentDialog from "@/components/RecivedAppointmentDialog";
 
 export default function Professor(){
   return (
@@ -14,6 +15,7 @@ export default function Professor(){
         Proffessor
 
         <AppointmentTable />
+        <RecivedAppointmentDialog />
 
       </div>
     </ProfAppointmentContextProvider>
@@ -89,7 +91,7 @@ function AppointmentCard({item}: {
   item: appointment_list_response_item
 }) {
 
-  const { name, status, message, target_date, start_time } = item;
+  const { name, status, message, target_date, start_time, id } = item;
   const displayDate = new Date(target_date).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
@@ -98,6 +100,8 @@ function AppointmentCard({item}: {
 
   const displayTime = removeSeconds(start_time);
 
+  const { setMainDialogOpened, setSelectedAppointmentId } = useProfAppointment();
+
   return (
     <motion.div
       initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
@@ -105,31 +109,44 @@ function AppointmentCard({item}: {
       exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
       transition={{ duration: 0.3}}
 
-      className="border-t-highlight-muted border-t-[1px] py-4 px-4
-      grid grid-cols-[13rem_15rem_10rem_7rem_5rem]"
+      className="border-t-highlight-muted border-t-[1px]"
     >
+      <button
+        onClick={handleClick}
+        className=" py-4 px-4
+        grid grid-cols-[13rem_15rem_10rem_7rem_5rem] my-1
+        hover:bg-highlight-muted duration-100 rounded-md cursor-pointer
+        text-left"
+      >
 
-      <p>
-        {name}
-      </p>
+        <p>
+          {name}
+        </p>
 
-      <p>
-        {message}
-      </p>
+        <p>
+          {message}
+        </p>
 
-      <p>
-        {displayDate}
-      </p>
+        <p>
+          {displayDate}
+        </p>
 
-      <p>
-        {displayTime}
-      </p>
+        <p>
+          {displayTime}
+        </p>
 
-      <div className="flex-cc [&_svg]:text-2xl">
-        <StatusIcon statusNumber={status} />
-      </div>
+        <div className="flex-cc [&_svg]:text-2xl">
+          <StatusIcon statusNumber={status} />
+        </div>
+
+      </button>
     </motion.div>
   );
+
+  function handleClick(){
+    setMainDialogOpened(true);
+    setSelectedAppointmentId(id);
+  }
 }
 
 function StatusIcon({statusNumber}:{
@@ -143,5 +160,6 @@ function StatusIcon({statusNumber}:{
     1: <p> Approved </p>,
 
     2: <p> Decilined </p>
+
   }[statusNumber]
 }

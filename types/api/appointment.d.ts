@@ -22,7 +22,7 @@ interface search_professor_user_response extends common_response {
 }
 
 interface appointment_list_response_item {
-  id: string;
+  id: number;
   status: number;
   message: string;
   target_date: string;
