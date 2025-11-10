@@ -9,7 +9,8 @@ import RecivedAppointmentDialog from "@/components/RecivedAppointmentDialog";
 import { FaTrash } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
-
+import { FaCheck } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
 export default function Professor(){
   return (
     <ProfAppointmentContextProvider>
@@ -245,11 +246,11 @@ function StatusIcon({statusNumber}:{
 
   return {
 
-    0: <MdOutlinePending className="fill-yellow-600" />,
+    0: <MdOutlinePending className="fill-yellow-500" />,
 
-    1: <p> Approved </p>,
+    1:  <FaCheck title='approved' className='fill-green-500' />, 
 
-    2: <p> Decilined </p>
+    2: <MdCancel title='declined' className='fill-red-400' />
 
   }[statusNumber]
 }

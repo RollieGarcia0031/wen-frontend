@@ -8,8 +8,7 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
-import { MdCancel, MdSmsFailed, MdWatchLater } from "react-icons/md";
-import { FcCancel } from "react-icons/fc";
+import { MdCancel, MdWatchLater } from "react-icons/md";
 
 export default function Student(){
 
