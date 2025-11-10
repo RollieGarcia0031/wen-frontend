@@ -3,7 +3,6 @@ import fetchBackend from "@/lib/fetchBackend";
 import {
     IoMdCloseCircleOutline,
     IoMdCreate,
-    
 } from "react-icons/io";
 
 import {
@@ -11,6 +10,7 @@ import {
     MdOutlineCheck,
     MdOutlineCancel
 } from "react-icons/md";
+import { toast } from "react-toastify";
 
 /**
  * Dialog box for creating and deleting a customized course
@@ -89,7 +89,7 @@ export default function CustomCourseDialog({ref}:{
             <div className="py-4 px-6 bg-background-medium flex-cc gap-4 rounded-md
               mt-4"
             >
-            {
+            {/*Rows of option in created courses*/
               courseList?.map(course =>
                 <div className={`flex-rc duration-150 pt-2 rounded-t-md
                   ${selectedCourseId === course.id ? 'bg-background-light': ''}`}
@@ -185,14 +185,28 @@ export default function CustomCourseDialog({ref}:{
   async function deleteCourse(){
     if(selectedCourseId === -1)return;
 
-    const response = await fetchBackend("course/delete", {
-      method: "DELETE",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({id: selectedCourseId})
-    });
+    try {
+      const response = await fetchBackend("course/delete", {
+        method: "DELETE",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: selectedCourseId})
+      });
 
-    if (response.ok){
+      const { message } = await response.json() as common_response;
+
+      if (!response.ok){
+        if (message.includes('23503'))
+          throw new Error(
+            "You cannot delete a course that\
+            is currently used by other users"
+          );
+        throw new Error(message || "Error Occured");
+      }
+
       setCourseList(list => list.filter( course => course.id !== selectedCourseId ));
+
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
     }
   }
 }
