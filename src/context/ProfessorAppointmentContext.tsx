@@ -20,8 +20,26 @@ interface ProfAppointmentContextProps {
   selectedAppointmentId: number;
   setSelectedAppointmentId: Dispatch<SetStateAction<number>>;
 
+  /**
+   * State for opening option dialog in declining/accepting
+   * appointments
+   */
   mainDialogOpened: boolean;
   setMainDialogOpened: Dispatch<SetStateAction<boolean>>;
+
+  /**
+   * Option mode for user, reflects how click event on
+   * the appointment cards will behave
+   */
+  selectionOption: number;
+  setSelectionOption: Dispatch<SetStateAction<number>>;
+
+  /**
+   * Array of selected appointment ids
+   * Useful for operations requiring multiple selection
+   */
+  selectedIds: number[]
+  setSelectedIds: Dispatch<SetStateAction<number[]>>;
 }
 
 const Context = createContext<ProfAppointmentContextProps>({
@@ -32,7 +50,13 @@ const Context = createContext<ProfAppointmentContextProps>({
   setSelectedAppointmentId: ()=>{},
 
   mainDialogOpened: false,
-  setMainDialogOpened: ()=>{}
+  setMainDialogOpened: ()=>{},
+
+  selectionOption: 0,
+  setSelectionOption: ()=>{},
+
+  selectedIds: [],
+  setSelectedIds: ()=>{}
 });
 
 export function ProfAppointmentContextProvider({children}:{
@@ -41,6 +65,8 @@ export function ProfAppointmentContextProvider({children}:{
   const [ mainDialogOpened, setMainDialogOpened ] = useState(false);
   const [ selectedAppointmentId, setSelectedAppointmentId ] = useState(-1);
   const [ recievedAppointments, setRecievedAppointments ] = useState<appointment_list_response_item[]>([]);
+  const [ selectionOption, setSelectionOption ] = useState(0);
+  const [ selectedIds, setSelectedIds ] = useState<number[]>([]);
 
   return (
     <Context.Provider
@@ -50,7 +76,12 @@ export function ProfAppointmentContextProvider({children}:{
         selectedAppointmentId,
         setSelectedAppointmentId,
         mainDialogOpened,
-        setMainDialogOpened
+        setMainDialogOpened,
+        selectionOption,
+        setSelectionOption,
+        selectedIds,
+        setSelectedIds
+
       }}
     >
       {children}
