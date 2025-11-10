@@ -5,6 +5,7 @@ import { BiCollapseVertical } from "react-icons/bi";
 import fetchBackend from "@/lib/fetchBackend";
 import { MdOutlineAdd } from "react-icons/md";
 import { toast } from "react-toastify";
+import { AnimatePresence, motion } from "framer-motion";
 
 
 export default function CoursePanel(){
@@ -89,7 +90,7 @@ export default function CoursePanel(){
       {/*This contains the list of courses that the user is enrolled/teaching*/}
       <div className="bg-background-medium px-4 py-2 rounded-md
         [&>*]:grid [&>*]:grid-cols-[3rem_6rem_auto_3rem] grid-rows-1
-        space-y-4"
+        "
       >
         {/* The headings of the table */}
         <div>
@@ -99,17 +100,25 @@ export default function CoursePanel(){
           <p></p>
         </div>
 
-        {/* The cells of table containing the course list */}
-        {ownedCourses.map(course =>
-          <div key={course.id}>
-            <p>{course.year}</p>
-            <p>{course.name}</p>
-            <p>{course.description}</p>
-            <button
-              onClick={()=>handleRemoveCourse(course.id)}
-            ><IoMdRemoveCircle/></button>
-          </div>
-        )}
+        <AnimatePresence>
+          {/* The cells of table containing the course list */}
+          {ownedCourses.map(course =>
+            <motion.div key={course.id}
+              initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginBottom: 0, translateX:0 }}
+              exit={{ opacity: 0, height: 'auto', marginBottom: 0, translateX: -40 }}
+              transition={{ duration: 0.2}}
+              className="my-4"
+            >
+              <p>{course.year}</p>
+              <p>{course.name}</p>
+              <p>{course.description}</p>
+              <button
+                onClick={()=>handleRemoveCourse(course.id)}
+              ><IoMdRemoveCircle/></button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* shows the available course with option to use/add it */}
@@ -166,22 +175,29 @@ export default function CoursePanel(){
               <p>Description</p>
             </div>
 
-            {/* table cell containing all available courses */}
-            {courseList.map((course, index) =>
-              <button className={`grid grid-cols-[6rem_auto] space-x-7
-                hover:bg-background-light justify-items-start w-full
-                py-1
-                ${selectedCourseIndex === index? 'bg-primary':''}
-                `}
-                key={course.id}
-                onClick={()=>setSelectedCourseIndex(index)}
-              >
+            <AnimatePresence>
+              {/* table cell containing all available courses */}
+              {courseList.map((course, index) =>
+                <motion.button
+                  className={`grid grid-cols-[6rem_auto] space-x-7
+                    hover:bg-background-light justify-items-start w-full
+                    py-1
+                    ${selectedCourseIndex === index? 'bg-primary':''}
+                  `}
+                  key={course.id}
+                  onClick={()=>setSelectedCourseIndex(index)}
+                  initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+                  exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+                  transition={{ duration: 0.3}}
+                >
 
-                <p>{course.name}</p>
-                <p>{course.description}</p>
+                  <p>{course.name}</p>
+                  <p>{course.description}</p>
 
-              </button>
-            )}
+                </motion.button>
+              )}
+            </AnimatePresence>
         </div>
       </div>
     </div>
