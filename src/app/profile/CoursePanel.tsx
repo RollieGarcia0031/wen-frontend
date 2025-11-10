@@ -4,6 +4,7 @@ import CustomCourseDialog from "./CustomCourseDialog";
 import { BiCollapseVertical } from "react-icons/bi";
 import fetchBackend from "@/lib/fetchBackend";
 import { MdOutlineAdd } from "react-icons/md";
+import { toast } from "react-toastify";
 
 
 export default function CoursePanel(){
@@ -193,7 +194,7 @@ export default function CoursePanel(){
    */
   async function handleAddCourse(e: React.SyntheticEvent<HTMLFormElement>){
     e.preventDefault();
-    if(!selectedCourse)return;
+    if(!selectedCourse) return toast.warn('Select a course first');
 
     // use the data from the input
     const formData =  new FormData(e.currentTarget);
