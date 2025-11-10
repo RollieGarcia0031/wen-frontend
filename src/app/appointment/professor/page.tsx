@@ -40,7 +40,7 @@ function AppointmentTable(){
       <div
         className="card w-[57rem] rounded-md p-8"
       >
-
+        {/* title and subtitle of the main table */}
         <div>
           <p className="text-4xl font-extrabold">
             Appointment History
@@ -48,6 +48,23 @@ function AppointmentTable(){
           <p className="mb-12">
             A complete record of all your scheduled meetings.
           </p>
+        </div>
+
+        <div
+          className="mb-4"
+        >
+          <span className="card2 space-x-2 py-3">
+            <span>
+              Select:
+            </span>
+            
+            <select>
+              <option>none</option>
+              <option>all</option>
+              <option>non-pending</option>
+              <option>all non-pending</option>
+            </select>
+          </span>
         </div>
 
         {/* table header */}
