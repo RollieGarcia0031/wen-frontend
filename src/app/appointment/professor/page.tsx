@@ -6,15 +6,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { MdOutlinePending } from "react-icons/md";
 import RecivedAppointmentDialog from "@/components/RecivedAppointmentDialog";
+import { FaTrash } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import fetchBackend from "@/lib/fetchBackend";
 
 export default function Professor(){
   return (
     <ProfAppointmentContextProvider>
       <div>
 
-        Proffessor
-
         <AppointmentTable />
+
         <RecivedAppointmentDialog />
 
       </div>
@@ -27,7 +29,14 @@ export default function Professor(){
  */
 function AppointmentTable(){
 
-  const { setRecievedAppointments, recievedAppointments } = useProfAppointment();
+  const {
+    setRecievedAppointments,
+    recievedAppointments,
+    selectionOption,
+    setSelectionOption,
+    selectedIds,
+    setSelectedIds
+  } = useProfAppointment();
 
   useEffect(() => {
     fetchRecievedAppointments(setRecievedAppointments);
@@ -50,21 +59,34 @@ function AppointmentTable(){
           </p>
         </div>
 
+        {/* shortcut option for deleting */}
         <div
-          className="mb-4"
+          className="mb-4 space-x-4 flex"
         >
           <span className="card2 space-x-2 py-3">
             <span>
               Select:
             </span>
             
-            <select>
-              <option>none</option>
-              <option>all</option>
-              <option>non-pending</option>
-              <option>all non-pending</option>
+            <select
+              value={`${selectionOption}`}
+              onChange={(e)=>setSelectionOption(parseInt(e.target.value))}>
+              <option value={0} >none</option>
+              <option value={1} >all</option>
+              <option value={2} >non-pending</option>
             </select>
           </span>
+          
+          { selectionOption === 2 &&
+            <button className='flex-rc'
+              onClick={handleMultiDelete}
+            >
+              <FaTrash
+                className={`${selectedIds.length > 0? 'fill-red-600':''}
+                duration-500`}
+              />
+            </button>
+          }
         </div>
 
         {/* table header */}
@@ -102,6 +124,35 @@ function AppointmentTable(){
 
     </div>
   );
+
+  async function handleMultiDelete(){
+
+    const reqBody = { ids: selectedIds }
+
+    try {
+
+      const response = await fetchBackend("appointment/hide",{
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(reqBody)
+      });
+
+      if (!response.ok) throw new Error("Error occured, no appointments are deleted");
+
+      setRecievedAppointments(items => (
+        items.filter(item => (
+          !selectedIds.includes(item.id)
+        ))
+      ));
+
+      setSelectedIds([]);
+      toast.success("Appointments deleted successfully");
+
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    }
+  }
 }
 
 function AppointmentCard({item}: {
@@ -117,8 +168,17 @@ function AppointmentCard({item}: {
 
   const displayTime = removeSeconds(start_time);
 
-  const { setMainDialogOpened, setSelectedAppointmentId } = useProfAppointment();
+  const {
+    setMainDialogOpened,
+    setSelectedAppointmentId,
+    selectionOption,
+    selectedIds,
+    setSelectedIds
+  } = useProfAppointment();
 
+  useEffect(()=>{
+    console.log(selectedIds);
+  }, [selectedIds]);
   return (
     <motion.div
       initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
@@ -130,10 +190,12 @@ function AppointmentCard({item}: {
     >
       <button
         onClick={handleClick}
-        className=" py-4 px-4
+        className={`py-4 px-4
         grid grid-cols-[13rem_15rem_10rem_7rem_5rem] my-1
-        hover:bg-highlight-muted duration-100 rounded-md cursor-pointer
-        text-left"
+        ${selectionOption === 0 ? 'hover:bg-highlight-muted' : ''}
+        ${selectionOption === 2 && selectedIds.includes(id)? 'bg-highlight-muted' : ''}
+        duration-100 rounded-md cursor-pointer
+        text-left`}
       >
 
         <p>
@@ -161,8 +223,19 @@ function AppointmentCard({item}: {
   );
 
   function handleClick(){
-    setMainDialogOpened(true);
-    setSelectedAppointmentId(id);
+    switch (selectionOption){
+      case 0:
+        setMainDialogOpened(true);
+        setSelectedAppointmentId(id);
+        break;
+      case 2:
+        if (status === 0) break;
+        if (selectedIds.includes(id))
+          setSelectedIds(ids => ids.filter(val => val !== id)); 
+        else
+          setSelectedIds(ids => [...ids, id]);
+        break;
+    }
   }
 }
 
