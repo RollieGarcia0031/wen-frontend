@@ -80,9 +80,16 @@ function AppointmentsTable(){
     >
       
       <div
-        className="w-[40rem] card p-4"
+        className="w-[40rem] card p-8"
       >
-
+        <div className="mb-8">
+          <p className="text-4xl font-extrabold">
+            Appointments
+          </p>
+          <p>
+            View your sent appointments
+          </p>
+        </div>
         <div
           className="grid grid-cols-[1fr_1fr_4rem_4rem] px-4 my-4 font-semibold"
         >
