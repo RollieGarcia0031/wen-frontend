@@ -53,7 +53,7 @@ export default function Header() {
   
   return (
     <header
-      className="flex-rc py-2"
+      className="flex-rc py-2 mt-2"
     >
       {/* link button/app name, shortcut to return to home */}
       <h1>
@@ -120,14 +120,14 @@ function NotificationButton({setMiniNotifPanelIsOpened, miniNotifPanelIsOpened, 
 
   return (
     <div>
-      <button className="svg-btn-sm common-button"
+      <button className="svg-btn-sm common-button relative"
         onClick={handleOpenNotif}
       >
         <IoMdNotificationsOutline />
 
         { unreadCount > 0 &&
           <span
-            className="absolute top-0 bg-primary rounded-full px-2 text-sm"
+            className="absolute top-[-3px] bg-primary rounded-full px-2 text-sm"
           >
            { unreadCount }   
           </span>
