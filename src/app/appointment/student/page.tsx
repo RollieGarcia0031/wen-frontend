@@ -6,6 +6,8 @@ import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
+import fetchBackend from "@/lib/fetchBackend";
 
 export default function Student(){
 
@@ -82,9 +84,10 @@ function AppointmentsTable(){
 function AppointmentCard({item}:{
   item: appointment_list_response_item
 }){
-  
+
   const { setSentAppointments } = useAppointment();
   const { name, id } = item;
+
   return (
     <motion.div
       className="grid grid-cols-[1fr_auto] card
@@ -108,10 +111,30 @@ function AppointmentCard({item}:{
     </motion.div>
   );
 
-  function handleDelete(){
-    setSentAppointments(appointments => {
-      return appointments.filter(apt => apt.id !== id)
-    });
+  async function handleDelete(){
 
+    const reqBody = { id };
+
+    try {
+
+      const response = await fetchBackend("appointment/delete", {
+        method: "DELETE",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(reqBody)
+      });
+
+      const { message, success } = await response.json() as common_response;
+
+      if (!response.ok || !success) throw new Error(message || "Error Occured");
+
+      setSentAppointments(appointments => 
+        appointments.filter(apt => apt.id !== id)
+      );
+
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    }
+    
   }
 }
