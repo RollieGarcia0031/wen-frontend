@@ -6,6 +6,9 @@ import fetchBackend from "@/lib/fetchBackend";
 import { useEffect, useRef, useState } from "react";
 import { BiCircle } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
+import { toast } from 'react-toastify';
+import { CiWarning } from 'react-icons/ci';
+import { IoWarning } from 'react-icons/io5';
 
 const DayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -19,9 +22,9 @@ export default function Availability(){
 
         <div className="flex-rc mt-10">
           <div className="card2 sm:w-[40rem] p-6">
-            <p> Weekly Availability </p> 
+            <p className='text-4xl font-extrabold'> Weekly Availability </p> 
            
-            <p>
+            <p className='mb-8'>
               Set your recurring available time slots for students to book
             </p>
 
@@ -82,7 +85,7 @@ function SaveChangesButton(){
         return newItem;
       }) 
     }
-
+    
     const response = await fetchBackend("availability/createAll", {
       method: "POST",
       headers: { 'Content-Type' : 'application/json' },
@@ -93,7 +96,6 @@ function SaveChangesButton(){
       alert( (await response.json() as common_response).message );
       return;
     }
-    
     // remove the temporary list in UI
     setTemporaryAvailabilityList([]);
 
@@ -203,15 +205,21 @@ function AvailabilityDayCard({day, index}:{
 /**
  * Component that holds the single row of table showing a single
  * availability of user along with delete option
+ *
+ * Contents of this component are retrieved from database only
  */
 function AvailabilityListCard({availability, containedList}: {
-  availability: AvailabilityItem;
+  availability: availability_list_response_item;
   /** Contains the sibling of the avaibility on the same group*/
-  containedList: AvailabilityItem[];
+  containedList: availability_list_response_item[];
 }){
 
   const { setAvailabilityList } = useAvailabilityContext();
-  const { end_time, start_time, id } = availability;
+  const { end_time, start_time, id, booked } = availability;
+
+  const confirmDialogRef = useRef<HTMLDialogElement | null>(null);
+  /** Used to confirm weather to delete the availability or not */
+  const userConfirmed = useRef<boolean>(false);
 
   return (
     <div
@@ -240,16 +248,65 @@ function AvailabilityListCard({availability, containedList}: {
       <button onClick={handleDelete}>
         <FiTrash/>
       </button>
+      
+      <dialog ref={confirmDialogRef} >
+        <div className='w-[20rem] p-2'>
 
+          <div className='flex-rc gap-2'>
+            <IoWarning className='text-2xl fill-yellow-600'/>
+            <p className='text-xl font-semibold'>
+              Are you sure?
+            </p>
+          </div>
+          { booked === 1 &&
+            <p className='p-2 text-justify'>
+              There is one appointment that is assigned to this availability,
+              deleting this would also result to declining of that
+              appointment sent by your student.
+            </p>
+          } {
+            booked > 1 &&
+            <p className='p-2 text-justify'>
+              There are {booked} appointments booked in this availability,
+              deleting this would result to declining of all of that
+              appointment. This action is irreversible
+            </p>
+          }
+
+          <div
+            className='grid grid-cols-2 gap-4 px-4 mt-4
+            [&>*]:py-1 [&>*]:rounded-md'
+          >
+            <button onClick={()=>deleteAvailability()}
+              className='bg-green-700'
+            >
+              Yes
+            </button>
+
+            <button onClick={()=>confirmDialogRef.current?.close()}
+              className='bg-red-700'
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
+
+  async function handleDelete(){
+    // if no booked appointments, immidiately delete
+    if (booked < 1) return deleteAvailability();
+    // show warning dialog before deleting if there are book appointments
+    confirmDialogRef.current?.showModal();
+  }
 
   /**
    *  Deletes the availability from the UI and database
    */
-  async function handleDelete(){
+  async function deleteAvailability(){
     const body = { id };
-
+    
     const response = await fetchBackend("availability/delete", {
       method: "DELETE",
       headers: { 'Content-Type' : 'application/json' },

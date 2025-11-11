@@ -120,7 +120,7 @@ function NotificationButton({setMiniNotifPanelIsOpened, miniNotifPanelIsOpened, 
 
   return (
     <div>
-      <button className="svg-btn-sm common-button"
+      <button className="svg-btn-sm common-button relative"
         onClick={handleOpenNotif}
       >
         <IoMdNotificationsOutline />
