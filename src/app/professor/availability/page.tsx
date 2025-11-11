@@ -22,9 +22,9 @@ export default function Availability(){
 
         <div className="flex-rc mt-10">
           <div className="card2 sm:w-[40rem] p-6">
-            <p> Weekly Availability </p> 
+            <p className='text-4xl font-extrabold'> Weekly Availability </p> 
            
-            <p>
+            <p className='mb-8'>
               Set your recurring available time slots for students to book
             </p>
 
