@@ -82,7 +82,7 @@ function SaveChangesButton(){
         return newItem;
       }) 
     }
-
+    console.log(RequestBody);
     const response = await fetchBackend("availability/createAll", {
       method: "POST",
       headers: { 'Content-Type' : 'application/json' },
@@ -93,7 +93,6 @@ function SaveChangesButton(){
       alert( (await response.json() as common_response).message );
       return;
     }
-    
     // remove the temporary list in UI
     setTemporaryAvailabilityList([]);
 
@@ -203,6 +202,8 @@ function AvailabilityDayCard({day, index}:{
 /**
  * Component that holds the single row of table showing a single
  * availability of user along with delete option
+ *
+ * Contents of this component are retrieved from database only
  */
 function AvailabilityListCard({availability, containedList}: {
   availability: AvailabilityItem;
