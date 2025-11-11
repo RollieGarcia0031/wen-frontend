@@ -24,8 +24,8 @@ export interface TemporaryAvailabilityItem {
 }
 
 interface AvailabilityProps {
-  availabilityList: AvailabilityItem[];
-  setAvailabilityList: React.Dispatch< SetStateAction<AvailabilityItem[]> >;
+  availabilityList: availability_list_response_item[];
+  setAvailabilityList: React.Dispatch< SetStateAction<availability_list_response_item[]> >;
   fetchAvailabilityList: (arg: any) => Promise<void>,
 
   temporaryAvailabilityList: TemporaryAvailabilityItem[];
@@ -45,7 +45,7 @@ export function AvailabilityContextProvider({children}:{
   children: React.ReactNode
 }){
  
-  const [ availabilityList, setAvailabilityList ] = useState<AvailabilityItem[]>([]);
+  const [ availabilityList, setAvailabilityList ] = useState<availability_list_response_item[]>([]);
   const [ temporaryAvailabilityList, setTemporaryAvailabilityList ] = useState<TemporaryAvailabilityItem[]>([]);
 
   useEffect(()=>{
@@ -69,7 +69,7 @@ export function AvailabilityContextProvider({children}:{
  * Retrieve the availability of user from the availability table 
  */
 const fetchAvailabilityList = async (
-    setAvailabilityList: React.Dispatch<SetStateAction<AvailabilityItem[]>>
+    setAvailabilityList: React.Dispatch<SetStateAction<availability_list_response_item[]>>
 ): Promise<void> =>
 {
   const response = await fetchBackend("availability/list", {
