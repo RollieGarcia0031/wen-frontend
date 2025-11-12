@@ -36,8 +36,8 @@
     --text-muted: oklch(85% 0 0);
     --primary: oklch(60% 0.1 188);
     --primary-hover: oklch(50% 0.09 188);
-    --highlight: oklch(80% 0.05 188);
-    --highlight-muted: oklch(55% 0.05 188);
+    --highlight: oklch(55% 0.05 188);
+    --highlight-muted: oklch(45% 0.05 268);
     --secondary: oklch(65% 0.07 230);
     --secondary-hover: oklch(60% 0.07 230);
   }
@@ -50,9 +50,11 @@ body {
 }
 
 @layer base {
-}
+
   html, body {
     @apply h-full;
+  }
+
   * {
     @apply text-foreground;
   }
