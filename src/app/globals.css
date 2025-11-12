@@ -29,7 +29,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: oklch(20% 0.0 188);
-    --background-medium: oklch(10% 0.0 188);
+    --background-medium: oklch(15% 0.0 188);
     --background-medium2: oklch(25% 0.0005 188);
     --background-light: oklch(35% 0.0 0);
     --foreground: #ededed;
@@ -80,6 +80,7 @@ body {
   dialog {
     @apply
       open:fixed open:top-1/2 open:left-1/2 open:-translate-x-1/2 open:-translate-y-1/2
+      open:shadow-2xl open:shadow-black
       [&::backdrop]:bg-black/50 [&::backdrop]:fixed [&::backdrop]:top-0 [&::backdrop]:left-0 [&::backdrop]:w-full [&::backdrop]:h-full
       focus:outline-none
       open:bg-background-medium open:p-4 rounded-md
