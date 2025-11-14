@@ -5,6 +5,8 @@ import { MdLogout, MdSettings } from "react-icons/md";
 
 import fetchBackend from "@/lib/fetchBackend";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ProfileMiniPanel({ref}:{
   ref: RefObject<HTMLDivElement | null>
@@ -30,6 +32,8 @@ export default function ProfileMiniPanel({ref}:{
 
   }, []);
 
+  const router = useRouter();
+
   return (
     <div
       ref={ref}
@@ -49,10 +53,26 @@ export default function ProfileMiniPanel({ref}:{
         Profile
       </Link>
 
-      <Link href='/login'>
+      <Link href='/' onClick={handleLogout}>
         <MdLogout/>
         Logout
       </Link>
     </div>
-  )
+  );
+
+  async function handleLogout(e: React.MouseEvent<HTMLAnchorElement>){
+    e.preventDefault();
+
+    const response = await fetchBackend('auth/logout', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (response.ok){
+      toast.info('User has logged out');
+      router.push('/login');
+    } else {
+      toast.error('Error logging out');
+    }
+  }
 }
