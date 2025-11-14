@@ -35,3 +35,13 @@ interface appointment_list_response_item {
 interface appointment_list_response extends common_response {
   data: appointment_list_response_item[];
 }
+
+
+interface appointment_count_response_item {
+  status: string;
+  count: number;
+}
+
+interface appointment_count_response extends common_response {
+  data?: appointment_count_response_item[];
+}
