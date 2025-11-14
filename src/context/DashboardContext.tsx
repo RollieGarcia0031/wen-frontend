@@ -37,7 +37,7 @@ const Context = createContext<DashboardContextProps>({
   setWeeklyCount: ()=>{}
 });
 
-export function DashoardContextProvider({children}:{
+export function DashboardContextProvider({children}:{
   children: React.ReactNode
 }){
 
@@ -84,14 +84,14 @@ export async function refreshCounter(
   const body = { time_range };
 
   try {
+
     const response = await fetchBackend("appointment/count",{
       method: "POST",
       headers: { 'Content-Type' : 'application/json' },
       body: JSON.stringify(body)
     });
 
-    if (!response.ok) throw new Error("Cannot fetch");
-
+    if (!response.ok) throw new Error(`Failed at ${time_range}`);
     const { data } = await response.json() as appointment_count_response;
 
     setCounter(data || []);

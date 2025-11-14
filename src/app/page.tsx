@@ -2,15 +2,19 @@
 
 import { FaCheck, FaClock } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
+import { DashboardContextProvider, useDashboard } from "@/context/DashboardContext";
 
 export default function Home() {
 
   return (
+    <DashboardContextProvider>
       <div className="flex flex-col items-center gap-10">
         <SummaryCount />
         <DailySummaryTable />
       </div>
-    );
+    </DashboardContextProvider>
+  );
+
 }
 
 /**
@@ -19,6 +23,16 @@ export default function Home() {
  * - total appointment for current week
  */
 function SummaryCount(){
+
+  const { todayCount, weeklyCount } = useDashboard();
+
+  const todayPending = todayCount.find( item => item.status === 0)?.count || 0;
+  const todayApproved = todayCount.find( item => item.status === 1)?.count || 0;
+  const todayDeclined = todayCount.find( item => item.status === 2)?.count || 0;
+
+  const weeklyPending = weeklyCount.find( item => item.status === 0)?.count || 0;
+  const weeklyApproved = weeklyCount.find( item => item.status === 1)?.count || 0;
+  const weeklyDeclined = weeklyCount.find( item => item.status === 2)?.count || 0;
 
   return (
     <div
@@ -56,13 +70,13 @@ function SummaryCount(){
           px-4 gap-y-1"
         >
           <FaClock />
-          <p>0</p>
+          <p>{todayPending}</p>
 
           <FaCheck />
-          <p>0</p>
+          <p>{todayApproved}</p>
 
           <FaX />
-          <p>0</p>
+          <p>{todayDeclined}</p>
         </div>
 
       </div>
@@ -76,13 +90,13 @@ function SummaryCount(){
           px-4 gap-y-1"
         >
           <FaClock />
-          <p>0</p>
+          <p>{weeklyPending}</p>
 
           <FaCheck />
-          <p>0</p>
+          <p>{weeklyApproved}</p>
 
           <FaX />
-          <p>0</p>
+          <p>{weeklyDeclined}</p>
         </div>
       </div>
 
