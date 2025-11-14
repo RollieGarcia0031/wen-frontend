@@ -36,6 +36,7 @@ interface appointment_list_response extends common_response {
   data: appointment_list_response_item[];
 }
 
+type TimeRange = 'today' | 'tomorrow' | 'this_week';
 
 interface appointment_count_response_item {
   status: string;

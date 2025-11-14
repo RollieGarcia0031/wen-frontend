@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useContext, useState, Dispatch, SetStateAction } from "react"
+import fetchBackend from "@/lib/fetchBackend";
+import { createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from "react"
 
 interface DashboardContextProps {
   /**
@@ -44,6 +45,14 @@ export function DashoardContextProvider({children}:{
   const [ todayCount, setTodayCount ] = useState<appointment_count_response_item[]>([]);
   const [ weeklyCount, setWeeklyCount ] = useState<appointment_count_response_item[]>([]);
 
+  useEffect(() => {
+
+    refreshCounter('tomorrow', setUpcomingCount);
+    refreshCounter('today', setTodayCount);
+    refreshCounter('this_week', setWeeklyCount);
+
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -61,3 +70,33 @@ export function DashoardContextProvider({children}:{
 }
 
 export const useDashboard = () => useContext(Context);
+
+/**
+ * refresh the counters of dashboard
+ *
+ * @param time_range - time range of appointment counts, it can be the current day or week
+ * @param setCounter - the state to be updated
+ */
+export async function refreshCounter(
+  time_range: TimeRange,
+  setCounter: Dispatch<SetStateAction<appointment_count_response_item[]>>
+){
+  const body = { time_range };
+
+  try {
+    const response = await fetchBackend("appointment/count",{
+      method: "POST",
+      headers: { 'Content-Type' : 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) throw new Error("Cannot fetch");
+
+    const { data } = await response.json() as appointment_count_response;
+
+    setCounter(data || []);
+
+  } catch (error){
+    console.error(error);
+  }
+}
