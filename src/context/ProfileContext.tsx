@@ -13,13 +13,13 @@ import { useContext, createContext, useState, Dispatch, SetStateAction } from "r
 
 interface ProfileContextProps {
   /**
-   * Contains list of courses of both profesor and student
+   * Contains list of courses that a user is enrolled/teaching
    *
    * for professors, it represents the courses that user teaches
    * for students, it represents the courses that a user is studying
    */
-  courseList: courseListItem[];
-  setCourseList: Dispatch<SetStateAction<courseListItem[]>>;
+  courseList: course_assigned_item[];
+  setCourseList: Dispatch<SetStateAction<course_assigned_item[]>>;
 }
 
 const Context = createContext<ProfileContextProps>({
@@ -31,7 +31,7 @@ export function ProfileContextProvider({children}:{
   children: React.ReactNode
 }){
 
-  const [ courseList, setCourseList ] = useState<courseListItem[]>([]);
+  const [ courseList, setCourseList ] = useState<course_assigned_item[]>([]);
 
   return (
     <Context.Provider
