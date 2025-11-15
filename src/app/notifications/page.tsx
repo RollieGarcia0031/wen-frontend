@@ -127,27 +127,29 @@ export default function Notification(){
   }, [hasNext]);
 
   return (
-    <div
-      className="grid grid-rows-[auto_1fr] w-[40rem] max-h-[80dvh]
-      gap-4"
-    >
+    <div className="flex-rc">
+      <div
+        className="grid grid-rows-[auto_1fr]
+        gap-4"
+      >
 
-      <div>
-        <h1>
-          Notifications
-        </h1>
+        <div className="w-full">
+          <p className="text-4xl font-extrabold">
+            Notifications
+          </p>
+        </div>
+
+        <div className="card p-5 h-[80dvh] w-[50rem] overflow-y-auto">
+          <AnimatePresence>
+            { notifications.map(item => (
+              <NotificationCard item={item} key={item.user_notification_id}/>
+            )) }
+          </AnimatePresence>
+
+          {hasNext && <div ref={loaderRef}> </div>}
+        </div>
+
       </div>
-
-      <div className="card p-5 h-[50dvh] overflow-y-auto">
-        <AnimatePresence>
-          { notifications.map(item => (
-            <NotificationCard item={item} key={item.user_notification_id}/>
-          )) }
-        </AnimatePresence>
-
-        {hasNext && <div ref={loaderRef}> </div>}
-      </div>
-
     </div>
   );
 }
@@ -167,13 +169,14 @@ function NotificationCard({ item }: {
 
   return (
     <motion.div
-      className="card2 my-2"
+      className="card2 my-2 p-5
+        grid grid-cols-[1fr_auto] items-end"
     >
       <p>
         {message}
       </p>
 
-      <p>
+      <p className="text-sm">
         {displayDate}
       </p>
 
