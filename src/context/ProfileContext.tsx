@@ -6,8 +6,8 @@ import { useContext, createContext, useState, Dispatch, SetStateAction } from "r
  *
  * This file contains the context that will be used
  * to read and update the profile of the logged user
- * some values of this context can be null depending
- * on the role of the logged user
+ * all values of this context are the only traits
+ * the both student and professor possess
  *
  */
 
@@ -20,22 +20,11 @@ interface ProfileContextProps {
    */
   courseList: courseListItem[];
   setCourseList: Dispatch<SetStateAction<courseListItem[]>>;
-
-  /**
-   * Contains list of sections with corresponding course_id
-   * it wil use courseList as it's lookup table to render the
-   * matching course in fetched section
-   */
-  sectionList: [];
-  setSectionList: Dispatch<SetStateAction<[]>>;
 }
 
 const Context = createContext<ProfileContextProps>({
   courseList: [],
   setCourseList: ()=>{},
-
-  sectionList: [],
-  setSectionList: ()=>{}
 });
 
 export function ProfileContextProvider({children}:{
@@ -43,15 +32,12 @@ export function ProfileContextProvider({children}:{
 }){
 
   const [ courseList, setCourseList ] = useState<courseListItem[]>([]);
-  const [ sectionList, setSectionList ] = useState<[]>([]);
 
   return (
     <Context.Provider
       value={{
         courseList,
-        setCourseList,
-        sectionList,
-        setSectionList
+        setCourseList
       }}
     >
       {children}
