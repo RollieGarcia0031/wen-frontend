@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import CoursePanel from "./CoursePanel";
+import StudentInfoPanel from "./StudentInfoPanel";
 
 export default function Profile(){
   const { user, setUser } = useAuth();
@@ -44,6 +45,9 @@ export default function Profile(){
           </div>
 
           <CoursePanel/>
+
+          {user?.role == 'student' && <StudentInfoPanel />}
+
         </div>
       </div>
     </div>
