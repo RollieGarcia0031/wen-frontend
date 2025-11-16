@@ -6,6 +6,8 @@ import { DashboardContextProvider, useDashboard } from "@/context/DashboardConte
 import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
+import { i } from "framer-motion/client";
+import { removeSeconds } from "@/util/TimeFormat";
 
 export default function Home() {
 
@@ -108,17 +110,22 @@ function SummaryCount(){
 }
 
 interface CursorProps {
-  next_id: string;
+  next_id: number;
   next_time: string;
 }
 
 const fetchAppointments = async (
+  hasNext: boolean,
   nextCursor: CursorProps,
   setNextCursor: Dispatch<SetStateAction<CursorProps>>,
   setAppointments: Dispatch<SetStateAction<appointment_currentDay_response_item[]>>,
   setIsloading: Dispatch<SetStateAction<boolean>>,
   setHasNext: Dispatch<SetStateAction<boolean>>
 )=>{
+  if (!hasNext) return;
+
+  console.log('searching');
+
   const body = {
     cursor_id: nextCursor.next_id,
     cursor_time: nextCursor.next_time
@@ -140,10 +147,10 @@ const fetchAppointments = async (
     setAppointments(prev => [...prev, ...data.data]);
 
     setNextCursor({
-      next_id: data.next_cursor_id.toString(),
+      next_id: data.next_cursor_id,
       next_time: data.next_cursor_time
     });
-    
+
     setHasNext(data.data.length > 0);
 
   } catch (error) {
@@ -163,10 +170,42 @@ function DailySummaryTable(){
   const [ appointments, setAppointments ] = useState<appointment_currentDay_response_item[]>([]);
   const [ hasNext, setHasNext ] = useState(true);
   const [ isloading, setIsloading ] = useState(false);
-  const [ nextCursor, setNextCursor ] = useState<CursorProps>({next_id: '0',next_time:'0'});
+  const [ nextCursor, setNextCursor ] = useState<CursorProps>({next_id: 0,next_time:'0'});
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
+
+  const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
+
+    const target = entries[0];
+    if (
+      target.isIntersecting
+      && hasNext
+      && !isloading
+    ){
+      fetchAppointments(
+        hasNext,
+        nextCursor,
+        setNextCursor,
+        setAppointments,
+        setIsloading,
+        setHasNext
+    );
+    }
+  }, [hasNext, isloading, nextCursor]);
+
+  useEffect(() => {
+
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver(handleIntersection);
+    if (loaderRef.current) observerRef.current.observe(loaderRef.current);
+
+    return () => {
+      if (observerRef.current) observerRef.current.disconnect();
+    }
+
+  }, [handleIntersection]);
 
   return (
     <div 
@@ -192,6 +231,8 @@ function DailySummaryTable(){
         <DailySummaryCard key={item.id} item={item} />
       ))}
 
+      { hasNext && <div ref={loaderRef}> </div> }
+
     </div>
   );
 }
@@ -200,17 +241,24 @@ function DailySummaryCard({item}:{
   item: appointment_currentDay_response_item
 }){
 
+  const { start_time, end_time, id, name, message, status } = item;
+
+  const displayTime = removeSeconds(start_time)
+
+  if (!item) return null;
   return (
-    <div>
+    <div
+      className="grid grid-cols-[1fr_1fr_6.625rem]"
+    >
       <p>
-        9:00-10:00
+        {displayTime}
       </p>
 
       <p>
-        Johnny Johny Yes papa 
+        {name}
       </p>
 
-      <StatusIndicator status={0} />
+      <StatusIndicator status={status} />
 
     </div>
   );

@@ -50,7 +50,7 @@ interface appointment_count_response extends common_response {
 interface appointment_currentDay_response_item {
   id: string;
   message: string;
-  status: string;
+  status: number;
   start_time: string;
   end_time: string;
   name: string;
