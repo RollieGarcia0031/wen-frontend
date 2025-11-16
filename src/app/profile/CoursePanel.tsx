@@ -6,14 +6,13 @@ import fetchBackend from "@/lib/fetchBackend";
 import { MdOutlineAdd } from "react-icons/md";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
-import { useProfileContext } from "@/context/ProfileContext";
 
 
 export default function CoursePanel(){
   const customCourseDialogRef = useRef<HTMLDialogElement>(null);
 
   /** the array of courses created by other users, serving as option for users to enroll */
-  const [ courseChoices, setCourseChoices ] = useState<courseListItem[]>([]);
+  const [ courseList, setCourseList ] = useState<courseListItem[]>([]);
   
   /**
   * state of the coursePicker, a panel below the course
@@ -26,9 +25,14 @@ export default function CoursePanel(){
    * which course to delete or which course can be operated specifically
    */
   const [ selectedCourseIndex, setSelectedCourseIndex ] = useState<number>(-99);
-  const selectedCourse = courseChoices[selectedCourseIndex];
+  const selectedCourse = courseList[selectedCourseIndex];
 
-  const { courseList, setCourseList } = useProfileContext();
+  /**
+   * owned courses
+   * this is used to render the list of which course does the logged user belong to
+   */
+  const [ ownedCourses, setOwnedCourse ] = useState<course_assigned_item[]>([]);
+
 
   useEffect(()=>{
     /**
@@ -44,7 +48,7 @@ export default function CoursePanel(){
       if (response.ok){
         const json = await response.json() as course_list_response;
 
-        setCourseChoices(json.data);
+        setCourseList(json.data);
       }
     }
 
@@ -62,7 +66,7 @@ export default function CoursePanel(){
 
       if (response.ok){
         const { data } = await response.json() as course_assigned_response;
-        setCourseList(data);
+        setOwnedCourse(data);
       }
     }
 
@@ -98,7 +102,7 @@ export default function CoursePanel(){
 
         <AnimatePresence>
           {/* The cells of table containing the course list */}
-          {courseList.map(course =>
+          {ownedCourses.map(course =>
             <motion.div key={course.id}
               initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
               animate={{ opacity: 1, height: 'auto', marginBottom: 0, translateX:0 }}
@@ -173,7 +177,7 @@ export default function CoursePanel(){
 
             <AnimatePresence>
               {/* table cell containing all available courses */}
-              {courseChoices.map((course, index) =>
+              {courseList.map((course, index) =>
                 <motion.button
                   className={`grid grid-cols-[6rem_auto] space-x-7
                     hover:bg-background-light justify-items-start w-full
@@ -236,7 +240,7 @@ export default function CoursePanel(){
         year: parseInt(data['year'] as string)
       };
 
-      setCourseList(x => [...x, newOwnedCourse]);
+      setOwnedCourse(x => [...x, newOwnedCourse]);
     } else {
       const json = await response.json() as common_response;
       alert(json.message);
@@ -265,7 +269,7 @@ export default function CoursePanel(){
     const {success} = await response.json() as common_response;
     if (success){
       // remove from the ui list
-      setCourseList(x => x.filter(course => course.id !== courseId));
+      setOwnedCourse(x => x.filter(course => course.id !== courseId));
     }
   }
 }
