@@ -46,3 +46,20 @@ interface appointment_count_response_item {
 interface appointment_count_response extends common_response {
   data?: appointment_count_response_item[];
 }
+
+interface appointment_currentDay_response_item {
+  id: string;
+  message: string;
+  status: number;
+  start_time: string;
+  end_time: string;
+  name: string;
+}
+
+interface appointment_currentDay_response extends common_response {
+  data: {
+    data: appointment_currentDay_response_item[],
+    next_cursor_id: number,
+    next_cursor_time: string
+  }
+}
