@@ -35,6 +35,10 @@ interface notification_list_all_response_item {
     * so they can view same notification at the same time
     */
     id: number;
+    /**
+     * String of message attached to the notification to
+     * be rendered in the user screen
+     */
     message: string;
     /** ranks as the importance
      * 0 as highest
