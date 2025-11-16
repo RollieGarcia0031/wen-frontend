@@ -3,7 +3,9 @@
 import { FaCheck, FaClock } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import { DashboardContextProvider, useDashboard } from "@/context/DashboardContext";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from "react";
+import { toast } from "react-toastify";
+import fetchBackend from "@/lib/fetchBackend";
 
 export default function Home() {
 
@@ -105,6 +107,52 @@ function SummaryCount(){
   );
 }
 
+interface CursorProps {
+  next_id: string;
+  next_time: string;
+}
+
+const fetchAppointments = async (
+  nextCursor: CursorProps,
+  setNextCursor: Dispatch<SetStateAction<CursorProps>>,
+  setAppointments: Dispatch<SetStateAction<appointment_currentDay_response_item[]>>,
+  setIsloading: Dispatch<SetStateAction<boolean>>,
+  setHasNext: Dispatch<SetStateAction<boolean>>
+)=>{
+  const body = {
+    cursor_id: nextCursor.next_id,
+    cursor_time: nextCursor.next_time
+  };
+  
+  setIsloading(true);
+
+  try {
+    const response = await fetchBackend("appointment/current-day", {
+      method: "POST",
+      headers: { 'Content-Type' : 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const { data, message, success } = await response.json() as appointment_currentDay_response;
+    if (!response.ok || !success)
+      throw new Error(message || "Failed to fetch appointments");
+
+    setAppointments(prev => [...prev, ...data.data]);
+
+    setNextCursor({
+      next_id: data.next_cursor_id.toString(),
+      next_time: data.next_cursor_time
+    });
+    
+    setHasNext(data.data.length > 0);
+
+  } catch (error) {
+    if (error instanceof Error) toast.error(error.message);
+  } finally {
+    setIsloading(false);
+  }
+}
+
 /**
  * Contains the time, student_name, and status
  * that are assigned to the current day, only
@@ -112,7 +160,13 @@ function SummaryCount(){
  */
 function DailySummaryTable(){
 
-  const [] = useState();
+  const [ appointments, setAppointments ] = useState<appointment_currentDay_response_item[]>([]);
+  const [ hasNext, setHasNext ] = useState(true);
+  const [ isloading, setIsloading ] = useState(false);
+  const [ nextCursor, setNextCursor ] = useState<CursorProps>({next_id: '0',next_time:'0'});
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   return (
     <div 
@@ -134,17 +188,17 @@ function DailySummaryTable(){
    
       </div>
 
-      {
-          [0,1,2,3,4,5,6].map(item => (
-            <DailySummaryCard key={item}/>
-          ))
-      }
+      { appointments.map(item => (
+        <DailySummaryCard key={item.id} item={item} />
+      ))}
 
     </div>
   );
 }
 
-function DailySummaryCard(){
+function DailySummaryCard({item}:{
+  item: appointment_currentDay_response_item
+}){
 
   return (
     <div>
