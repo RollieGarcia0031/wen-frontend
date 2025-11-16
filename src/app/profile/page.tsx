@@ -43,7 +43,7 @@ export default function Profile(){
             </div>
           </div>
 
-          <CoursePanel/>
+          { user?.role === 'professor' && <CoursePanel/> }
         </div>
       </div>
     </div>
