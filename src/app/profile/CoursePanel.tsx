@@ -7,7 +7,6 @@ import { MdOutlineAdd } from "react-icons/md";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
 
-
 export default function CoursePanel(){
   const customCourseDialogRef = useRef<HTMLDialogElement>(null);
 
