@@ -3,6 +3,7 @@
 import { FaCheck, FaClock } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import { DashboardContextProvider, useDashboard } from "@/context/DashboardContext";
+import { useState } from "react";
 
 export default function Home() {
 
@@ -110,6 +111,8 @@ function SummaryCount(){
  * with a status of pending and approved
  */
 function DailySummaryTable(){
+
+  const [] = useState();
 
   return (
     <div 
