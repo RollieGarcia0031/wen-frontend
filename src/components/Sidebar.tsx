@@ -46,8 +46,8 @@ export default function Sidebar(){
       </button>
 
       <button>
-        <Link href="/notifications">
-          <IoIosNotificationsOutline />
+        <Link href="/appointment">
+          <IoIosNotificationsOutline /> 
         </Link>
       </button>
       
