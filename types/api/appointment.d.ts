@@ -34,7 +34,14 @@ interface appointment_list_response_item {
 
 interface appointment_list_response extends common_response {
   data: {
+    /**
+     * The actual list of appointments
+     */
     items: appointment_list_response_item[];
+    /**
+     * The cursor for the next page, useful for pagination
+     * to access the remaining data
+     */
     next_cursor: {
       cursor_id: number;
       cursor_date: string;

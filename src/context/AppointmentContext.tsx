@@ -65,8 +65,9 @@ export async function refreshSentAppointments(
   const { data, message } = await response.json() as appointment_list_response;
 
   if (!response.ok) return toast.error(message);
+  const { items } = data;
 
-  setState(data);
+  setState(items);
 }
 
 export const useAppointment = () => useContext(AppointmentContext);
