@@ -70,12 +70,9 @@ function AppointmentsTable(){
     );
   }
   return (
-    <div
-      className="flex-cc mt-10"
-    >
-      
+    <div className="h-screen flex-cc pt-5 pb-1">        
       <div
-        className="w-[40rem] card p-8"
+        className="w-[40rem] h-full card p-8 grid grid-rows-[auto_1fr]"
       >
         <div className="mb-8">
           <p className="text-4xl font-extrabold">
@@ -85,21 +82,24 @@ function AppointmentsTable(){
             View your sent appointments
           </p>
         </div>
-        <div
-          className="grid grid-cols-[1fr_1fr_4rem_4rem] px-4 my-4 font-semibold"
-        >
-          <p>Name</p>
-          <p>Date</p>
-          <p>Status</p>
+
+        <div className="overflow-y-scroll">
+          <div
+            className="grid grid-cols-[1fr_1fr_4rem_4rem] px-4 my-4 font-semibold"
+          >
+            <p>Name</p>
+            <p>Date</p>
+            <p>Status</p>
+          </div>
+
+          <AnimatePresence> 
+          {sentAppointments.map(item => (
+            <AppointmentCard item={item} key={item.id}/> 
+          ))}
+          </AnimatePresence>
         </div>
 
-        <AnimatePresence> 
-        {sentAppointments.map(item => (
-          <AppointmentCard item={item} key={item.id}/> 
-        ))}
-        </AnimatePresence>
-      </div>
-      
+      </div>        
     </div>
   );
 }
