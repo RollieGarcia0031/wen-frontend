@@ -247,6 +247,14 @@ function DailySummaryTable(){
         </AnimatePresence>
 
         { hasNext && <div ref={loaderRef}> </div> }
+        { !hasNext && 
+          <p
+            className="text-center mt-5 italic text-sm
+            border-t-highlight border-t-[1px]"
+          >
+            No more appointments
+          </p>
+        }
 
       </div>
     </div>
@@ -265,6 +273,10 @@ function DailySummaryCard({item}:{
   return (
     <motion.div
       className="grid grid-cols-[1fr_1fr_6.625rem] my-8"
+      initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+      exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      transition={{ duration: 0.3}}
     >
       <p>
         {displayTime}
@@ -280,6 +292,10 @@ function DailySummaryCard({item}:{
   );
 }
 
+/**
+ * Creates a div element that displays the status of the appointment
+ * with corresponding color code and message
+ */
 function StatusIndicator({status}:{status: number}){
 
   const StatusWord = ['pending', 'approved'];
