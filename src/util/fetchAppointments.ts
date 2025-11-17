@@ -1,3 +1,4 @@
+import { SearchFilter } from "@/context/AppointmentContext";
 import fetchBackend from "@/lib/fetchBackend";
 
 /**
@@ -7,16 +8,13 @@ import fetchBackend from "@/lib/fetchBackend";
 export default function fetchAppointments(
     cursor_id: number,
     cursor_date: string,
-    filter?: {
-        status?: number,
-        time_range?: string
-    }
+    filter?: SearchFilter
 ) {
 
     const body:any = {
         cursor_id,
         cursor_date
-    };
+    }; console.log(body);
 
     if (filter) {
         body.status = filter.status;

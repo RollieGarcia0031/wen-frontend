@@ -1,7 +1,7 @@
 "use client"
 
 import { FaCheck, FaPlus, FaTrashAlt } from "react-icons/fa";
-import { AppointmentContextProvider, refreshSentAppointments, useAppointment } from "@/context/AppointmentContext";
+import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
 import { useEffect } from "react";
@@ -58,10 +58,6 @@ function AppointmentHeader(){
 
 function AppointmentsTable(){
   const { sentAppointments, setSentAppointments} = useAppointment();
-
-  useEffect(()=>{
-    refreshSentAppointments(setSentAppointments);
-  }, []);
 
   if (sentAppointments.length === 0){
 
