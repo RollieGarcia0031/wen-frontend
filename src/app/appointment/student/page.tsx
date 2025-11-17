@@ -62,24 +62,6 @@ function AppointmentsTable(){
 
   const loaderRef = useRef<HTMLDivElement>(null);
 
-/*  const router = useRouter();
-
-  useEffect(()=>{
-
-    const handleRouteChange = (url: string) => {
-      if (url === 'appointment/student'){
-        reset();
-      }
-    }
-
-    router.events.on('routeChangeStart', handleRouteChange);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
-    }
-
-  }, [router.events]);
-*/
   useEffect(()=>{
     reset();
   }, []);
