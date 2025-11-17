@@ -1,6 +1,6 @@
 import fetchAppointments from "@/util/fetchAppointments";
-import { useContext, createContext, useState, Dispatch, SetStateAction, useEffect, useRef, useCallback } from "react";
-import { toast } from "react-toastify";
+import { useContext, createContext, useState, Dispatch, SetStateAction } from "react";
+import { useRef }from "react";
 
 interface AppointmentProps {
   /**
@@ -27,16 +27,10 @@ interface AppointmentProps {
   hasNext: boolean;
   isLoading: boolean;
 
-  /**
-   * the decoy element for pagination
-   */
-  loaderRef: React.RefObject<HTMLDivElement | null>;
-
-  /**
-   * Resets the context
-   */
-  reset: () => void
+  reset: () => void;
 }
+
+
 
 const AppointmentContext = createContext<AppointmentProps>({
   searchDialogOpened: false,
@@ -51,9 +45,11 @@ const AppointmentContext = createContext<AppointmentProps>({
   hasNext: true,
   isLoading: false,
 
-  loaderRef: {current: null},
   reset: () => {}
+
 });
+
+
 
 export interface SearchFilter {
   status?: number,
@@ -79,8 +75,8 @@ export function AppointmentContextProvider({children}: {
   /**
    * Pagination cursors
    */
-  const [ nextId, setNextId ] = useState<number | null>(0);
-  const [ nextDate, setNextDate ] = useState<string | null>('0');
+  const [ nextId, setNextId ] = useState<number>(0);
+  const [ nextDate, setNextDate ] = useState<string>('0');
 
   /**
    * Pagination states
@@ -92,46 +88,37 @@ export function AppointmentContextProvider({children}: {
    * State for search filter
    */
   const searchFilter = useRef<SearchFilter>({});
-
-  /**
-   * Element and observer refs for pagination
-   */
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
   
   const fetchMoreAppointment = async () => {
-    if (isLoading || !hasNext || nextId === null || nextDate === null) return;
+    if (isLoading || !hasNext) return;
 
     try {
       setIsLoading(true);
+
       const response = await fetchAppointments(nextId, nextDate, searchFilter.current);
+      const json = await response.json();
 
-      const {
-        data: {
-          items,
-          next_cursor
-        },
-        message
-      } = await response.json() as appointment_list_response;
+      if (!response.ok) throw new Error(json.message);
 
-      if (!response.ok) throw new Error(message || "Cannot get appointments");
+      const { items, next_cursor } = json.data;
 
-      setSentAppointments(prev =>
-        [...prev, ...items]
-      );
-
+      setSentAppointments(prev => [...prev, ...items]);
       setHasNext(!!next_cursor);
-      setNextDate(next_cursor?.cursor_date || null);
-      setNextId(next_cursor?.cursor_id || null);
-
-    } catch (error) {
-      console.error(error);
-      if (error instanceof Error) 
-        toast.error(error.message);
+      setNextId(next_cursor?.cursor_id ?? null);
+      setNextDate(next_cursor?.cursor_date ?? null);
+      
     } finally {
       setIsLoading(false);
     }
-  }
+  };
+
+  const reset = () => {
+    setSentAppointments([]);
+    setNextId(0);
+    setNextDate("0");
+    setHasNext(true);
+  };
+
 
   return (
     <AppointmentContext.Provider
@@ -144,7 +131,6 @@ export function AppointmentContextProvider({children}: {
         searchFilter,
         hasNext,
         isLoading,
-        loaderRef,
         reset
       }}
     >

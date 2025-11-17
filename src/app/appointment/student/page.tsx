@@ -4,7 +4,7 @@ import { FaCheck, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
@@ -57,14 +57,40 @@ function AppointmentHeader(){
 }
 
 function AppointmentsTable(){
-  const { sentAppointments, hasNext, loaderRef, fetchMoreAppointment, reset } = useAppointment();
+  const { sentAppointments, hasNext, isLoading, fetchMoreAppointment, reset } = useAppointment();
+
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
-    reset();
-    fetchMoreAppointment();
-  }, [])
+    if (sentAppointments.length === 0) {
+      fetchMoreAppointment();
+    }
+  }, []);
 
-  if (sentAppointments.length === 0){
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && hasNext && !isLoading) {
+          fetchMoreAppointment();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    const loader = loaderRef.current;
+    if (loader) {
+      observer.observe(loader);
+    }
+
+    return () => {
+      if (loader) {
+        observer.unobserve(loader);
+      }
+    };
+  }, [hasNext, isLoading, fetchMoreAppointment]);
+
+  if (sentAppointments.length === 0 && !isLoading){
 
     return (
       <div className="flex-full-center h-[30dvh]">
