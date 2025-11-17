@@ -107,7 +107,8 @@ export async function fetchRecievedAppointments(setRecievedAppointments: appoint
 
     if (!success) throw new Error("Request Failed");
 
-    setRecievedAppointments(data);
+    const { items } = data;
+    setRecievedAppointments(items);
   } catch (error) {
     toast.error("Unexpected error occured");
   }
