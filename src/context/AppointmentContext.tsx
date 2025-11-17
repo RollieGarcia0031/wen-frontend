@@ -112,13 +112,37 @@ export function AppointmentContextProvider({children}: {
     }
   };
 
+  const fetchFirst = async () => {
+
+    if (isLoading || !hasNext) return;
+
+    try {
+      setIsLoading(true);
+
+      const response = await fetchAppointments(nextId, nextDate, searchFilter.current);
+      const json = await response.json();
+
+      if (!response.ok) throw new Error(json.message);
+
+      const { items, next_cursor } = json.data;
+
+      setSentAppointments(items);
+      setHasNext(!!next_cursor);
+      setNextId(next_cursor?.cursor_id ?? null);
+      setNextDate(next_cursor?.cursor_date ?? null);
+      
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const reset = () => {
     setSentAppointments([]);
     setNextId(0);
     setNextDate("0");
     setHasNext(true);
+    fetchFirst();
   };
-
 
   return (
     <AppointmentContext.Provider

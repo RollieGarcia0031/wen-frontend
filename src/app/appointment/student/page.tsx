@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
 import { MdCancel, MdWatchLater } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export default function Student(){
 
@@ -61,10 +62,26 @@ function AppointmentsTable(){
 
   const loaderRef = useRef<HTMLDivElement>(null);
 
+/*  const router = useRouter();
+
   useEffect(()=>{
-    if (sentAppointments.length === 0) {
-      fetchMoreAppointment();
+
+    const handleRouteChange = (url: string) => {
+      if (url === 'appointment/student'){
+        reset();
+      }
     }
+
+    router.events.on('routeChangeStart', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    }
+
+  }, [router.events]);
+*/
+  useEffect(()=>{
+    reset();
   }, []);
 
   useEffect(() => {
