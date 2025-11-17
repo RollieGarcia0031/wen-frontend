@@ -160,7 +160,7 @@ function AppointmentCard({item}: {
   item: appointment_list_response_item
 }) {
 
-  const { name, status, message, target_date, start_time, id } = item;
+  const { counterpart_name: name, status, message, target_date, start_time, id } = item;
   const displayDate = new Date(target_date).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',

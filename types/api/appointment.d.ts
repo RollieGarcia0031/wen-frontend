@@ -29,11 +29,17 @@ interface appointment_list_response_item {
   day_of_week: number;
   start_time: string;
   end_time: string;
-  name: string;
+  counterpart_name: string;
 }
 
 interface appointment_list_response extends common_response {
-  data: appointment_list_response_item[];
+  data: {
+    items: appointment_list_response_item[];
+    next_cursor: {
+      cursor_id: number;
+      cursor_date: string;
+    }
+  }
 }
 
 type TimeRange = 'today' | 'tomorrow' | 'this_week';

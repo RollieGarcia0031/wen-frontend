@@ -113,7 +113,7 @@ function AppointmentCard({item}:{
 }){
 
   const { setSentAppointments } = useAppointment();
-  const { name, id, target_date, status } = item;
+  const { counterpart_name: name, id, target_date, status } = item;
 
   const displayDate = new Date(target_date).toLocaleDateString('en-US', {
     weekday: 'short',

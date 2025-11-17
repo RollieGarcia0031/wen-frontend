@@ -65,14 +65,14 @@ export default function RecivedAppointmentDialog(){
           </p>
           
           <p className="text-sm mb-8">
-            Details for your appointment with {selectedAppointment?.name}
+            Details for your appointment with {selectedAppointment?.counterpart_name}
           </p>
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 mb-8">
             <BsPersonCircle className="text-[5rem]"/>
             <div>
               <p className="text-xl">
-                {selectedAppointment?.name}
+                {selectedAppointment?.counterpart_name}
               </p>
 
               <p>
