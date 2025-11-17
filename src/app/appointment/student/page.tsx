@@ -57,7 +57,7 @@ function AppointmentHeader(){
 }
 
 function AppointmentsTable(){
-  const { sentAppointments, setSentAppointments} = useAppointment();
+  const { sentAppointments, hasNext } = useAppointment();
 
   if (sentAppointments.length === 0){
 
@@ -97,6 +97,14 @@ function AppointmentsTable(){
             <AppointmentCard item={item} key={item.id}/> 
           ))}
           </AnimatePresence>
+
+          { !hasNext && (
+            <div className="flex-full-center">
+              <p className="text-lg font-semibold">
+                No More Appointments
+              </p>
+            </div>
+          )}
         </div>
 
       </div>        

@@ -24,6 +24,9 @@ interface AppointmentProps {
 
   fetchMoreAppointment: () => Promise<void>;
   searchFilter: React.RefObject<SearchFilter>;
+
+  hasNext: boolean;
+  isLoading: boolean
 }
 
 const AppointmentContext = createContext<AppointmentProps>({
@@ -34,7 +37,10 @@ const AppointmentContext = createContext<AppointmentProps>({
   setSentAppointments: (arg: any) => {},
 
   fetchMoreAppointment: async () => {},
-  searchFilter: {current: {  }}
+  searchFilter: {current: {  }},
+
+  hasNext: true,
+  isLoading: false
 });
 
 export interface SearchFilter {
@@ -123,7 +129,9 @@ export function AppointmentContextProvider({children}: {
         sentAppointments,
         setSentAppointments,
         fetchMoreAppointment,
-        searchFilter
+        searchFilter,
+        hasNext,
+        isLoading
       }}
     >
       {children}
