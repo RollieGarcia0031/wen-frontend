@@ -6,8 +6,8 @@ import { DashboardContextProvider, useDashboard } from "@/context/DashboardConte
 import { useState, useRef, useEffect, useCallback, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
-import { i } from "framer-motion/client";
 import { removeSeconds } from "@/util/TimeFormat";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
 
@@ -208,31 +208,55 @@ function DailySummaryTable(){
   }, [handleIntersection]);
 
   return (
-    <div 
-      className="card w-[50rem] min-h-[40dvh] rounded-md space-y-4
-      [&>div]:grid [&>div]:grid-cols-[1fr_1fr_6.625rem] p-5"
+    <div
+      className="h-screen pt-5 pb-5
+      grid grid-rows-[auto_1fr] gap-y-4"
     >
       <div>
-        <p className="text-lg font-bold">
-          Time
+        <p className="text-4xl font-bold">
+          Daily Summary
         </p>
-
-        <p className="text-lg font-bold">
-          Name
+        <p>
+          A list of appointments for the current day
         </p>
-
-        <p className="text-lg font-bold">
-          Status
-        </p>
-   
       </div>
+      <div 
+        className="card w-[50rem] min-h-[40dvh] rounded-md space-y-4
+        [&>div]:grid [&>div]:grid-cols-[1fr_1fr_6.625rem] p-5
+        overflow-y-auto max-h-full"
+      >
+        <div>
+          <p className="text-lg font-bold">
+            Time
+          </p>
 
-      { appointments.map(item => (
-        <DailySummaryCard key={item.id} item={item} />
-      ))}
+          <p className="text-lg font-bold">
+            Name
+          </p>
 
-      { hasNext && <div ref={loaderRef}> </div> }
+          <p className="text-lg font-bold">
+            Status
+          </p>
+    
+        </div>
+        
+        <AnimatePresence>
+          { appointments.map(item => (
+            <DailySummaryCard key={item.id} item={item} />
+          ))}
+        </AnimatePresence>
 
+        { hasNext && <div ref={loaderRef}> </div> }
+        { !hasNext && 
+          <p
+            className="text-center mt-5 italic text-sm
+            border-t-highlight border-t-[1px]"
+          >
+            No more appointments
+          </p>
+        }
+
+      </div>
     </div>
   );
 }
@@ -247,8 +271,12 @@ function DailySummaryCard({item}:{
 
   if (!item) return null;
   return (
-    <div
-      className="grid grid-cols-[1fr_1fr_6.625rem]"
+    <motion.div
+      className="grid grid-cols-[1fr_1fr_6.625rem] my-8"
+      initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
+      exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
+      transition={{ duration: 0.3}}
     >
       <p>
         {displayTime}
@@ -260,10 +288,14 @@ function DailySummaryCard({item}:{
 
       <StatusIndicator status={status} />
 
-    </div>
+    </motion.div>
   );
 }
 
+/**
+ * Creates a div element that displays the status of the appointment
+ * with corresponding color code and message
+ */
 function StatusIndicator({status}:{status: number}){
 
   const StatusWord = ['pending', 'approved'];
