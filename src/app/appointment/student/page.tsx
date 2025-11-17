@@ -57,7 +57,12 @@ function AppointmentHeader(){
 }
 
 function AppointmentsTable(){
-  const { sentAppointments, hasNext } = useAppointment();
+  const { sentAppointments, hasNext, loaderRef, fetchMoreAppointment, reset } = useAppointment();
+
+  useEffect(()=>{
+    reset();
+    fetchMoreAppointment();
+  }, [])
 
   if (sentAppointments.length === 0){
 
@@ -97,6 +102,19 @@ function AppointmentsTable(){
             <AppointmentCard item={item} key={item.id}/> 
           ))}
           </AnimatePresence>
+
+          {
+            hasNext && (
+              <div
+                ref={loaderRef}
+                className="flex-cc"
+              >
+                <p className="text-lg font-semibold">
+                  Loading...
+                </p>
+              </div>
+            )
+          }
 
           { !hasNext && (
             <div className="flex-full-center">

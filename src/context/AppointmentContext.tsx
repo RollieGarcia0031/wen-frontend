@@ -1,6 +1,5 @@
-import fetchBackend from "@/lib/fetchBackend";
 import fetchAppointments from "@/util/fetchAppointments";
-import { useContext, createContext, useState, Dispatch, SetStateAction, use, useEffect, useRef } from "react";
+import { useContext, createContext, useState, Dispatch, SetStateAction, useEffect, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
 
 interface AppointmentProps {
@@ -26,7 +25,17 @@ interface AppointmentProps {
   searchFilter: React.RefObject<SearchFilter>;
 
   hasNext: boolean;
-  isLoading: boolean
+  isLoading: boolean;
+
+  /**
+   * the decoy element for pagination
+   */
+  loaderRef: React.RefObject<HTMLDivElement | null>;
+
+  /**
+   * Resets the context
+   */
+  reset: () => void
 }
 
 const AppointmentContext = createContext<AppointmentProps>({
@@ -40,7 +49,10 @@ const AppointmentContext = createContext<AppointmentProps>({
   searchFilter: {current: {  }},
 
   hasNext: true,
-  isLoading: false
+  isLoading: false,
+
+  loaderRef: {current: null},
+  reset: () => {}
 });
 
 export interface SearchFilter {
@@ -67,8 +79,8 @@ export function AppointmentContextProvider({children}: {
   /**
    * Pagination cursors
    */
-  const [ nextId, setNextId ] = useState(0);
-  const [ nextDate, setNextDate ] = useState('0');
+  const [ nextId, setNextId ] = useState<number | null>(0);
+  const [ nextDate, setNextDate ] = useState<string | null>('0');
 
   /**
    * Pagination states
@@ -80,6 +92,12 @@ export function AppointmentContextProvider({children}: {
    * State for search filter
    */
   const searchFilter = useRef<SearchFilter>({});
+
+  /**
+   * Element and observer refs for pagination
+   */
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
   
   const fetchMoreAppointment = async () => {
     if (isLoading || !hasNext || nextId === null || nextDate === null) return;
@@ -91,7 +109,7 @@ export function AppointmentContextProvider({children}: {
       const {
         data: {
           items,
-          next_cursor: {cursor_date, cursor_id}
+          next_cursor
         },
         message
       } = await response.json() as appointment_list_response;
@@ -102,11 +120,9 @@ export function AppointmentContextProvider({children}: {
         [...prev, ...items]
       );
 
-      setHasNext(items.length === 10 || cursor_date === null);
-      setNextDate(cursor_date);
-      setNextId(cursor_id);
-
-      console.log(cursor_id, cursor_date);
+      setHasNext(!!next_cursor);
+      setNextDate(next_cursor?.cursor_date || null);
+      setNextId(next_cursor?.cursor_id || null);
 
     } catch (error) {
       console.error(error);
@@ -116,10 +132,6 @@ export function AppointmentContextProvider({children}: {
       setIsLoading(false);
     }
   }
-
-  useEffect(() => {
-    fetchMoreAppointment();
-  }, []);
 
   return (
     <AppointmentContext.Provider
@@ -131,7 +143,9 @@ export function AppointmentContextProvider({children}: {
         fetchMoreAppointment,
         searchFilter,
         hasNext,
-        isLoading
+        isLoading,
+        loaderRef,
+        reset
       }}
     >
       {children}
