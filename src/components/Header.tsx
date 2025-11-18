@@ -26,6 +26,23 @@ export default function Header() {
   const [ miniNotifPanelIsOpened, setMiniNotifPanelIsOpened ] = useState(false);
   const notifPanelRef = useRef<HTMLDivElement | null>(null);
 
+  const [ displayDate, setDisplayDate ] = useState(new Date().toLocaleDateString('en-US', {weekday: "short"}));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDisplayDate(new Date().toLocaleDateString('en-US', {
+        month: "long",
+        day: "numeric",
+        weekday: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+      }));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(()=>{
 
     const handleBodyClick = (event: Event) => {
@@ -55,12 +72,18 @@ export default function Header() {
     <header
       className="flex-rc py-2"
     >
-      {/* link button/app name, shortcut to return to home */}
-      <h1>
-        <Link href="/">
-          Wen
-        </Link>
-      </h1>
+      <div className="flex-rc gap-20 items-end">
+        {/* link button/app name, shortcut to return to home */}
+        <h1>
+          <Link href="/">
+            Wen
+          </Link>
+        </h1>
+
+        <p className="text-sm">
+          {displayDate}
+        </p>
+      </div>
       
       {/* contains the shortcut menu (notif, user_settings) */}
       <div
