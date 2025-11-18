@@ -152,6 +152,25 @@ function AppointmentTable(){
         { hasNext && !isLoading &&
           <div ref={loaderRef}></div>
         }
+
+        {
+          isLoading &&
+          <div>
+            <p className="text-center">Loading...</p>
+          </div>
+        }
+
+        {
+          !hasNext && !isLoading &&
+          <div>
+            <p
+              className="text-center mt-10 italic text-gray-400
+              border-t-white boder-t-[1px] border-solid"
+            >
+              No more appointments
+            </p>
+          </div>
+        }
       </div>
 
     </div>
