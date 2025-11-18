@@ -3,7 +3,7 @@
 import { fetchRecievedAppointments, ProfAppointmentContextProvider, useProfAppointment } from "@/context/ProfessorAppointmentContext";
 import { removeSeconds } from "@/util/TimeFormat";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { MdOutlinePending } from "react-icons/md";
 import RecivedAppointmentDialog from "@/components/RecivedAppointmentDialog";
 import { FaTrash } from "react-icons/fa6";
@@ -36,12 +36,39 @@ function AppointmentTable(){
     selectionOption,
     setSelectionOption,
     selectedIds,
-    setSelectedIds
+    setSelectedIds,
+    fetchMoreAppointments,
+    loaderRef,
+    observerRef,
+    hasNext,
+    isLoading
   } = useProfAppointment();
 
-  useEffect(() => {
-    fetchRecievedAppointments(setRecievedAppointments);
-  }, []);
+  const observerHandler = useCallback((entries: IntersectionObserverEntry[]) => {
+    const target = entries[0];
+    if (target.isIntersecting && hasNext && !isLoading) {
+      fetchMoreAppointments();
+    }
+  }, [ fetchMoreAppointments, hasNext, isLoading ] );
+
+  useEffect(()=>{
+
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    const observer = new IntersectionObserver(observerHandler);
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+
+  }, [ observerHandler ])
 
   return (
     <div
@@ -121,6 +148,29 @@ function AppointmentTable(){
             <AppointmentCard key={item.id} item={item} />
           ))}
         </AnimatePresence>
+
+        { hasNext && !isLoading &&
+          <div ref={loaderRef}></div>
+        }
+
+        {
+          isLoading &&
+          <div>
+            <p className="text-center">Loading...</p>
+          </div>
+        }
+
+        {
+          !hasNext && !isLoading &&
+          <div>
+            <p
+              className="text-center mt-10 italic text-gray-400
+              border-t-white boder-t-[1px] border-solid"
+            >
+              No more appointments
+            </p>
+          </div>
+        }
       </div>
 
     </div>
