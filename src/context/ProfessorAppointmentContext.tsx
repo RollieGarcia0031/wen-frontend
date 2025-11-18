@@ -42,6 +42,15 @@ interface ProfAppointmentContextProps {
    */
   selectedIds: number[]
   setSelectedIds: Dispatch<SetStateAction<number[]>>;
+
+  /**
+   * Hooks for pagination
+   */
+  loaderRef: React.RefObject<HTMLDivElement | null>;
+  observerRef: React.RefObject<IntersectionObserver | null>;
+  fetchMoreAppointments: () => Promise<void>;
+  hasNext: boolean;
+  isLoading: boolean;
 }
 
 const Context = createContext<ProfAppointmentContextProps>({
@@ -58,7 +67,14 @@ const Context = createContext<ProfAppointmentContextProps>({
   setSelectionOption: ()=>{},
 
   selectedIds: [],
-  setSelectedIds: ()=>{}
+  setSelectedIds: ()=>{},
+
+  fetchMoreAppointments: async ()=>{},
+  loaderRef: { current: null },
+  observerRef: { current: null },
+
+  hasNext: true,
+  isLoading: false
 });
 
 export function ProfAppointmentContextProvider({children}:{
@@ -154,8 +170,12 @@ export function ProfAppointmentContextProvider({children}:{
         selectionOption,
         setSelectionOption,
         selectedIds,
-        setSelectedIds
-
+        setSelectedIds,
+        loaderRef,
+        observerRef,
+        fetchMoreAppointments,
+        hasNext,
+        isLoading
       }}
     >
       {children}
