@@ -10,6 +10,7 @@ import { IoMdReturnLeft } from "react-icons/io";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
+import './styles.css';
 
 export default function Main () {
   return (
@@ -118,7 +119,9 @@ function CalendarInput(){
   const { setSelectedDate, selectedDate, setSelectedAvailability } = useSendAppointment();
 
   return (
-    <div>
+    <div
+      className="bg-background p-4 rounded-xl"
+    >
 
       <DatePicker
         selected={selectedDate}
