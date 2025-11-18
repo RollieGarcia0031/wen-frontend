@@ -1,8 +1,10 @@
 "use client"
 
 import fetchBackend from "@/lib/fetchBackend";
-import { createContext, useContext, useState, Dispatch, SetStateAction } from "react"
+import fetchAppointments from "@/util/fetchAppointments";
+import { createContext, useContext, useState, Dispatch, SetStateAction, useRef, useEffect } from "react"
 import { toast } from "react-toastify";
+import { SearchFilter } from "./AppointmentContext";
 
 type appointmentDispatch = Dispatch<SetStateAction<appointment_list_response_item[]>>;
 
@@ -67,6 +69,78 @@ export function ProfAppointmentContextProvider({children}:{
   const [ recievedAppointments, setRecievedAppointments ] = useState<appointment_list_response_item[]>([]);
   const [ selectionOption, setSelectionOption ] = useState(0);
   const [ selectedIds, setSelectedIds ] = useState<number[]>([]);
+
+  const [ nextCursor, setNextCursor ] = useState(0);
+  const [ nextDate, setNextDate ] = useState('0');
+  const [ hasNext, setHasNext ] = useState(true);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const searchFilter = useRef<SearchFilter>({});
+
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const fetchMoreAppointments = async () => {
+    if (!hasNext || isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      const response = await fetchAppointments( nextCursor, nextDate, searchFilter.current);
+
+      const { data, message } = await response.json() as appointment_list_response;
+
+      if (!response.ok) throw new Error(message);
+
+      setRecievedAppointments(prev => [...prev, ...data.items]);
+      setHasNext(!!data.next_cursor);
+      setNextCursor(data.next_cursor?.cursor_id ?? 0);
+      setNextDate(data.next_cursor?.cursor_date ?? '0');
+
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const fetchFirst = async () => {
+    if (isLoading || !hasNext) return;
+
+    try {
+      setIsLoading(true);
+
+      const response = await fetchAppointments( nextCursor!, nextDate!, searchFilter.current);
+
+      const { data, message } = await response.json() as appointment_list_response;
+      console.log(data);
+
+      if (!response.ok) throw new Error(message);
+
+      setRecievedAppointments(data.items);
+      setHasNext(!!data.next_cursor);
+      setNextCursor(data.next_cursor?.cursor_id ?? 0);
+      setNextDate(data.next_cursor?.cursor_date ?? '0');
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const resetAll = () => {
+    setRecievedAppointments([]);
+    setNextCursor(0);
+    setNextDate('0');
+    setHasNext(true);
+    setIsLoading(false);
+    fetchFirst();
+  }
+
+  useEffect(()=>{
+    resetAll();
+  }, []);
 
   return (
     <Context.Provider

@@ -39,10 +39,6 @@ function AppointmentTable(){
     setSelectedIds
   } = useProfAppointment();
 
-  useEffect(() => {
-    fetchRecievedAppointments(setRecievedAppointments);
-  }, []);
-
   return (
     <div
       className="flex-cc pb-8"
