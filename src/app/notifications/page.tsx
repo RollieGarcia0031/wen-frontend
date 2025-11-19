@@ -4,6 +4,7 @@ import fetchBackend from "@/lib/fetchBackend";
 import { useCallback, useEffect, useRef, useState, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNotification } from "@/context/NotificationContext";
 
 /**
  * Retrieve notifications from the database
@@ -133,10 +134,12 @@ export default function Notification(){
         gap-4"
       >
 
-        <div className="w-full">
+        <div className="w-full grid grid-cols-[1fr_auto] align-bottom">
           <p className="text-4xl font-extrabold">
             Notifications
           </p>
+
+          <DeleteDropdown setNotifications={setNotifications}/>
         </div>
 
         <div className="card p-5 h-[80dvh] w-[50rem] overflow-y-auto">
@@ -182,4 +185,94 @@ function NotificationCard({ item }: {
 
     </motion.div>
   );
+}
+
+function DeleteDropdown({setNotifications}:{
+  setNotifications: Dispatch<SetStateAction<notification_list_all_response_item[]>>
+}){
+
+  const [ isOpened, setIsOpened ] = useState(false);
+  const deleteAllDialogRef= useRef<HTMLDialogElement>(null);
+
+  return (
+    <>
+    <div>
+
+      <button
+        onClick={()=>setIsOpened(prev => !prev)}
+        className="bg-black p-2 rounded-md"
+      >
+        Delete
+      </button>
+
+      <div
+        className={`${isOpened? 'block':'hidden'}
+        absolute mt-1 card2 p-2
+        [&_button]:px-2 [&_button]:hover:bg-highlight-muted [&_button]:py-1 [&_button]:rounded-md
+        `}
+      >
+        <button onClick={()=>{
+          deleteAllDialogRef.current?.showModal();
+          setIsOpened(false);
+        }}>
+          Delete All
+        </button>
+      </div>
+
+    </div>
+
+    <dialog ref={deleteAllDialogRef}>
+      <div>
+        Are you sure you want to delete all notifications?
+
+        <div
+          className="grid grid-cols-2 gap-10 px-15 pt-4
+          [&_button]:rounded-sm [&_button]:py-[2px]"
+        >
+
+          <button
+            className="bg-green-700"
+            onClick={handleDeleteAll}
+          >
+            Yes
+          </button>
+
+          <button
+            className="bg-red-700"
+            onClick={()=>deleteAllDialogRef.current?.close()}
+          >
+            No
+          </button>
+
+        </div>
+      </div>
+
+    </dialog>
+
+    </>
+  );
+
+
+  async function handleDeleteAll(){
+
+    try {
+      const response = await fetchBackend("notification/delete-all",{
+        method: "DELETE",
+        headers: { 'Content-Type' : 'application/json' }
+      });
+
+      const { message } = await response.json() as common_response;
+
+      if (!response.ok) throw new Error(message || "Error occured");
+
+      setNotifications(prev => []);
+      toast.success("All notifications has been deleted!");
+
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    } finally {
+      deleteAllDialogRef.current?.close();
+    }
+  }
 }
