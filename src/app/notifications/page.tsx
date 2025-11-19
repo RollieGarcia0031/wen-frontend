@@ -139,7 +139,7 @@ export default function Notification(){
             Notifications
           </p>
 
-          <DeleteDropdown />
+          <DeleteDropdown setNotifications={setNotifications}/>
         </div>
 
         <div className="card p-5 h-[80dvh] w-[50rem] overflow-y-auto">
@@ -187,12 +187,12 @@ function NotificationCard({ item }: {
   );
 }
 
-function DeleteDropdown(){
+function DeleteDropdown({setNotifications}:{
+  setNotifications: Dispatch<SetStateAction<notification_list_all_response_item[]>>
+}){
 
   const [ isOpened, setIsOpened ] = useState(false);
   const deleteAllDialogRef= useRef<HTMLDialogElement>(null);
-
-  const { setNotifications } = useNotification();
 
   return (
     <>
@@ -211,7 +211,10 @@ function DeleteDropdown(){
         [&_button]:px-2 [&_button]:hover:bg-highlight-muted [&_button]:py-1 [&_button]:rounded-md
         `}
       >
-        <button onClick={()=>deleteAllDialogRef.current?.showModal()}>
+        <button onClick={()=>{
+          deleteAllDialogRef.current?.showModal();
+          setIsOpened(false);
+        }}>
           Delete All
         </button>
       </div>
