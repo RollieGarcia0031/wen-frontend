@@ -124,8 +124,6 @@ const fetchAppointments = async (
 )=>{
   if (!hasNext) return;
 
-  console.log('searching');
-
   const body = {
     cursor_id: nextCursor.next_id,
     cursor_time: nextCursor.next_time
@@ -141,6 +139,9 @@ const fetchAppointments = async (
     });
 
     const { data, message, success } = await response.json() as appointment_currentDay_response;
+
+    if (response.status === 401) return setIsloading(false);
+
     if (!response.ok || !success)
       throw new Error(message || "Failed to fetch appointments");
 

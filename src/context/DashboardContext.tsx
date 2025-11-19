@@ -91,6 +91,8 @@ export async function refreshCounter(
       body: JSON.stringify(body)
     });
 
+    if (response.status === 401) return;
+
     if (!response.ok) throw new Error(`Failed at ${time_range}`);
     const { data } = await response.json() as appointment_count_response;
 
