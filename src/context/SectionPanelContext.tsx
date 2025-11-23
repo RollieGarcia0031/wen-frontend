@@ -1,5 +1,6 @@
 "use client";
 
+import { section } from "framer-motion/client";
 import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
 
 interface SectionPanelProps {
@@ -25,7 +26,14 @@ interface SectionPanelProps {
 }
 
 const Context = createContext({
+  sections: [] as section_list_all_response_item[],
+  setSections: () => {},
 
+  ownedSections: [] as section_list_all_response_item[],
+  setOwnedSections: () => {},
+
+  temporarySections: [] as section_list_all_response_item[],
+  setTemporarySections: () => {},
 });
 
 export default function SectionPanelContext({children}:{
@@ -47,3 +55,5 @@ export default function SectionPanelContext({children}:{
     </Context.Provider>
   )
 }
+
+export const useSectionPanel = () => useContext(Context); 
