@@ -7,6 +7,7 @@ interface section_item {
 interface section_list_all_response_item {
     course_name: string;
     course_code: string;
+    course_id: number;
     sections: section_item[];
 }
 

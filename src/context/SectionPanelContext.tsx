@@ -1,7 +1,9 @@
 "use client";
 
+import fetchBackend from "@/lib/fetchBackend";
 import { section } from "framer-motion/client";
-import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface SectionPanelProps {
   /**
@@ -17,33 +19,57 @@ interface SectionPanelProps {
   setOwnedSections: Dispatch<SetStateAction<section_list_all_response_item[]>>;
 
   /**
-   * List of all sections to be added to the database
-   * used for temporary storage, and render new sections to
-   * be added
+   * List of ids of sections that are temporary
+   * which means that they are not owned by the user
+   * the user has the options to commit it to database
    */
-  temporarySections: section_list_all_response_item[];
-  setTemporarySections: Dispatch<SetStateAction<section_list_all_response_item[]>>;
+  temporarySections: number[];
+  setTemporarySections: Dispatch<SetStateAction<number[]>>;
 }
 
-const Context = createContext({
+const Context = createContext<SectionPanelProps>({
   sections: [] as section_list_all_response_item[],
-  setSections: () => {},
+  setSections: ()=>{},
 
   ownedSections: [] as section_list_all_response_item[],
-  setOwnedSections: () => {},
+  setOwnedSections: ()=>{},
 
-  temporarySections: [] as section_list_all_response_item[],
+  temporarySections: [] as number[],
   setTemporarySections: () => {},
 });
 
-export default function SectionPanelContext({children}:{
+export default function SectionPanelContextProvider({children}:{
   children: React.ReactNode
 }) {
 
   const [ sections, setSections ] = useState<section_list_all_response_item[]>([]);
   const [ ownedSections, setOwnedSections ] = useState<section_list_all_response_item[]>([]);
-  const [ temporarySections, setTemporarySections ] = useState<section_list_all_response_item[]>([]);
+  const [ temporarySections, setTemporarySections ] = useState<number[]>([]);
 
+  useEffect(()=>{
+    refreshSections();
+  }, []);
+
+  /**
+   * Refreshes the list of available sections
+   */
+  const refreshSections = async () => {
+    try {
+      const response = await fetchBackend("section/list/all", {
+        method: "GET",
+        headers: { 'Content-Type' : 'application/json' }
+      });
+
+      if (!response.ok) throw new Error("Failed to refresh sections");
+
+      const { data } = await response.json() as section_list_all_response;
+
+      setSections(data);
+
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    }
+  }
 
   return (
     <Context.Provider value={{
