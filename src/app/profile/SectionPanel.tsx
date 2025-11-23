@@ -4,6 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import SectionPanelContextProvider, { useSectionPanel } from "@/context/SectionPanelContext";
 import fetchBackend from "@/lib/fetchBackend";
 import React, { useEffect, useState } from "react";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoSaveOutline } from "react-icons/io5";
+import { MdOutlineSaveAs } from "react-icons/md";
+import { VscDiscard } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
 export default function Main(){
@@ -45,9 +49,6 @@ export function SectionPanel(){
 
       {/* main container of courses*/}
       <div>
-        {temporarySections.map((item, index) => (
-          <TemporaryCard key={index} index={index}/>
-        ))}
 
         {ownedSections.map((item, index) => (
           <SectionCard key={index} item={item}/>
@@ -59,31 +60,41 @@ export function SectionPanel(){
       >
         <button
           onClick={handleAddSection}
-          className="bg-white text-black px-2 py-1 rounded-md"
+          className="bg-white text-black px-2 py-1 rounded-md
+          mt-8 f flex-rc gap-1"
         >
+          <IoIosAddCircleOutline className="fill-black"/>
           Add section
         </button>
 
-        {
-          temporarySections.length > 0 &&
-          <button
-            className="bg-white text-black px-2 py-1 rounded-md"
-            onClick={()=>setTemporarySections([])}
-          >
-            Reset
-          </button>
+        <div className="mt-4">
+          {temporarySections.map((item, index) => (
+            <TemporaryCard key={index} index={index}/>
+          ))}
+        </div>
+
+        { temporarySections.length > 0 &&
+          <div className="space-x-2 flex-rl mt-4">
+            <button
+              onClick={handleSave}
+              className="bg-white text-black px-2 py-1 rounded-md
+              flex-rc gap-1"
+            >
+              <MdOutlineSaveAs className="text-lg fill-black"/>
+              Save
+            </button>
+
+            <button
+              className="flex-rc bg-white text-black px-2 py-1 rounded-md"
+              onClick={()=>setTemporarySections([])}
+            >
+              <VscDiscard className="fill-black"/>
+              Discard Changes
+            </button>
+          </div>        
         }
       </div>
 
-      {
-        temporarySections.length > 0 &&
-        <button
-          onClick={handleSave}
-          className="bg-secondary text-black px-2 py-1 rounded-md"
-        >
-          Save
-        </button>
-      }
     </div>
   );
 
