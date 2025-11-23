@@ -27,7 +27,7 @@ export function SectionPanel(){
   useEffect(()=>{
     refreshOwnedSections();
   }, []);
-  
+
   return (
     <div className="card2">
       <div>
@@ -111,6 +111,7 @@ export function SectionPanel(){
       if (error instanceof Error)
         toast.error(error.message);
     } finally {
+      refreshOwnedSections();
       setTemporarySections([]);
     }
   }
