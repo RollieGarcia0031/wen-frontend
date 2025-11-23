@@ -41,34 +41,33 @@ function AppointmentTable(){
     loaderRef,
     observerRef,
     hasNext,
-    isLoading
+    isLoading,
+    resetAll
   } = useProfAppointment();
 
-  const observerHandler = useCallback((entries: IntersectionObserverEntry[]) => {
-    const target = entries[0];
-    if (target.isIntersecting && hasNext && !isLoading) {
-      fetchMoreAppointments();
-    }
-  }, [ fetchMoreAppointments, hasNext, isLoading ] );
+  useEffect(()=>{
+    resetAll();
+  },[]);
 
   useEffect(()=>{
 
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
+    const oberverHandler = new IntersectionObserver((entries: IntersectionObserverEntry[])=>{
+      const target = entries[0];
+      if (target.isIntersecting && hasNext && !isLoading) {
+        fetchMoreAppointments();
+      }
+    },{ threshold: 1.0 });
 
-    const observer = new IntersectionObserver(observerHandler);
     if (loaderRef.current) {
-      observer.observe(loaderRef.current);
+      oberverHandler.observe(loaderRef.current);
     }
 
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+      if (loaderRef.current) {
+        oberverHandler.unobserve(loaderRef.current);
       }
     };
-
-  }, [ observerHandler ])
+  }, [isLoading, hasNext, fetchMoreAppointments])
 
   return (
     <div
