@@ -100,7 +100,8 @@ export function SearchResultCard({searchResultItem}:{
   searchResultItem: search_professor_response_item
 }){
 
-  const { name, classes, id } = searchResultItem;
+  const { name, id } = searchResultItem;
+  const classes = ["fake1", "fake2"];
 
   return (
 
