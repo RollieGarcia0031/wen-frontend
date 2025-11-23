@@ -1,7 +1,6 @@
 "use client";
 
 import fetchBackend from "@/lib/fetchBackend";
-import { section } from "framer-motion/client";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -25,6 +24,11 @@ interface SectionPanelProps {
    */
   temporarySections: number[];
   setTemporarySections: Dispatch<SetStateAction<number[]>>;
+
+  /**
+   * Refresh the list of owned course by the user
+   */
+  refreshOwnedSections: () => Promise<void>;
 }
 
 const Context = createContext<SectionPanelProps>({
@@ -36,6 +40,8 @@ const Context = createContext<SectionPanelProps>({
 
   temporarySections: [] as number[],
   setTemporarySections: () => {},
+
+  refreshOwnedSections: async () => {}
 });
 
 export default function SectionPanelContextProvider({children}:{
@@ -71,11 +77,31 @@ export default function SectionPanelContextProvider({children}:{
     }
   }
 
+  const refreshOwnedSections = async () => {
+    try {
+      const response = await fetchBackend("section/list/owned", {
+        method: "GET",
+        headers: { 'Content-Type' : 'application/json' }
+      });
+
+      const { data, success, message } = await response.json() as section_list_owned_response;
+
+      if (!response.ok || !success)
+        throw new Error(message || "Failed to refresh owned sections");
+
+      setOwnedSections(data);
+
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    }
+  }
+
   return (
     <Context.Provider value={{
       sections, setSections,
       ownedSections, setOwnedSections,
-      temporarySections, setTemporarySections
+      temporarySections, setTemporarySections,
+      refreshOwnedSections
     }}>
     {children}
     </Context.Provider>

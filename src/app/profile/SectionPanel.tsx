@@ -17,7 +17,17 @@ export default function Main(){
 export function SectionPanel(){
   const { user } = useAuth();
 
-  const { temporarySections, setTemporarySections } = useSectionPanel();
+  const {
+    temporarySections,
+    setTemporarySections,
+    ownedSections,
+    refreshOwnedSections
+  } = useSectionPanel();
+
+  useEffect(()=>{
+    refreshOwnedSections();
+  }, []);
+  
   return (
     <div className="card2">
       <div>
@@ -37,6 +47,10 @@ export function SectionPanel(){
       <div>
         {temporarySections.map((item, index) => (
           <TemporaryCard key={index} index={index}/>
+        ))}
+
+        {ownedSections.map((item, index) => (
+          <SectionCard key={index} item={item}/>
         ))}
       </div>
 
@@ -102,6 +116,11 @@ export function SectionPanel(){
   }
 }
 
+/**
+ * Display a card for a temporary section
+ * these sections can be removed ore added later
+ * when the user desires to save it in database
+ */
 function TemporaryCard({index}:{
   index: number
 }){
@@ -183,4 +202,33 @@ function TemporaryCard({index}:{
     ]);
   }
         
+}
+
+/**
+ * Displays the card of section that
+ * the user is currently belonged to
+ */
+function SectionCard({item}:{
+  item: section_list_all_response_item
+}){
+  const {
+    course_code,
+    course_name,
+    sections
+  } = item;
+
+  return (
+    <div>
+      <p>
+        {course_code} - {course_name}
+      </p>
+      {sections.map((item, index) => (
+        <p
+          key={index}
+        >
+          {item.section_code} - {item.year_level}
+        </p>
+      ))}
+    </div>
+  );
 }
