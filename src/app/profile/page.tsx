@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import CoursePanel from "./CoursePanel";
 
 export default function Profile(){
   const { user, setUser } = useAuth();
@@ -43,7 +42,6 @@ export default function Profile(){
             </div>
           </div>
 
-          { user?.role === 'professor' && <CoursePanel/> }
         </div>
       </div>
     </div>
