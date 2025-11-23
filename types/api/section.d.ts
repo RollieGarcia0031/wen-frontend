@@ -13,3 +13,7 @@ interface section_list_all_response_item {
 interface section_list_all_response extends common_response {
     data: section_list_all_response_item[]
 }
+
+interface section_list_owned_response extends common_response {
+    data: section_list_all_response_item[]
+}
