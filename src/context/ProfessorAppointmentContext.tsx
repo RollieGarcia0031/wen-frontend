@@ -51,6 +51,11 @@ interface ProfAppointmentContextProps {
   fetchMoreAppointments: () => Promise<void>;
   hasNext: boolean;
   isLoading: boolean;
+
+  /**
+   * Remove all search results
+   */
+  resetAll: () => void
 }
 
 const Context = createContext<ProfAppointmentContextProps>({
@@ -74,7 +79,9 @@ const Context = createContext<ProfAppointmentContextProps>({
   observerRef: { current: null },
 
   hasNext: true,
-  isLoading: false
+  isLoading: false,
+
+  resetAll: ()=>{}
 });
 
 export function ProfAppointmentContextProvider({children}:{
@@ -154,10 +161,6 @@ export function ProfAppointmentContextProvider({children}:{
     fetchFirst();
   }
 
-  useEffect(()=>{
-    resetAll();
-  }, []);
-
   return (
     <Context.Provider
       value={{
@@ -175,7 +178,8 @@ export function ProfAppointmentContextProvider({children}:{
         observerRef,
         fetchMoreAppointments,
         hasNext,
-        isLoading
+        isLoading,
+        resetAll
       }}
     >
       {children}
