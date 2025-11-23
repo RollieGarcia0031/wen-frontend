@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import SectionPanel from "./SectionPanel";
 
 export default function Profile(){
   const { user, setUser } = useAuth();
@@ -42,6 +43,7 @@ export default function Profile(){
             </div>
           </div>
 
+          <SectionPanel />
         </div>
       </div>
     </div>
