@@ -218,18 +218,54 @@ function SectionCard({item}:{
     sections
   } = item;
 
+  const { refreshOwnedSections } = useSectionPanel();
+
   return (
     <div>
       <p>
         {course_code} - {course_name}
       </p>
       {sections.map((item, index) => (
-        <p
+        <div
+          className="grid grid-cols-[1fr_auto]
+            gap-x-2 my-2 border-b-2 border-highlight-muted pb-2" 
           key={index}
         >
-          {item.section_code} - {item.year_level}
-        </p>
+          <p>
+            {item.section_code} - {item.year_level}
+          </p>
+
+          <button
+            onClick={()=>handleRemoveSection(item.section_id)}
+          >
+            Remove
+          </button>
+        </div>
+
       ))}
     </div>
   );
+
+  async function handleRemoveSection(section_id: number){
+    const body = { section_id };
+
+    try{
+      const response = await fetchBackend("section/unenroll", {
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const { message, success } = await response.json() as common_response;
+
+      if (!response.ok || !success)
+        throw new Error(message || "Unknown error occured");
+
+      toast.success(message);
+      refreshOwnedSections();
+    } catch (error){
+      if (error instanceof Error)
+        toast.error(error.message);
+    }
+  }
 }
