@@ -2,7 +2,9 @@
 
 import { useAuth } from "@/context/AuthContext";
 import SectionPanelContextProvider, { useSectionPanel } from "@/context/SectionPanelContext";
+import fetchBackend from "@/lib/fetchBackend";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Main(){
   return (
@@ -38,17 +40,65 @@ export function SectionPanel(){
         ))}
       </div>
 
-      <button
-        onClick={handleAddSection}
-        className="bg-secondary text-black px-2 py-1 rounded-md"
+      <div
+        className="my-2 space-x-2"
       >
-        Add section
-      </button>
+        <button
+          onClick={handleAddSection}
+          className="bg-white text-black px-2 py-1 rounded-md"
+        >
+          Add section
+        </button>
+
+        {
+          temporarySections.length > 0 &&
+          <button
+            className="bg-white text-black px-2 py-1 rounded-md"
+            onClick={()=>setTemporarySections([])}
+          >
+            Reset
+          </button>
+        }
+      </div>
+
+      {
+        temporarySections.length > 0 &&
+        <button
+          onClick={handleSave}
+          className="bg-secondary text-black px-2 py-1 rounded-md"
+        >
+          Save
+        </button>
+      }
     </div>
   );
 
   function handleAddSection(){
     setTemporarySections(prev => [...prev, -1]);
+  }
+
+  async function handleSave(){
+
+    try{
+      const response = await fetchBackend("section/enroll/all", {
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify({ section_ids: temporarySections })
+      });
+
+      const { success, message } = await response.json() as common_response;
+
+      if (!response.ok || !success)
+        throw new Error(message || "Unkown error occured");
+
+      toast.success(message);
+
+    }catch(error){
+      if (error instanceof Error)
+        toast.error(error.message);
+    } finally {
+      setTemporarySections([]);
+    }
   }
 }
 
@@ -74,9 +124,11 @@ function TemporaryCard({index}:{
 
   return (
     <div
-      className="grid grid-cols-[auto_auto_1fr]"
+      className="grid grid-cols-[1fr_1fr_auto]
+        gap-x-2 my-2"
     >
       <select
+        className="py-1"
         value={selectedCourseId}
         onChange={(e) => setSelectedCourseId(Number(e.target.value))}
       >
