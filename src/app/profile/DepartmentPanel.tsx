@@ -7,6 +7,8 @@ import { IoRemoveCircleOutline } from "react-icons/io5";
 import { VscDiscard } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
+const MAX_DEPARTMENT = 1;
+
 export default function DepartmentPanel(){
 
   /**
@@ -51,7 +53,10 @@ export default function DepartmentPanel(){
           onClick={()=>setTemporaryDepartments(x=>[...x, 1])}
           className="bg-white text-black py-1 px-3 rounded-md mt-8
           disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={temporaryDepartments.length > allDepartments.length-1}
+          disabled={
+            temporaryDepartments.length > allDepartments.length-1
+            || joinedDepartment.length >= MAX_DEPARTMENT
+          }
         >
           Join a department
         </button>
