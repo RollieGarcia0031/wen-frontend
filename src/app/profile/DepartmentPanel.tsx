@@ -1,8 +1,10 @@
 "use client";
 
 import fetchBackend from "@/lib/fetchBackend";
+import { availableMemory } from "process";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IoRemoveCircleOutline } from "react-icons/io5";
+import { VscDiscard } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
 export default function DepartmentPanel(){
@@ -46,12 +48,15 @@ export default function DepartmentPanel(){
         </div>
 
         <button
-          onClick={()=>setTemporaryDepartments(x=>[...x, 0])}
-          className="bg-white text-black py-1 px-3 rounded-md mt-4"
+          onClick={()=>setTemporaryDepartments(x=>[...x, 1])}
+          className="bg-white text-black py-1 px-3 rounded-md mt-8
+          disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={temporaryDepartments.length > allDepartments.length-1}
         >
           Join a department
         </button>
 
+        {/* Shows the departments that you can join */}
         <div
           className="mt-4 px-10"
         >
@@ -65,6 +70,29 @@ export default function DepartmentPanel(){
             )
           }
         </div>
+
+        { temporaryDepartments.length > 0 &&
+          <div
+            className="flex-rl gap-2 mt-4
+            [&_button]:flex [&_button]:flex-row [&_button]:px-3 [&_button]:py-1 [&_button]:rounded-md"
+          >
+            <button
+              onClick={handleSave}
+              className="bg-white text-black rounded-md"
+            >
+              Save
+            </button>
+
+            <button
+              onClick={()=>setTemporaryDepartments([])}
+              className="bg-white text-black"
+            >
+              <VscDiscard className="text-xl fill-black" />
+              Discard
+            </button>
+          </div>
+        }
+
       </div>
     </div>
   );
@@ -104,6 +132,28 @@ export default function DepartmentPanel(){
   } catch (error) {
       if (error instanceof Error)
         toast.error(error.message);
+    }
+  }
+
+  async function handleSave(){
+    try {
+      const response = await fetchBackend("department/join/multi",{
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify({ department_ids: temporaryDepartments })
+      });
+
+      const { message, success } = await response.json() as common_response;
+
+      if (!response.ok || !success)
+        throw new Error(message || "Failed to join department");
+
+      toast.success(message);
+      fetchJoinedDepartment();
+      setTemporaryDepartments([]);
+    } catch (error){
+    if (error instanceof Error)
+      toast.error(error.message);
     }
   }
 }
@@ -167,10 +217,6 @@ function TemporaryDepartmentCard({index, allDepartments, setTemporaryDepartments
   setTemporaryDepartments: Dispatch<SetStateAction<number[]>>,
   temporaryDepartments: number[]
 }){
-
-  if (index >= allDepartments.length)
-    return null;
-
   return (
     <div
       className="my-2 grid grid-cols-[1fr_auto] items-center justify-center gap-5"
