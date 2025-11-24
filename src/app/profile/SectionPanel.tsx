@@ -5,8 +5,7 @@ import SectionPanelContextProvider, { useSectionPanel } from "@/context/SectionP
 import fetchBackend from "@/lib/fetchBackend";
 import React, { useEffect, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { IoSaveOutline } from "react-icons/io5";
-import { MdOutlineSaveAs } from "react-icons/md";
+import { MdOutlineRemoveCircleOutline, MdOutlineSaveAs } from "react-icons/md";
 import { VscDiscard } from "react-icons/vsc";
 import { toast } from "react-toastify";
 
@@ -48,8 +47,9 @@ export function SectionPanel(){
       </div>
 
       {/* main container of courses*/}
-      <div>
-
+      <div
+        className="mt-8 space-y-4"
+      >
         {ownedSections.map((item, index) => (
           <SectionCard key={index} item={item}/>
         ))}
@@ -192,9 +192,10 @@ function TemporaryCard({index}:{
         
       <div className="flex-rr">
         <button
+          className="bg-red-400 px-1 aspect-square rounded-xl"
           onClick={handleDelete}
         >
-          Delete
+          <MdOutlineRemoveCircleOutline className="fill-black text-lg"/>
         </button>
       </div>
     </div>    
@@ -232,14 +233,22 @@ function SectionCard({item}:{
   const { refreshOwnedSections } = useSectionPanel();
 
   return (
-    <div>
-      <p>
+    <div
+      className="card p-4"
+    >
+      <p
+        className="font-semibold"
+      >
         {course_code} - {course_name}
       </p>
-      {sections.map((item, index) => (
+      <div>
+
+      { //render the sections on each course
+        sections.map((item, index) => (
         <div
           className="grid grid-cols-[1fr_auto]
-            gap-x-2 my-2 border-b-2 border-highlight-muted pb-2" 
+            items-end
+            gap-x-2 my-2 border-b-[1px] border-white" 
           key={index}
         >
           <p>
@@ -247,13 +256,15 @@ function SectionCard({item}:{
           </p>
 
           <button
+            className="bg-red-700 py-1 px-2 rounded-md mb-1 text-sm"
             onClick={()=>handleRemoveSection(item.section_id)}
           >
             Remove
           </button>
         </div>
-
       ))}
+
+      </div>
     </div>
   );
 
