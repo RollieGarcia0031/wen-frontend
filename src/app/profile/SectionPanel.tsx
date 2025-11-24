@@ -102,7 +102,7 @@ export function SectionPanel(){
   );
 
   function handleAddSection(){
-    setTemporarySections(prev => [...prev, -1]);
+    setTemporarySections(prev => [...prev, 1]);
   }
 
   async function handleSave(){
@@ -140,21 +140,16 @@ function TemporaryCard({index}:{
   index: number
 }){
 
-  const { sections, setTemporarySections, temporarySections } = useSectionPanel();
-  const [ selectedCourseId, setSelectedCourseId ] = useState(sections[0].course_id);
+  const { sections, setTemporarySections, temporarySections, ownedSections } = useSectionPanel();
+  const [ selectedCourseId, setSelectedCourseId ] = useState(0);
 
   // get the sections that match the selected course
   const matchingSections = sections.filter(item => item.course_id === selectedCourseId);
-
   // get the sections, that are not haven't been used
-  const availableSections = matchingSections[0]
-    ?.sections.filter(item =>
-      !temporarySections.includes(item.section_id)
-    );  
-
-  useEffect(()=>{
-    console.log('selected', temporarySections);
-  }, [temporarySections]);
+  const availableSections = matchingSections[0]?.sections.filter(item => {
+    const ownedIds = ownedSections.map(item => item.sections.map(item => item.section_id)).flat();
+    return !temporarySections.includes(item.section_id) && !ownedIds.includes(item.section_id);
+  })
 
   return (
     <div
@@ -166,6 +161,7 @@ function TemporaryCard({index}:{
         value={selectedCourseId}
         onChange={(e) => setSelectedCourseId(Number(e.target.value))}
       >
+        <option value={0}>Select course</option>
         {sections.map((item, index) => (
           <option
             key={index}
@@ -177,7 +173,7 @@ function TemporaryCard({index}:{
       </select>
       
       {
-        matchingSections.length > 0 &&
+        availableSections?.length > 0 &&
         <select
           value={temporarySections[index]}
           onChange={e=>handleSelectSectionId(e)}
