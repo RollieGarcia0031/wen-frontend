@@ -1,3 +1,6 @@
+// TODO: fix adding new section, currently using -1 as default section id
+// int the temporary card
+
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
