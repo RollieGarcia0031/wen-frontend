@@ -119,7 +119,7 @@ export function SearchResultCard({searchResultItem}:{
           { 
             classes.map((item, index) => (
               <p key={index}>
-                {item.class}
+                {item}
               </p>
             ))
           }
