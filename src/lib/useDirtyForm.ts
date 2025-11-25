@@ -12,24 +12,45 @@ export function useDirtyForm<T extends Record<string, any>>(initial: T) {
   const [initialValues] = useState<T>(initial);
   const [values, setValues] = useState<T>(initial);
 
-  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  type InputName = keyof T;
+
+  const onChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> &
+      { target: { name: InputName; value: any } }
+  ) => {
     const { name, value } = e.target;
 
-    // Ensure name is a valid key of T
     setValues(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  // Build diff-like dirtyFields object
-  const dirtyFields: Partial<T> = {};
-  for (const key in values) {
-    if (values[key] !== initialValues[key]) {
-      dirtyFields[key] = values[key];
+  
+  /**
+   * tracks the fields that have been changed
+   */
+  const dirtyFields = Object.keys(values).reduce((acc, key) => {
+    const typedKey = key as keyof T;
+    if (values[typedKey] !== initialValues[typedKey]) {
+      acc[typedKey] = values[typedKey];
     }
-  }
+    return acc;
+  }, {} as Partial<T>);
 
-  return { values, onChange, dirtyFields };
+  const isDirty = Object.keys(dirtyFields).length > 0;
+
+  /** reset the form back to the initial state */
+  const resetForm = () => {
+    setValues(initialValues);
+  };
+
+  return {
+    values,
+    onChange,
+    dirtyFields,
+    isDirty,
+    resetForm
+  };
 }
 
