@@ -5,27 +5,6 @@ import { useDirtyForm } from "@/lib/useDirtyForm";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-
-const updateProfessorInfo = async (body:info_update_professor_request) => {
-  try {
-    const response = await fetchBackend("info/update/professor",{
-      method: "POST",
-      headers: { 'Content-Type' : 'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    const json = await response.json() as info_update_professor_response;
-    const { success, message } = json;
-
-    if (!success || !response.ok)
-      throw new Error(message || "Unexpected Error Occured!");
-
-    return success;
-  } catch (e) {
-    if (e instanceof Error) toast.error(e.message);
-  }
-}
-
 export default function ProfessorProfilePanel(){
 
   const { values, isDirty, onChange, resetForm, dirtyFields, setInitial } = useDirtyForm<info_update_professor_request>({
