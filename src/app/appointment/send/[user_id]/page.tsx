@@ -28,32 +28,11 @@ export function SendAppointment(){
   
   const { user_id } = useParams();
 
-  const { setUserInfo } = useSendAppointment();
+  const { setUserInfo, setFullInfo } = useSendAppointment();
 
   useEffect(()=>{
-
-    const fetchUserInfo = async () => {
-
-      const reqBody = {
-        professor_user_id: user_id
-      }
-
-      const response = await fetchBackend("search/professor/user", {
-        method: "POST",
-        headers: { 'Content-Type' : 'application/json' },
-        body: JSON.stringify(reqBody)
-      });
-
-      if (!response.ok) return;
-
-      const {data} = await response.json() as search_professor_user_response;
-
-      if (data.length > 1) return; // make sure only one user exists
-
-      setUserInfo(data[0]);
-    }
-
     fetchUserInfo();
+    fetchCompleteInfo();
   }, []);
 
   return (
@@ -90,6 +69,48 @@ export function SendAppointment(){
     </div>
   );
 
+  async function fetchUserInfo() {
+
+    const reqBody = {
+      professor_user_id: user_id
+    }
+
+    const response = await fetchBackend("search/professor/user", {
+      method: "POST",
+      headers: { 'Content-Type' : 'application/json' },
+      body: JSON.stringify(reqBody)
+    });
+
+    if (!response.ok) return;
+
+    const {data} = await response.json() as search_professor_user_response;
+
+    if (data.length > 1) return; // make sure only one user exists
+
+    setUserInfo(data[0]);
+  }
+
+
+  async function fetchCompleteInfo(){
+    try {
+
+      const response = await fetchBackend("info/professor",{
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify({user_id})
+      });
+
+      const { success, data } = await response.json() as info_professor_response;
+
+      if (!success || !response.ok)
+        throw new Error("Error occured, cannot get professor information");
+
+      setFullInfo(data);
+    } catch (e){
+      if (e instanceof Error)
+        toast.error(e.message);
+    }
+  }
 }
 
 /**

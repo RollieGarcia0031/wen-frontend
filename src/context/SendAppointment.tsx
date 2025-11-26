@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, Dispatch, SetStateAction } from "react";
 
 interface Props {
   /**
@@ -26,6 +26,25 @@ interface Props {
    */
   selectedAvailability: search_professor_user_availability | null;
   setSelectedAvailability: React.Dispatch< React.SetStateAction<search_professor_user_availability | null> >;
+
+  /**
+   * The full personal information on the target professor
+   */
+  fullInfo: info_professor_response_item;
+  setFullInfo: Dispatch<SetStateAction<info_professor_response_item>>;
+}
+
+const fullInfoInitial: info_professor_response_item = {
+  bio: "",
+  birthday: "",
+  cellphone_number: "",
+  department_code: "",
+  department_name: "",
+  email: "",
+  first_name: "",
+  gender: 0,
+  last_name: "",
+  middle_name: ""
 }
 
 const Context = createContext<Props>({
@@ -44,7 +63,10 @@ const Context = createContext<Props>({
   setSelectedDate: ()=>{},
 
   selectedAvailability: null,
-  setSelectedAvailability: function(arg){arg} 
+  setSelectedAvailability: function(arg){arg},
+
+  fullInfo: fullInfoInitial,
+  setFullInfo: ()=>{}
 });
 
 /**
@@ -63,6 +85,7 @@ export function SendAppointmentContextProvider({children}:{
     id: ''
   });
 
+  const [ fullInfo, setFullInfo ] = useState<info_professor_response_item>(fullInfoInitial);
   const [ selectedDate, setSelectedDate ] = useState<Date | null>(new Date());
   const [ selectedAvailability, setSelectedAvailability ] = useState<search_professor_user_availability | null>(null);
   return (
@@ -72,7 +95,9 @@ export function SendAppointmentContextProvider({children}:{
       selectedDate,
       setSelectedDate,
       selectedAvailability,
-      setSelectedAvailability 
+      setSelectedAvailability,
+      fullInfo,
+      setFullInfo
     }}>
       {children}
     </Context.Provider>
