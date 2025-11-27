@@ -7,10 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 import { removeSeconds } from '@/util/TimeFormat';
 import { IoMdReturnLeft } from "react-icons/io";
+import ProfInfoDialog from "./ProfInfoDialog";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import './styles.css';
+import { FaInfo } from "react-icons/fa";
 
 export default function Main () {
   return (
@@ -97,16 +99,24 @@ export function SendAppointment(){
  */
 function SendAptHeader(){
   const { userInfo } = useSendAppointment();
+  const infoDialogRef = useRef<HTMLDialogElement | null>(null);
 
   return (
     <div
-      className=""
+      className="flex-rl gap-2"
     >
+      <button className="bg-blue-900 aspect-square p-2 flex-cc rounded-full"
+        onClick={()=>infoDialogRef.current?.showModal()}
+      >
+        <FaInfo />
+      </button>
       <p
         className="text-4xl font-bold"
       >
         {userInfo.name}
       </p>
+
+      <ProfInfoDialog ref={infoDialogRef}/>
 
     </div>
   );
