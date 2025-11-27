@@ -3,14 +3,16 @@
 import Link from "next/link";
 import fetchBackend from "@/lib/fetchBackend";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useSendAppointment, SendAppointmentContextProvider } from "@/context/SendAppointment";
 import { removeSeconds } from '@/util/TimeFormat';
 import { IoMdReturnLeft } from "react-icons/io";
+import ProfInfoDialog from "./ProfInfoDialog";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import './styles.css';
+import { FaInfo } from "react-icons/fa";
 
 export default function Main () {
   return (
@@ -118,19 +120,70 @@ export function SendAppointment(){
  */
 function SendAptHeader(){
   const { userInfo } = useSendAppointment();
+  const infoDialogRef = useRef<HTMLDialogElement | null>(null);
+
+  const [ fullInfo, setFullInfo ] = useState<info_professor_response_item>({
+    bio: "",
+    department_code: "",
+    department_name: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    sections: [],
+    user_id: "",
+    birthday: "",
+    cellphone_number: "",
+    email: "",
+    gender: 0,
+    user_name: ""
+  });
+
+  const user_id = useParams().user_id;
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
 
   return (
     <div
-      className=""
+      className="flex-rl gap-2"
     >
+      <button className="bg-blue-900 aspect-square p-2 flex-cc rounded-full"
+        onClick={()=>infoDialogRef.current?.showModal()}
+      >
+        <FaInfo />
+      </button>
       <p
         className="text-4xl font-bold"
       >
         {userInfo.name}
       </p>
 
+      <ProfInfoDialog ref={infoDialogRef} info={fullInfo}/>
+
     </div>
   );
+
+  async function fetchInfo(){
+    try {
+      const response = await fetchBackend("info/professor", {
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify({user_id})
+      });
+
+      const { data, message, success } = await response.json() as info_professor_response;
+
+      if (!success || !response.ok)
+        throw new Error(message || "Unknown error occured");
+
+      setFullInfo(data);
+      console.log(data);
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    }
+  }
 }
 
 /**

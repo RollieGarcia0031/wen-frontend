@@ -22,7 +22,7 @@ export default function SearchProfessorDialog(){
 
   return (
     <dialog ref={dialogRef} onClose={()=>setSearchDialogOpened(false)} onSubmit={e => e.preventDefault() } 
-      className="pt-0"
+      className="pt-4"
     >
       <div className="grid grid-rows-[auto_69dvh] gap-y-5
         h-[70dvh] w-[40rem] overflow-hidden

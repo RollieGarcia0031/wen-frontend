@@ -4,12 +4,11 @@ import { FaCheck, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
 import { MdCancel, MdWatchLater } from "react-icons/md";
-import { useRouter } from "next/router";
 
 export default function Student(){
 
