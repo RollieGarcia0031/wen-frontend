@@ -29,12 +29,12 @@ interface info_professor_response_item {
   email: string,
   department_name: string,
   department_code: string,
-  sections: [
+  sections: {
     year_level: number,
     section_code: string,
     course_code: string,
     course_name: string
-  ]
+  }[];
 }
 
 interface info_professor_response extends common_response {

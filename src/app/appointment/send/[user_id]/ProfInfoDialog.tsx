@@ -1,8 +1,19 @@
 "use client"
 
-export default function ProfInfoDialog({ref}:{
-  ref: React.RefObject<HTMLDialogElement | null>
+export default function ProfInfoDialog({ref, info}:{
+  ref: React.RefObject<HTMLDialogElement | null>,
+  info: info_professor_response_item
 }){
+
+  const {
+    bio,
+    department_code,
+    department_name,
+    first_name,
+    last_name,
+    middle_name,
+    sections
+  } = info;
 
   return (
     <dialog ref={ref}>
@@ -18,11 +29,12 @@ export default function ProfInfoDialog({ref}:{
 
         <div>
           <p className="text-2xl">
-            Proferssor_name
+            {(!last_name && !first_name && !middle_name) && "Professor"}
+            {first_name} {middle_name} {last_name}
           </p>
 
-          <p>
-            Department_name
+          <p className="text-sm">
+            {department_name} - <span className="italic">({department_code}) </span>
           </p>
 
           <div className="mt-8">
@@ -30,12 +42,30 @@ export default function ProfInfoDialog({ref}:{
               Description:
             </p>
             <p>
-              None
+              {bio}
             </p>
           </div>
 
           <div className="mt-4">
             Sections:
+            <div
+              className="ml-4"
+            >
+              {sections.map((item, index) => (
+                <div
+                  key={index} 
+                  className="grid grid-cols-[auto_1fr] gap-4"
+                >
+                  <p>
+                    {item.course_code}
+                  </p>
+
+                  <p>
+                    {item.section_code} - {item.year_level}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
