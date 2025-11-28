@@ -129,10 +129,10 @@ function AppointmentTable(){
               Status:
             </span>
             <select
-              value={searchFilter.status}
-              onChange={e => setSearchFilter(prev => ({...prev, status: parseInt(e.target.value!)}))}
+              value={searchFilter.status === undefined ? "" : searchFilter.status}
+              onChange={e => setSearchFilter(prev => ({...prev, status: e.target.value === "" ? undefined : parseInt(e.target.value!)}))}
             >
-              <option>all</option>
+              <option value={-1}>all</option>
               <option value={0}>pending</option>
               <option value={1}>confirmed</option>
               <option value={2}>declined</option>
