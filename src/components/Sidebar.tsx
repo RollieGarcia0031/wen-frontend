@@ -43,7 +43,7 @@ export default function Sidebar(){
       </button>
 
       <button>
-        <Link href={`/appointments`}>
+        <Link href={`/appointment`}>
           <IoPeopleOutline /> 
         </Link>
       </button>
