@@ -60,7 +60,9 @@ function AppointmentTable(){
     observerRef,
     hasNext,
     isLoading,
-    resetAll
+    resetAll,
+    searchFilter,
+    setSearchFilter
   } = useProfAppointment();
 
   useEffect(()=>{
@@ -121,17 +123,31 @@ function AppointmentTable(){
               <option value={2} >non-pending</option>
             </select>
           </span>
-          
-          { selectionOption === 2 &&
-            <button className='flex-rc'
-              onClick={handleMultiDelete}
+
+          <span>
+            <span>
+              Status:
+            </span>
+            <select
+              value={searchFilter.status}
+              onChange={e => setSearchFilter(prev => ({...prev, status: parseInt(e.target.value!)}))}
             >
-              <FaTrash
-                className={`${selectedIds.length > 0? 'fill-red-600':''}
-                duration-500`}
-              />
-            </button>
-          }
+              <option>all</option>
+              <option value={0}>pending</option>
+              <option value={1}>confirmed</option>
+              <option value={2}>declined</option>
+            </select>
+          </span>
+
+          <span>
+            <span>Time Range:</span>
+            <select
+              value={searchFilter.time_range || ""}
+              onChange={e => setSearchFilter(prev => ({...prev, time_range: parseInt(e.target.value!)}))}
+            >
+              <option>none</option>
+            </select>
+          </span>
         </div>
 
         {/* table header */}
