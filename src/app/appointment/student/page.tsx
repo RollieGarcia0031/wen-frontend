@@ -192,7 +192,8 @@ function AppointmentCard({item}:{
 
       <button
         onClick={handleDelete}
-        className="flex-cc"
+        className="flex-cc disabled:opacity-50"
+        disabled={status === 1}
       >
         <FaTrashAlt />
       </button>
