@@ -122,9 +122,14 @@ function AppointmentTable(){
               <option value={1} >all</option>
               <option value={2} >non-pending</option>
             </select>
+            {selectedIds.length > 0 && (
+              <button onClick={handleMultiDelete}>
+                <FaTrash />
+              </button>
+            )}
           </span>
 
-          <span>
+          <span className="card2 space-x-2 py-3">
             <span>
               Status:
             </span>
@@ -139,7 +144,7 @@ function AppointmentTable(){
             </select>
           </span>
 
-          <span>
+          <span className="card2 space-x-2 py-3">
             <span>Time Range:</span>
             <select
               value={searchFilter.time_range || "all"}
