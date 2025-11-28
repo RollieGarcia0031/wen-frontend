@@ -15,3 +15,27 @@ interface info_update_professor_response_item {
 interface info_update_professor_response extends common_response {
   data: info_update_professor_response_item;
 }
+
+interface info_professor_response_item {
+    bio: "",
+    department_code: "",
+    department_name: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
+    sections: {
+      section_code: string;
+      course_code: string;
+      year_level: number;
+    }[],
+    user_id: string,
+    birthday: string,
+    cellphone_number: string,
+    email: string,
+    gender: number,
+    user_name: string; 
+}
+
+interface info_professor_response extends common_response {
+  data: info_professor_response_item;
+}
