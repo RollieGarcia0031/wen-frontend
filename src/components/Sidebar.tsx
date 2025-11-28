@@ -18,6 +18,9 @@ export default function Sidebar(){
     return <span> </span>; 
   }
 
+  if (!user) return <div></div>;
+
+  if (user)
   return (
     <div
       className="flex-ct gap-3
@@ -34,13 +37,13 @@ export default function Sidebar(){
       </button>
 
       <button>
-        <Link href="/appointment">
+        <Link href={`/appointment/${user.role}`}>
           <MdOutlineScheduleSend />
         </Link>
       </button>
 
       <button>
-        <Link href="/appointment">
+        <Link href={`/appointments`}>
           <IoPeopleOutline /> 
         </Link>
       </button>

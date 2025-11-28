@@ -11,7 +11,25 @@ import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
 import { FaCheck } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
 export default function Professor(){
+
+  const router = useRouter();
+  const { user } = useAuth();
+
+  useEffect(()=>{
+    if (user?.role === 'student'){
+      router.replace('/appointment/student');
+    }
+  }, [user]);
+
+  if (!user){
+    return null;
+  }
+
+  if (user.role === 'professor')
   return (
     <ProfAppointmentContextProvider>
       <div>

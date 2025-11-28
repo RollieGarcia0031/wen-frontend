@@ -9,9 +9,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
 import { MdCancel, MdWatchLater } from "react-icons/md";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Student(){
 
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(()=>{
+    if (user?.role === 'professor')
+      router.replace('/appointment/professor');
+  }, [user]);
+
+  if (!user) return null;
+
+  if (user.role === 'student')
   return (
     <AppointmentContextProvider>
       <SearchProfessorContextProvider>
