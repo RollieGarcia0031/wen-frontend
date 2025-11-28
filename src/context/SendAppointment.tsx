@@ -44,7 +44,10 @@ const fullInfoInitial: info_professor_response_item = {
   first_name: "",
   gender: 0,
   last_name: "",
-  middle_name: ""
+  middle_name: "",
+  sections: [],
+  user_id: "",
+  user_name: ""
 }
 
 const Context = createContext<Props>({
