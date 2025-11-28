@@ -4,6 +4,11 @@ import fetchBackend from "@/lib/fetchBackend";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+export type TemporarySectionItem = {
+  courseId: number;
+  sectionId: number;
+};
+
 interface SectionPanelProps {
   /**
    * List of all available sections
@@ -22,8 +27,8 @@ interface SectionPanelProps {
    * which means that they are not owned by the user
    * the user has the options to commit it to database
    */
-  temporarySections: number[];
-  setTemporarySections: Dispatch<SetStateAction<number[]>>;
+  temporarySections: TemporarySectionItem[];
+  setTemporarySections: Dispatch<SetStateAction<TemporarySectionItem[]>>;
 
   /**
    * Refresh the list of owned course by the user
@@ -38,7 +43,7 @@ const Context = createContext<SectionPanelProps>({
   ownedSections: [] as section_list_all_response_item[],
   setOwnedSections: ()=>{},
 
-  temporarySections: [] as number[],
+  temporarySections: [] as TemporarySectionItem[],
   setTemporarySections: () => {},
 
   refreshOwnedSections: async () => {}
@@ -50,7 +55,7 @@ export default function SectionPanelContextProvider({children}:{
 
   const [ sections, setSections ] = useState<section_list_all_response_item[]>([]);
   const [ ownedSections, setOwnedSections ] = useState<section_list_all_response_item[]>([]);
-  const [ temporarySections, setTemporarySections ] = useState<number[]>([]);
+  const [ temporarySections, setTemporarySections ] = useState<TemporarySectionItem[]>([]);
 
   useEffect(()=>{
     refreshSections();
@@ -85,6 +90,8 @@ export default function SectionPanelContextProvider({children}:{
       });
 
       const { data, success, message } = await response.json() as section_list_owned_response;
+
+      console.log("Fetched owned sections data:", data); // <--- Added console.log
 
       if (!response.ok || !success)
         throw new Error(message || "Failed to refresh owned sections");

@@ -1,10 +1,8 @@
-// TODO: fix adding new section, currently using -1 as default section id
-// int the temporary card
-
-"use client";
+"use client"
 
 import { useAuth } from "@/context/AuthContext";
-import SectionPanelContextProvider, { useSectionPanel } from "@/context/SectionPanelContext";
+import SectionPanelContextProvider from "@/context/SectionPanelContext";
+import { TemporarySectionItem, useSectionPanel } from "@/context/SectionPanelContext";
 import fetchBackend from "@/lib/fetchBackend";
 import React, { useEffect, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -24,6 +22,7 @@ export function SectionPanel(){
   const { user } = useAuth();
 
   const {
+    sections,
     temporarySections,
     setTemporarySections,
     ownedSections,
@@ -72,7 +71,7 @@ export function SectionPanel(){
 
         <div className="mt-4">
           {temporarySections.map((item, index) => (
-            <TemporaryCard key={index} index={index}/>
+            <TemporaryCard key={index} index={index} item={item}/>
           ))}
         </div>
 
@@ -102,16 +101,46 @@ export function SectionPanel(){
   );
 
   function handleAddSection(){
-    setTemporarySections(prev => [...prev, 1]);
+    setTemporarySections(prev => [...prev, { courseId: 0, sectionId: 0 }]);
   }
 
   async function handleSave(){
 
     try{
+      const sectionsToEnroll = temporarySections.filter(item => item.sectionId !== 0);
+
+      if (sectionsToEnroll.length === 0) {
+        toast.info("No sections selected to save.");
+        return;
+      }
+
+      // Perform validation for each selected temporary section
+      for (const tempItem of sectionsToEnroll) {
+        const correspondingCourse = sections.find(
+          (course) => course.course_id === tempItem.courseId
+        );
+
+        if (!correspondingCourse) {
+          throw new Error(`Course with ID ${tempItem.courseId} not found for selected section.`);
+        }
+
+        const sectionExistsInCourse = correspondingCourse.sections.some(
+          (section) => section.section_id === tempItem.sectionId
+        );
+
+        if (!sectionExistsInCourse) {
+          throw new Error(
+            `Selected section ID ${tempItem.sectionId} does not belong to course ID ${tempItem.courseId}.`
+          );
+        }
+      }
+
+      const section_ids = sectionsToEnroll.map(item => item.sectionId);
+
       const response = await fetchBackend("section/enroll/all", {
         method: "POST",
         headers: { 'Content-Type' : 'application/json' },
-        body: JSON.stringify({ section_ids: temporarySections })
+        body: JSON.stringify({ section_ids: section_ids })
       });
 
       const { success, message } = await response.json() as common_response;
@@ -124,6 +153,8 @@ export function SectionPanel(){
     }catch(error){
       if (error instanceof Error)
         toast.error(error.message);
+      else
+        toast.error("An unexpected error occurred during save.");
     } finally {
       refreshOwnedSections();
       setTemporarySections([]);
@@ -136,20 +167,33 @@ export function SectionPanel(){
  * these sections can be removed ore added later
  * when the user desires to save it in database
  */
-function TemporaryCard({index}:{
-  index: number
+function TemporaryCard({index, item}:{
+  index: number,
+  item: TemporarySectionItem
 }){
 
   const { sections, setTemporarySections, temporarySections, ownedSections } = useSectionPanel();
-  const [ selectedCourseId, setSelectedCourseId ] = useState(0);
+  const [ selectedCourseId, setSelectedCourseId ] = useState(item.courseId);
 
   // get the sections that match the selected course
-  const matchingSections = sections.filter(item => item.course_id === selectedCourseId);
+  const matchingSections = sections.filter(s_item => s_item.course_id === selectedCourseId);
   // get the sections, that are not haven't been used
-  const availableSections = matchingSections[0]?.sections.filter(item => {
-    const ownedIds = ownedSections.map(item => item.sections.map(item => item.section_id)).flat();
-    return !temporarySections.includes(item.section_id) && !ownedIds.includes(item.section_id);
-  })
+  const availableSections = matchingSections[0]?.sections.filter(s_item => {
+    const ownedIds = ownedSections.map(o_item => o_item.sections.map(o_sec => o_sec.section_id)).flat();
+    // Exclude the current item's sectionId from the temporarySectionIds check
+    const otherTemporarySectionIds = temporarySections
+                                      .filter((_, i) => i !== index)
+                                      .map(t_item => t_item.sectionId);
+    return !ownedIds.includes(s_item.section_id) && !otherTemporarySectionIds.includes(s_item.section_id);
+  });
+
+  useEffect(()=>{
+    // Update the item's courseId when selectedCourseId changes
+    setTemporarySections(prev => prev.map((t_item, i) =>
+      i === index ? { ...t_item, courseId: selectedCourseId, sectionId: 0 } : t_item
+    ));
+  }, [selectedCourseId]);
+
 
   return (
     <div
@@ -162,30 +206,38 @@ function TemporaryCard({index}:{
         onChange={(e) => setSelectedCourseId(Number(e.target.value))}
       >
         <option value={0}>Select course</option>
-        {sections.map((item, index) => (
+        {sections.map((s_item, s_index) => (
           <option
-            key={index}
-            value={item.course_id}
+            key={s_index}
+            value={s_item.course_id}
           >
-            {item.course_name}
+            {s_item.course_name}
           </option>
         ))}
       </select>
       
       {
-        availableSections?.length > 0 &&
+        availableSections && availableSections.length > 0 && selectedCourseId !== 0 ?
         <select
-          value={temporarySections[index]}
+          value={item.sectionId}
           onChange={e=>handleSelectSectionId(e)}
         >
-          {matchingSections[0].sections.map((item, index) => (
+          <option value={0}>Select section</option>
+          {availableSections.map((s_item, s_index) => (
             <option
-              key={index}
-              value={item.section_id}
+              key={s_index}
+              value={s_item.section_id}
             >
-              {item.section_code} - {item.year_level}
+              {s_item.section_code} - {s_item.year_level}
             </option>
           ))}
+        </select>
+        :
+        <select
+          value={0}
+          disabled
+        >
+          <option value={0}>No sections available</option>
         </select>
       }
         
@@ -201,9 +253,10 @@ function TemporaryCard({index}:{
   );
 
   function handleSelectSectionId(event: React.SyntheticEvent<HTMLSelectElement>){    
-    const newSections = [...temporarySections];
-    newSections[index] = Number(event.currentTarget.value);
-    setTemporarySections(newSections);
+    const newSectionId = Number(event.currentTarget.value);
+    setTemporarySections(prev => prev.map((t_item, i) =>
+      i === index ? { ...t_item, sectionId: newSectionId } : t_item
+    ));
   }
   function handleDelete(){
     console.log('delete')
