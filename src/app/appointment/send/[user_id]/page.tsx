@@ -47,7 +47,7 @@ export function SendAppointment(){
         <button className="bg-highlight p-1 rounded-full
         [&_svg]:fill-black [&_svg]:text-2xl"
         >
-          <Link href='/appointment'>
+          <Link href='/appointment/student'>
             <IoMdReturnLeft /> 
           </Link>
         </button>
@@ -343,7 +343,7 @@ function MessageInput(){
       if (!response.ok || !success) throw new Error(message);
       
       toast.success("Appointment Sent!");
-      router.push('/appointment');
+      router.push('/appointment/student');
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
     } finally {

@@ -2,7 +2,7 @@
 
 import fetchBackend from "@/lib/fetchBackend";
 import fetchAppointments from "@/util/fetchAppointments";
-import { createContext, useContext, useState, Dispatch, SetStateAction, useRef, useEffect } from "react"
+import { createContext, useContext, useState, Dispatch, SetStateAction, useRef, useEffect, RefObject } from "react"
 import { toast } from "react-toastify";
 import { SearchFilter } from "./AppointmentContext";
 
@@ -55,7 +55,10 @@ interface ProfAppointmentContextProps {
   /**
    * Remove all search results
    */
-  resetAll: () => void
+  resetAll: () => void;
+
+  searchFilter: SearchFilter;
+  setSearchFilter: Dispatch<SetStateAction<SearchFilter>>;
 }
 
 const Context = createContext<ProfAppointmentContextProps>({
@@ -81,7 +84,10 @@ const Context = createContext<ProfAppointmentContextProps>({
   hasNext: true,
   isLoading: false,
 
-  resetAll: ()=>{}
+  resetAll: ()=>{},
+
+  searchFilter: {time_range: 'all'},
+  setSearchFilter: ()=>{}
 });
 
 export function ProfAppointmentContextProvider({children}:{
@@ -97,7 +103,20 @@ export function ProfAppointmentContextProvider({children}:{
   const [ nextDate, setNextDate ] = useState('0');
   const [ hasNext, setHasNext ] = useState(true);
   const [ isLoading, setIsLoading ] = useState(false);
-  const searchFilter = useRef<SearchFilter>({});
+  const [ searchFilter, setSearchFilter ] = useState<SearchFilter>(()=>{
+    if (typeof window !== 'undefined') {
+      const savedFilter = localStorage.getItem('professorSearchFilter');
+      return savedFilter ? JSON.parse(savedFilter) : {};
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('professorSearchFilter', JSON.stringify(searchFilter));
+    }
+    resetAll();
+  }, [searchFilter]);
 
   const loaderRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -108,7 +127,7 @@ export function ProfAppointmentContextProvider({children}:{
     try {
       setIsLoading(true);
 
-      const response = await fetchAppointments( nextCursor, nextDate, searchFilter.current);
+      const response = await fetchAppointments( nextCursor, nextDate, searchFilter);
 
       const { data, message } = await response.json() as appointment_list_response;
 
@@ -133,7 +152,7 @@ export function ProfAppointmentContextProvider({children}:{
     try {
       setIsLoading(true);
 
-      const response = await fetchAppointments( nextCursor!, nextDate!, searchFilter.current);
+      const response = await fetchAppointments( nextCursor!, nextDate!, searchFilter);
 
       const { data, message } = await response.json() as appointment_list_response;
       console.log(data);
@@ -179,7 +198,9 @@ export function ProfAppointmentContextProvider({children}:{
         fetchMoreAppointments,
         hasNext,
         isLoading,
-        resetAll
+        resetAll,
+        searchFilter,
+        setSearchFilter
       }}
     >
       {children}
@@ -211,3 +232,4 @@ export async function fetchRecievedAppointments(setRecievedAppointments: appoint
     toast.error("Unexpected error occured");
   }
 }
+

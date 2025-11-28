@@ -53,7 +53,7 @@ const AppointmentContext = createContext<AppointmentProps>({
 
 export interface SearchFilter {
   status?: number,
-  time_range?: string
+  time_range?: 'all' | 'past' | 'upcoming' | 'today'; 
 }
 
 export function AppointmentContextProvider({children}: {
