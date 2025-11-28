@@ -86,7 +86,7 @@ const Context = createContext<ProfAppointmentContextProps>({
 
   resetAll: ()=>{},
 
-  searchFilter: {},
+  searchFilter: {time_range: 'all'},
   setSearchFilter: ()=>{}
 });
 

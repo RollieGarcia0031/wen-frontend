@@ -142,10 +142,13 @@ function AppointmentTable(){
           <span>
             <span>Time Range:</span>
             <select
-              value={searchFilter.time_range || ""}
-              onChange={e => setSearchFilter(prev => ({...prev, time_range: parseInt(e.target.value!)}))}
+              value={searchFilter.time_range || "all"}
+              onChange={e => setSearchFilter(prev => ({...prev, time_range: e.target.value as 'all' | 'past' | 'upcoming' | 'today'}))}
             >
-              <option>none</option>
+              <option value='all'>all</option>
+              <option value='today'>today</option>
+              <option value='upcoming'>upcoming</option>
+              <option value='past'>past</option>
             </select>
           </span>
         </div>
