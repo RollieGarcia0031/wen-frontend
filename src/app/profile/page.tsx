@@ -6,6 +6,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import SectionPanel from "./SectionPanel";
 import DepartmentPanel from "./DepartmentPanel";
 import ProfessorProfilePanel from "./ProfessorProfilePanel";
+import StudentInfoPanel from "./StudentInfoPanel";
 
 export default function Profile(){
   const { user, setUser } = useAuth();
@@ -50,6 +51,10 @@ export default function Profile(){
           { user?.role === 'professor' && <>
             <DepartmentPanel />
             <ProfessorProfilePanel />
+          </>}
+
+          {user?.role === 'student' && <>
+            <StudentInfoPanel />
           </>}
         </div>
       </div>
