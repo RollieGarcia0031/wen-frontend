@@ -39,3 +39,14 @@ interface info_professor_response_item {
 interface info_professor_response extends common_response {
   data: info_professor_response_item;
 }
+
+interface info_student_response_item {
+  first_name: string;
+  last_name: string;
+  middle_name: string;
+  birthday: string;
+}
+
+interface info_student_response extends common_response {
+  data: info_update_student_response_item;
+}
