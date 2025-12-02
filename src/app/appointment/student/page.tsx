@@ -4,13 +4,14 @@ import { FaCheck, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { AppointmentContextProvider, useAppointment } from "@/context/AppointmentContext";
 import SearchProfessorDialog from "@/components/SearchProfessorDialog";
 import { SearchProfessorContextProvider } from "@/context/SearchProfessorContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import fetchBackend from "@/lib/fetchBackend";
 import { MdCancel, MdWatchLater } from "react-icons/md";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 export default function Student(){
 
@@ -172,7 +173,13 @@ function AppointmentCard({item}:{
 }){
 
   const { setSentAppointments } = useAppointment();
-  const { counterpart_name: name, id, target_date, status } = item;
+  const { counterpart_name: name, id, target_date, status, message, end_time, start_time } = item;
+
+  const isPast = new Date(target_date) > new Date();
+  const isAccepted = status === 1;
+
+  const infoRef = useRef<HTMLDialogElement | null>(null);
+  const [ infoIsOpened, setInfoIsOpened ] = useState(false);
 
   const displayDate = new Date(target_date).toLocaleDateString('en-US', {
     weekday: 'short',
@@ -182,6 +189,7 @@ function AppointmentCard({item}:{
   });
 
   return (
+    <>
     <motion.div
       className="grid grid-cols-[1fr_1fr_4rem_4rem]
       border-y-highlight-muted border-y-[1px] cursor-pointer
@@ -190,6 +198,7 @@ function AppointmentCard({item}:{
       animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
       exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
       transition={{ duration: 0.3}}
+      onClick={()=>infoRef.current?.showModal()}
     >
       <p className="overflow-x-hidden">
         {name}
@@ -206,11 +215,14 @@ function AppointmentCard({item}:{
       <button
         onClick={handleDelete}
         className="flex-cc disabled:opacity-50"
-        disabled={status === 1}
+        disabled={isPast && isAccepted}
       >
         <FaTrashAlt />
       </button>
+
     </motion.div>
+    <InfoDialog message={message} start_time={start_time} end_time={end_time} target_date={target_date} ref={infoRef} handleClose={()=>infoRef.current?.close()}/>
+    </>
   );
 
   async function handleDelete(){
@@ -255,4 +267,42 @@ function StatusIcon({status}:{status:number}){
     default:
       <MdWatchLater />
   }
+}
+
+function InfoDialog({message, end_time, start_time, target_date, ref, handleClose}: {
+  message: string,
+  end_time: string,
+  start_time: string,
+  target_date: string,
+  ref: React.RefObject<HTMLDialogElement | null>,
+  handleClose?: () => void
+}){
+
+  return (
+    <dialog ref={ref}>
+      <div className="grid grid-rows-[auto_1fr]">
+        <div className="flex-rr">
+          <button
+            className="text-xl fill-red-500"
+            onClick={handleClose}
+          >
+            <IoMdCloseCircleOutline />
+          </button>
+        </div>
+
+        <div>
+          <p className="text-2xl">
+            Appointment Details
+          </p>
+
+          <div className="space-y-2">
+            <p>Message: {message}</p>
+            <p>Start Time: {start_time}</p>
+            <p>End Time: {end_time}</p>
+            <p>Target Date: {target_date}</p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  )
 }
