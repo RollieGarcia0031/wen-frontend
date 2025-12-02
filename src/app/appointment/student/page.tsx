@@ -174,6 +174,9 @@ function AppointmentCard({item}:{
   const { setSentAppointments } = useAppointment();
   const { counterpart_name: name, id, target_date, status } = item;
 
+  const isPast = new Date(target_date) > new Date();
+  const isAccepted = status === 1;
+
   const displayDate = new Date(target_date).toLocaleDateString('en-US', {
     weekday: 'short',
     day: 'numeric',
@@ -206,7 +209,7 @@ function AppointmentCard({item}:{
       <button
         onClick={handleDelete}
         className="flex-cc disabled:opacity-50"
-        disabled={status === 1}
+        disabled={isPast && isAccepted}
       >
         <FaTrashAlt />
       </button>
