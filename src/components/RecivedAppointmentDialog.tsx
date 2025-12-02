@@ -21,11 +21,14 @@ export default function RecivedAppointmentDialog(){
     setRecievedAppointments
   } = useProfAppointment();
 
+  
   const ref = useRef<HTMLDialogElement | null>(null);
-
+  
   const selectedAppointment = recievedAppointments.filter(item => (
     item.id === selectedAppointmentId
   ))[0];
+  
+  const { status } = selectedAppointment || {};
 
   const displayDate = new Date(selectedAppointment?.target_date).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -96,13 +99,14 @@ export default function RecivedAppointmentDialog(){
 
           <div
             className="grid grid-cols-2 gap-x-4 px-4
-            [&_button]:py-1 [&_button]:rounded-md"
+            [&_button]:py-1 [&_button]:rounded-md [&_button]:shadow-black [&_button]:shadow-md
+            [&_button]:disabled:opacity-60"
           >
             
             <button
               className={`bg-green-800`}
               onClick={handleAccept}
-              disabled={isAccepting.current}
+              disabled={isAccepting.current || status > 0}
             >
               { !isAccepting.current ? 
                 <p>Accept</p>
@@ -113,6 +117,7 @@ export default function RecivedAppointmentDialog(){
             <button
               className="bg-red-800"
               onClick={handleDecline}
+              disabled={isDeclining.current || status > 0}
             >
               Decline
             </button>
