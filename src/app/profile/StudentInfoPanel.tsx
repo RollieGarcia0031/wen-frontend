@@ -39,22 +39,22 @@ export default function StudentInfoPanel(){
       <form className="mt-8 flex flex-col gap-2">
         <label>
           First Name
-          <input type="text" name="first_name" value={values.first_name} onChange={onChange}/>
+          <input type="text" name="first_name" value={values.first_name || ""} onChange={onChange}/>
         </label>
 
         <label>
           Last Name
-          <input type="text" name="last_name" value={values.last_name} onChange={onChange}/>
+          <input type="text" name="last_name" value={values.last_name || ""} onChange={onChange}/>
         </label>
 
         <label>
           Middle Name
-          <input type="text" name="middle_name" value={values.middle_name} onChange={onChange}/>
+          <input type="text" name="middle_name" value={values.middle_name || ""} onChange={onChange}/>
         </label>
 
         <label>
           Birthday
-          <input type="date" name="birthday" value={values.birthday} onChange={onChange}/>
+          <input type="date" name="birthday" value={values.birthday || ""} onChange={onChange}/>
         </label>
 
         <div className="*:bg-white *:text-black *:px-2 *:py-1 *:rounded-md
@@ -91,6 +91,8 @@ export default function StudentInfoPanel(){
       });
 
       const { data, message, success } = await response.json() as info_student_response;
+
+      if (response.status === 404) throw new Error("Student data not found");
 
       if (!response.ok || !success)
         throw new Error(message || "Failed to fetch student information");
