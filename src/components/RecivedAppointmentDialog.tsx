@@ -54,8 +54,9 @@ export default function RecivedAppointmentDialog(){
       onClose={handleClose}    
     >
       <div
-        className="grid grid-rows-[auto_1fr] h-[20rem] w-[30rem]"
+        className="grid grid-rows-[auto_1fr_auto] h-[20rem] w-[30rem] gap-2"
       >
+        {/* header & close button */}
         <div className="flex-rr">
           <button onClick={handleClose}>
             <IoMdCloseCircleOutline />  
@@ -95,34 +96,38 @@ export default function RecivedAppointmentDialog(){
             <p>
               {displayStartTime} - {displayEndTime}
             </p>
-          </div>
 
-          <div
-            className="grid grid-cols-2 gap-x-4 px-4
-            [&_button]:py-1 [&_button]:rounded-md [&_button]:shadow-black [&_button]:shadow-md
-            [&_button]:disabled:opacity-60"
+          </div>
+          <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi, voluptate nihil recusandae officia sit veniam sint necessitatibus facilis harum autem dolorem inventore omnis eos suscipit totam, tenetur pariatur itaque ducimus!
+          </p>
+        </div>
+        {/* Accept/decline button */}
+        <div
+          className="grid grid-cols-2 gap-x-4 px-4
+          [&_button]:py-1 [&_button]:rounded-md [&_button]:shadow-black [&_button]:shadow-md
+          [&_button]:disabled:opacity-60"
+        >
+          
+          <button
+            className={`bg-green-800`}
+            onClick={handleAccept}
+            disabled={isAccepting.current || status > 0}
           >
-            
-            <button
-              className={`bg-green-800`}
-              onClick={handleAccept}
-              disabled={isAccepting.current || status > 0}
-            >
-              { !isAccepting.current ? 
-                <p>Accept</p>
-                : <p>plese wait </p>
-              }
-            </button>
+            { !isAccepting.current ? 
+              <p>Accept</p>
+              : <p>plese wait </p>
+            }
+          </button>
 
-            <button
-              className="bg-red-800"
-              onClick={handleDecline}
-              disabled={isDeclining.current || status > 0}
-            >
-              Decline
-            </button>
+          <button
+            className="bg-red-800"
+            onClick={handleDecline}
+            disabled={isDeclining.current || status > 0}
+          >
+            Decline
+          </button>
 
-          </div>
         </div>
       </div>
     </dialog>
