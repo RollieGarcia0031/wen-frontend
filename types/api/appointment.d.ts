@@ -76,3 +76,11 @@ interface appointment_currentDay_response extends common_response {
     next_cursor_time: string
   }
 }
+
+interface appointment_get_message_response_item {
+  message: string;
+}
+
+interface appointment_get_message_response extends common_response {
+  data: appointment_get_message_response_item
+}
