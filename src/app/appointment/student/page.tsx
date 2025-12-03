@@ -173,7 +173,7 @@ function AppointmentCard({item}:{
 }){
 
   const { setSentAppointments } = useAppointment();
-  const { counterpart_name: name, id, target_date, status, message, end_time, start_time } = item;
+  const { counterpart_name: name, id, target_date, status, header: message, end_time, start_time } = item;
 
   const isPast = new Date(target_date) > new Date();
   const isAccepted = status === 1;

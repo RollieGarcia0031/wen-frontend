@@ -24,7 +24,7 @@ interface search_professor_user_response extends common_response {
 interface appointment_list_response_item {
   id: number;
   status: number;
-  message: string;
+  header: string;
   target_date: string;
   day_of_week: number;
   start_time: string;

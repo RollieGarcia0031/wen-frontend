@@ -65,7 +65,7 @@ export default function RecivedAppointmentDialog(){
 
         <div className="overflow-y-auto px-4">
           <p className="text-2xl font-semibold">
-            {selectedAppointment?.message}
+            {selectedAppointment?.header}
           </p>
           
           <p className="text-sm mb-8">
