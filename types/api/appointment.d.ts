@@ -78,7 +78,9 @@ interface appointment_currentDay_response extends common_response {
 }
 
 interface appointment_get_message_response_item {
-  message: string;
+  message: {
+    message: string
+  }
 }
 
 interface appointment_get_message_response extends common_response {

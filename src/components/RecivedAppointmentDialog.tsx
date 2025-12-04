@@ -2,7 +2,7 @@
 
 import { useProfAppointment } from "@/context/ProfessorAppointmentContext"
 import { removeSeconds } from "@/util/TimeFormat";
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { BsPersonCircle } from "react-icons/bs";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
@@ -39,12 +39,18 @@ export default function RecivedAppointmentDialog(){
 
   const displayStartTime = selectedAppointment? removeSeconds(selectedAppointment?.start_time): '';
   const displayEndTime = selectedAppointment? removeSeconds(selectedAppointment?.end_time): '';
+  const [ displayMessage, setDisplayMessage ] = useState<string>("");
 
   const isAccepting = useRef(false);
   const isDeclining = useRef(false);
 
   useEffect(()=>{
-    if (mainDialogOpened) ref.current?.showModal();
+    if (mainDialogOpened) {
+      ref.current?.showModal()
+      isAccepting.current = false;
+      isDeclining.current = false;
+      fetchMessage();
+    }
     else ref.current?.close();
   },[mainDialogOpened]);
 
@@ -99,7 +105,8 @@ export default function RecivedAppointmentDialog(){
 
           </div>
           <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi, voluptate nihil recusandae officia sit veniam sint necessitatibus facilis harum autem dolorem inventore omnis eos suscipit totam, tenetur pariatur itaque ducimus!
+            { displayMessage.length === 0 && "No message" }
+            { displayMessage + "" }
           </p>
         </div>
         {/* Accept/decline button */}
@@ -215,6 +222,28 @@ export default function RecivedAppointmentDialog(){
         toast.error(error.message);
     } finally {
       isDeclining.current = false;
+    }
+  }
+
+  async function fetchMessage(){
+    const body = { id: selectedAppointment.id };
+
+    try {
+      const response = await fetchBackend("appointment/get/message", {
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const { data, message, success } = await response.json() as appointment_get_message_response;
+
+      if (!response.ok || !success)
+        throw new Error(message);
+
+      setDisplayMessage(data.message.message);
+    } catch (error){
+      if (error instanceof Error)
+        toast.error(error.message);
     }
   }
 }
