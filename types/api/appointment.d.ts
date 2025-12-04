@@ -24,7 +24,7 @@ interface search_professor_user_response extends common_response {
 interface appointment_list_response_item {
   id: number;
   status: number;
-  message: string;
+  header: string;
   target_date: string;
   day_of_week: number;
   start_time: string;
@@ -75,4 +75,14 @@ interface appointment_currentDay_response extends common_response {
     next_cursor_id: number,
     next_cursor_time: string
   }
+}
+
+interface appointment_get_message_response_item {
+  message: {
+    message: string
+  }
+}
+
+interface appointment_get_message_response extends common_response {
+  data: appointment_get_message_response_item
 }
