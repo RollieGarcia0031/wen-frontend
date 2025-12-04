@@ -241,7 +241,7 @@ function TimeOptions(){
 
   return (
     <div className="grid grid-cols-3 gap-x-2 gap-y-2
-    card p-6 items-start auto-rows-min"
+    card p-6 items-start auto-rows-min overflow-auto"
     >
       {newAvailabilities?.map((item: search_professor_user_availability) => (
         <TimeSlotCard availabilityItem={item} key={item.availability_id}/>
