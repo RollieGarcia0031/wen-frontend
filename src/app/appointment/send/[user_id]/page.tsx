@@ -178,7 +178,6 @@ function SendAptHeader(){
         throw new Error(message || "Unknown error occured");
 
       setFullInfo(data);
-      console.log(data);
     } catch (error) {
       if (error instanceof Error)
         toast.error(error.message);
@@ -292,6 +291,10 @@ function MessageInput(){
 
   // used to limit outgoing api request
   const isSending = useRef(false);
+  const [ header, setHeader ] = useState("");
+
+  const headerLimit = 30;
+  const messageLimit = 400;
 
   if (!selectedAvailability) return null;
 
@@ -300,19 +303,36 @@ function MessageInput(){
       card rounded-md py-2"
       onSubmit={e=>handleSubmit(e)}
     >
-      <input type='text'
-        className="px-4"
-        placeholder="Message"
-        name='message'
-      />
+      <div className="grid grid-rows-[auto_1fr] gap-1">
+        <input type='text'
+          className="px-4"
+          placeholder="Header"
+          name='header'
+          maxLength={headerLimit}
+          value={header}
+          onChange={e=>setHeader(e.target.value)}
+        />
 
-      <button
-        className="bg-primary hover:bg-primary-hover px-2 rounded-md"
-        type='submit'
-        disabled={isSending.current}
-      >
-        Send
-      </button>
+        <textarea
+          className="px-4 bg-background-medium focus:outline-none resize-none"
+          placeholder="Message"
+          name='message'
+          maxLength={messageLimit}
+        >
+
+        </textarea>
+      </div>
+      
+      <div className="flex flex-col justify-end ">
+        <button
+          className="bg-primary hover:bg-primary-hover px-2 rounded-md
+          disabled:opacity-50 disabled:cursor-not-allowed"
+          type='submit'
+          disabled={isSending.current || !selectedDate || !selectedAvailability || !header || header.length <= 3}
+        >
+          Send
+        </button>
+      </div>
     </form>
   );
 
