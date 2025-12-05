@@ -11,40 +11,53 @@ interface AuthContextProps {
     user: User | null;
     setUser: (user: any) => void;
     refreshAuth: () => Promise<void>;
+    isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextProps>({
     user: null,
     setUser: (user: any) => {},
-    refreshAuth: async () => {}
+    refreshAuth: async () => {},
+    isLoading: true
 });
 
 export function AuthContextProvider({ children }: any) {
     const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const router = useRouter();
 
     const fetchUser = async () => {
-        const userInfoResponse = await fetchBackend('auth/profile', {
-            method: "GET",
-            headers: { 'Content-Type': 'application/json' }
-        });
-        
+        setIsLoading(true);
         try {
+            const userInfoResponse = await fetchBackend('auth/profile', {
+                method: "GET",
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
             const userInfoJson = await userInfoResponse.json() as auth_profile_response;
             if (userInfoResponse.ok || userInfoJson.success) {
                 if (userInfoJson.data){
                     localStorage.setItem('user', JSON.stringify(userInfoJson.data));
                     setUser(userInfoJson.data);
-                } else throw new Error("Not logged in");
-
+                } else {
+                    localStorage.removeItem('user');     
+                    setUser(null);
+                    router.replace('/login');
+                }
             } else {
-                if (userInfoResponse.status === 401) throw new Error("Not logged in");
+                if (userInfoResponse.status === 401) {
+                    throw new Error("Not logged in");
+                } else {
+                    throw new Error(userInfoJson.message || "An error occurred during authentication.");
+                }
             }
         } catch (error){
             localStorage.removeItem('user');     
             setUser(null);
             router.replace('/login');
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -53,7 +66,7 @@ export function AuthContextProvider({ children }: any) {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ user, setUser, refreshAuth: fetchUser }}>
+        <AuthContext.Provider value={{ user, setUser, refreshAuth: fetchUser, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

@@ -12,24 +12,20 @@ import fetchBackend from "@/lib/fetchBackend";
 import { FaCheck } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 export default function Professor(){
 
-  const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuthGuard(['professor']);
 
-  useEffect(()=>{
-    if (user?.role === 'student'){
-      router.replace('/appointment/student');
-    }
-  }, [user]);
+  if (isLoading) {
+    return <div>Loading authentication...</div>;
+  }
 
-  if (!user){
+  if (!user || user.role !== 'professor') {
     return null;
   }
 
-  if (user.role === 'professor')
   return (
     <ProfAppointmentContextProvider>
       <div>
