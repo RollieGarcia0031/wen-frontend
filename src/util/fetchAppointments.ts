@@ -17,8 +17,10 @@ export default function fetchAppointments(
     }; console.log(body);
 
     if (filter?.status || filter?.status === 0) body.status = filter.status;
+    else body.status = -1;
     body.time_range = filter?.time_range || "all";
 
+    console.log(body);
     return fetchBackend("appointment/list", {
         method: "POST",
         headers: { 'Content-Type' : 'application/json' },
