@@ -22,7 +22,7 @@ export default function Login(){
         shadow-black shadow-xl
         `}
       >
-        <div>
+        <div className='overflow-y-auto'>
           <AuthForm option={option} setOption={setOption}/>
         </div>
 

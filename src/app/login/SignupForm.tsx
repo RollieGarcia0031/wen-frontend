@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logOption } from "./page";
 import fetchBackend from "@/lib/fetchBackend";
 import { toast } from "react-toastify";
+import { FaInfoCircle } from "react-icons/fa";
 
 export default function SignupForm({setOption}: {
   setOption: React.Dispatch<React.SetStateAction<logOption>>
@@ -11,8 +12,14 @@ export default function SignupForm({setOption}: {
 
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [passwordValid, setPasswordValid] = useState<boolean>(false);
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState<boolean>(false);
 
     const passwordMatched = password === confirmPassword;
+
+    useEffect(() => {
+      setPasswordValid(isStrongPassword(password));
+    }, [password]);
 
     // used to limit the api request at a time, only one api
     // request will be allowed to be sent, before each responses
@@ -22,7 +29,8 @@ export default function SignupForm({setOption}: {
       <form className='flex-cl justify-between gap-2 h-full
       px-15 min-w-30
       [&_input]:w-full [&_div]:w-full
-      border-r-[1px] border-r-solid border-r-highlight-muted'
+      border-r-[1px] border-r-solid border-r-highlight-muted
+      overflow-y-auto'
 
       onSubmit={(e) => handleSubmit(e)}
     >
@@ -43,6 +51,25 @@ export default function SignupForm({setOption}: {
         <input type='password' name='password' required
             value={password} onChange={(e) => setPassword(e.target.value)}
         />
+        {!passwordValid && password && (
+            <div className='flex items-center gap-2'>
+                <button
+                    type="button"
+                    className="text-blue-500 text-sm mt-1 underline"
+                    onClick={() => setShowPasswordRequirements(!showPasswordRequirements)}
+                >
+                  <FaInfoCircle />
+                </button>
+                <p className='text-red-500 text-sm mt-1'>
+                    Password is not strong enough.
+                </p>
+            </div>
+        )}
+        {showPasswordRequirements && !passwordValid && password && (
+            <p className='text-red-500 text-sm mt-1'>
+                Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
+            </p>
+        )}
       </div>
 
       <div>
@@ -71,11 +98,11 @@ export default function SignupForm({setOption}: {
       </div>
 
       <button
-        className='primary-button mt-4 
+        className='primary-button mt-4   disabled:opacity-50 
         py-2 rounded-md w-full mb-8
         shadow-black shadow-lg'
         type='submit'
-        disabled={!passwordMatched}
+        disabled={ !passwordMatched || isSubmitting || !password  || !confirmPassword || !passwordValid }
       >
         Sign Up
       </button>
@@ -98,18 +125,26 @@ export default function SignupForm({setOption}: {
 
     if (isSubmitting) return;
 
+    if (!passwordValid) {
+        toast.error('Password does not meet the strength requirements.');
+        return;
+    }
+
     const formdata = new FormData(e.currentTarget);
 
     const data = Object.fromEntries(formdata);
 
+    // update state, to block further api requests
     setIsSubmitting(true);
 
+    // send api request
     const response = await fetchBackend('auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
 
+    // handle response
     if (response.ok){
       toast.info('Signup successful');
 
@@ -122,4 +157,26 @@ export default function SignupForm({setOption}: {
       setIsSubmitting(false);
     }
   }
+}
+
+/**
+ * Checks if the password is valid
+ * with minimum length of 8, uppercase, lowercase, digit, and special character
+ * @param password 
+ * @returns 
+ */
+function isStrongPassword(password: string){
+  const minLength = /.{8,}/;
+  const upper = /[A-Z]/;
+  const lower = /[a-z]/;
+  const digit = /[0-9]/;
+  const special = /[^A-Za-z0-9]/;
+
+  return (
+    minLength.test(password) &&
+    upper.test(password) &&
+    lower.test(password) &&
+    digit.test(password) &&
+    special.test(password)
+  );
 }
