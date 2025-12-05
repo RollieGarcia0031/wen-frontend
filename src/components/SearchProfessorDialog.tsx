@@ -4,14 +4,16 @@ import Link from "next/link";
 import { useAppointment } from "@/context/AppointmentContext";
 import { useSearchProfessor } from "@/context/SearchProfessorContext";
 import fetchBackend from "@/lib/fetchBackend";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 export default function SearchProfessorDialog(){
   const { searchDialogOpened, setSearchDialogOpened} = useAppointment();
   const { setSearchResults, searchResults } = useSearchProfessor();
+  const [ message, setMessage ] = useState("");
 
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   
@@ -59,6 +61,7 @@ export default function SearchProfessorDialog(){
                   />
                 ))
               }
+              {message && <p className="text-red-500 text-center">{message}</p>}
            </div>
         </div>
       </div>
@@ -74,24 +77,32 @@ export default function SearchProfessorDialog(){
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData);
   
-    const response = await fetchBackend("search/professors",{
-      method: "POST",
-      headers: { 'Content-Type' : 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok){
-      const { message } = await response.json() as common_response;
-      alert(message);
-      return;
+    try {
+      const response = await fetchBackend("search/professors",{
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(data)
+      });
+  
+      if (!response.ok){
+        const { message } = await response.json() as common_response;
+        alert(message);
+        return;
+      }
+  
+      // get the json data
+      const json = await response.json() as common_response;
+      const jsonData = json.data as search_professor_response_item[];
+  
+      if (jsonData.length == 0)
+        throw new Error("No professors found");
+      // save the state
+      setSearchResults(jsonData);
+      setMessage("");
+    } catch (error){
+      if (error instanceof Error)
+        setMessage(error.message);
     }
-
-    // get the json data
-    const json = await response.json() as common_response;
-    const jsonData = json.data as search_professor_response_item[];
-
-    // save the state
-    setSearchResults(jsonData);
 
   }
 }

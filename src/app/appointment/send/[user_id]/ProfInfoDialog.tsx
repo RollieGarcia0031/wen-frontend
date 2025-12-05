@@ -51,7 +51,7 @@ export default function ProfInfoDialog({ref, info}:{
             <div
               className="ml-4"
             >
-              {sections.map((item, index) => (
+              {sections?.map((item, index) => (
                 <div
                   key={index} 
                   className="grid grid-cols-[auto_1fr] gap-4"
