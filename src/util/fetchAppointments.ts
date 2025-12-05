@@ -16,7 +16,7 @@ export default function fetchAppointments(
         cursor_date
     }; console.log(body);
 
-    body.status = filter?.status || -1;
+    if (filter?.status || filter?.status === 0) body.status = filter.status;
     body.time_range = filter?.time_range || "all";
 
     return fetchBackend("appointment/list", {
