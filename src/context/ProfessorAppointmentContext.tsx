@@ -2,7 +2,7 @@
 
 import fetchBackend from "@/lib/fetchBackend";
 import fetchAppointments from "@/util/fetchAppointments";
-import { createContext, useContext, useState, Dispatch, SetStateAction, useRef, useEffect, RefObject } from "react"
+import { createContext, useContext, useState, Dispatch, SetStateAction, useRef, useEffect, RefObject, useCallback } from "react"
 import { toast } from "react-toastify";
 import { SearchFilter } from "./AppointmentContext";
 
@@ -121,7 +121,7 @@ export function ProfAppointmentContextProvider({children}:{
   const loaderRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const fetchMoreAppointments = async () => {
+  const fetchMoreAppointments = useCallback(async () => {
     if (!hasNext || isLoading) return;
 
     try {
@@ -133,7 +133,10 @@ export function ProfAppointmentContextProvider({children}:{
 
       if (!response.ok) throw new Error(message);
 
-      setRecievedAppointments(prev => [...prev, ...data.items]);
+      setRecievedAppointments(prev => {
+        const newItems = data.items.filter(newItem => !prev.some(existingItem => existingItem.id === newItem.id));
+        return [...prev, ...newItems];
+      });
       setHasNext(!!data.next_cursor);
       setNextCursor(data.next_cursor?.cursor_id ?? 0);
       setNextDate(data.next_cursor?.cursor_date ?? '0');
@@ -144,22 +147,27 @@ export function ProfAppointmentContextProvider({children}:{
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [hasNext, isLoading, nextCursor, nextDate, searchFilter, setRecievedAppointments, setHasNext, setNextCursor, setNextDate, setIsLoading]);
 
-  const fetchFirst = async () => {
+  const fetchFirst = useCallback(async () => {
+    // If hasNext is false, it means we've already fetched all available items.
+    // If isLoading is true, a fetch operation is already in progress.
+    // In either case, we should not proceed with a new fetch.
     if (isLoading || !hasNext) return;
 
     try {
       setIsLoading(true);
 
-      const response = await fetchAppointments( nextCursor!, nextDate!, searchFilter);
+      const response = await fetchAppointments( 0, '0', searchFilter);
 
       const { data, message } = await response.json() as appointment_list_response;
       console.log(data);
 
       if (!response.ok) throw new Error(message);
 
-      setRecievedAppointments(data.items);
+      setRecievedAppointments(data.items.filter((item, index, self) =>
+        index === self.findIndex((t) => t.id === item.id)
+      ));
       setHasNext(!!data.next_cursor);
       setNextCursor(data.next_cursor?.cursor_id ?? 0);
       setNextDate(data.next_cursor?.cursor_date ?? '0');
@@ -169,16 +177,16 @@ export function ProfAppointmentContextProvider({children}:{
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [isLoading, searchFilter, setRecievedAppointments, setHasNext, setNextCursor, setNextDate, setIsLoading]);
 
-  const resetAll = () => {
+  const resetAll = useCallback(() => {
     setRecievedAppointments([]);
     setNextCursor(0);
     setNextDate('0');
     setHasNext(true);
     setIsLoading(false);
     fetchFirst();
-  }
+  }, [fetchFirst, setHasNext, setIsLoading, setNextCursor, setNextDate, setRecievedAppointments]);
 
   return (
     <Context.Provider
