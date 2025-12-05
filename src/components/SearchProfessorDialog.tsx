@@ -113,8 +113,7 @@ export function SearchResultCard({searchResultItem}:{
   searchResultItem: search_professor_response_item
 }){
 
-  const { name, id } = searchResultItem;
-  const classes = ["fake1", "fake2"];
+  const { name, id, department_name } = searchResultItem;
 
   return (
 
@@ -130,11 +129,7 @@ export function SearchResultCard({searchResultItem}:{
 
         <div className="flex-rl gap-2 text-xs">
           { 
-            classes.map((item, index) => (
-              <p key={index}>
-                {item}
-              </p>
-            ))
+            department_name && <p>{department_name}</p>
           }
         </div>
       </div>

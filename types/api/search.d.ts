@@ -1,10 +1,7 @@
 interface search_professor_response_item {
   name: string;
   id: number;
-  classes: {
-    year: number,
-    class: string
-  }[]
+  department_name: string;
 }
 
 interface search_professors_response extends common_response {
