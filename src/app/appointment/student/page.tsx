@@ -294,8 +294,8 @@ function InfoDialog({message, end_time, start_time, target_date, ref, handleClos
           </button>
         </div>
 
-        <div>
-          <p className="text-2xl">
+        <div className="px-5 py-3">
+          <p className="text-2xl mb-4">
             Appointment Details
           </p>
 
