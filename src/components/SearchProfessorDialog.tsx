@@ -94,8 +94,10 @@ export default function SearchProfessorDialog(){
       const json = await response.json() as common_response;
       const jsonData = json.data as search_professor_response_item[];
   
-      if (jsonData.length == 0)
+      if (jsonData.length == 0){
+        setSearchResults([]);
         throw new Error("No professors found");
+      }
       // save the state
       setSearchResults(jsonData);
       setMessage("");
