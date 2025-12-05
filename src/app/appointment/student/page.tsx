@@ -191,25 +191,29 @@ function AppointmentCard({item}:{
   return (
     <>
     <motion.div
-      className="grid grid-cols-[1fr_1fr_4rem_4rem]
+      className="grid grid-cols-[1fr_4rem]
       border-y-highlight-muted border-y-[1px] cursor-pointer
       px-4 py-4 my-2 duration-100 rounded-md hover:bg-highlight-muted"
       initial={{ opacity: 0, height: 'auto', marginBottom: 0 }}
       animate={{ opacity: 1, height: 'auto', marginBottom: 0 }}
       exit={{ opacity: 0, height: 'auto', marginBottom: 0 }}
       transition={{ duration: 0.3}}
-      onClick={()=>infoRef.current?.showModal()}
     >
-      <p className="overflow-x-hidden">
-        {name}
-      </p>
+      <div
+        onClick={()=>infoRef?.current?.showModal()}
+        className="grid grid-cols-[1fr_1fr_4rem]"
+      >
+        <p className="overflow-x-hidden">
+          {name}
+        </p>
 
-      <p className="flex flex-row items-center">
-        {displayDate}
-      </p>
+        <p className="flex flex-row items-center">
+          {displayDate}
+        </p>
 
-      <div className="flex-cc">
-        <StatusIcon status={status} />
+        <div className="flex-cc">
+          <StatusIcon status={status} />
+        </div>
       </div>
 
       <button
