@@ -3,9 +3,11 @@
 import fetchBackend from "@/lib/fetchBackend";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { userInfo } from "os";
 
 interface AuthContextProps {
+    /**
+     * The info currently logged in user
+     */
     user: User | null;
     setUser: (user: any) => void;
     refreshAuth: () => Promise<void>;

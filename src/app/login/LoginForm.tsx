@@ -5,11 +5,16 @@ import { logOption } from "./page";
 import fetchBackend from "@/lib/fetchBackend";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 export default function LoginForm({setOption}: {
   setOption: React.Dispatch<React.SetStateAction<logOption>>
 }){
   const { refreshAuth } = useAuth();
+
+  useEffect(()=>{
+    destroyUserSession();
+  }, []);
 
   const router = useRouter();
 
@@ -63,18 +68,41 @@ export default function LoginForm({setOption}: {
 
     const data = Object.fromEntries(formData);
 
-    const response = await fetchBackend('auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+    try {
 
-    if (response.ok){
+      const response = await fetchBackend('auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });      
+
+      const { success, message } = await response.json() as common_response;
+
+      if (!response.ok || !success)
+        throw new Error(message || "Unknown error occured");
+
+      toast.success(message);
+
       refreshAuth();
-      return router.push('/');
-    } else {
-      const json = await response.json() as common_response;
-      toast.error(json.message);
+      router.push('/');
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
+    }
+  }
+
+  async function destroyUserSession(){
+    try {
+      const response = await fetchBackend('auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const { success, message } = await response.json() as common_response;
+      refreshAuth();
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error(error.message);
     }
   }
 }
