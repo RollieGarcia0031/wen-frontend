@@ -26,29 +26,29 @@ export default function Sidebar(){
       className="flex-ct gap-3
         py-4
         [&_svg]:text-2xl
-        [&_button]:bg-black [&_button]:p-3 [&_button]:rounded-full
+        [&_button]:p-3 [&_button]:rounded-full
+        [&_button]:duration-300
         border-r-highlight-muted border-r-[1px]
         h-[100dvh]"
     >
-      <button>
+      <button className={`${path == "/" ? "bg-highlight-muted" : ""}`}>
         <Link href="/">
           <HiOutlineHome/>
         </Link>
       </button>
 
-      <button>
-        <Link href={`/appointment/${user.role}`}>
+      <button
+        className={`${path == `/appointment/${user.role}` ? "bg-highlight-muted" : ""}`}
+      >
+        <Link href={`/appointment/${user.role}`}
+        >
           <MdOutlineScheduleSend />
         </Link>
       </button>
 
-      <button>
-        <Link href={`/appointment`}>
-          <IoPeopleOutline /> 
-        </Link>
-      </button>
-
-      <button>
+      <button
+        className={`${path === '/notifications'? "bg-highlight-muted" : ""}`}
+      >
         <Link href="/notifications">
           <IoIosNotificationsOutline />
         </Link>
@@ -56,7 +56,9 @@ export default function Sidebar(){
       
       {/* side bar options exclusive to professors */}
       { user?.role == 'professor' &&
-        <button>
+        <button
+          className={`${path == '/professor/availability'? "bg-highlight-muted" : ""}`}
+        >
           <Link href="/professor/availability">
             <RiCalendarScheduleLine /> 
           </Link>
