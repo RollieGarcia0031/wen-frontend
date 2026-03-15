@@ -1,8 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WEN Frontend
+
+WEN Frontend is the web interface for an **appointment management system designed for students and teachers**. It provides the client-side experience for scheduling, viewing, and managing appointments in an academic setting.
+
+Students can use the app to request and track consultations, while teachers can review requests, manage schedules, and handle appointment flow efficiently.
+
+## Project Architecture
+
+This repository contains the **frontend** built with Next.js.
+
+The corresponding backend API for this project is in:
+
+- https://github.com/RollieGarcia0031/wen-backend.git
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ (recommended)
+- npm (or yarn/pnpm/bun)
+
+### 1) Clone and install dependencies
+
+```bash
+git clone https://github.com/RollieGarcia0031/wen-frontend
+cd wen-frontend
+npm install
+```
+
+### 2) Configure environment variables
+
+Create a `.env.local` file in the project root and add the variables required by the app (for example, the backend API URL). Use the backend repository documentation as reference for API setup.
+
+### 3) Run the development server
 
 ```bash
 npm run dev
@@ -14,23 +43,23 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Run production build
+npm run lint     # Run linter
+```
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org)
+- React
+- TypeScript
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.hey
+For full end-to-end functionality, make sure the backend service is running and accessible by this frontend.
